@@ -87,3 +87,10 @@
 .dark .mdxeditor [contenteditable="true"] blockquote {
   color: var(--text) !important;
 }
+
+.dark .mdxeditor-toolbar button,
+.dark .mdxeditor-toolbar select,
+.dark .mdxeditor-toolbar svg {
+  color: var(--text) !important;
+  fill: var(--text) !important;
+}
