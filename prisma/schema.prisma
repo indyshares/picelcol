@@ -1,0 +1,291 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Users ----------
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile   Profile?
+  articles  Article[]
+  comments  Comment[]
+  likes     ArticleLike[]
+  bookmarks Bookmark[]
+
+  @@map("users")
+}
+
+model Profile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName String?
+  avatarUrl   String?
+  bio         String?
+
+  @@map("profiles")
+}
+
+// ---------- Content ----------
+
+model Article {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String?
+  content     String
+  coverImage  String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  categories ArticleCategory[]
+  tags       ArticleTag[]
+  keywords   ArticleKeyword[]
+  comments   Comment[]
+  likes      ArticleLike[]
+  bookmarks  Bookmark[]
+  views      ArticleView[]
+  entities   ArticleEntity[]
+
+  relatedFrom RelatedArticle[] @relation("ArticleRelatedFrom")
+  relatedTo   RelatedArticle[] @relation("ArticleRelatedTo")
+
+  @@map("articles")
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pages")
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+
+  @@map("media")
+}
+
+// ---------- Taxonomy ----------
+
+model Category {
+  id       String            @id @default(cuid())
+  slug     String            @unique
+  name     String
+  articles ArticleCategory[]
+
+  @@map("categories")
+}
+
+model ArticleCategory {
+  articleId  String
+  categoryId String
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, categoryId])
+  @@map("article_categories")
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  slug     String       @unique
+  name     String
+  articles ArticleTag[]
+
+  @@map("tags")
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("article_tags")
+}
+
+model ArticleKeyword {
+  id        String  @id @default(cuid())
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  keyword   String
+
+  @@map("article_keywords")
+}
+
+// ---------- Engagement ----------
+
+model Comment {
+  id        String   @id @default(cuid())
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model ArticleLike {
+  articleId String
+  userId    String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([articleId, userId])
+  @@map("article_likes")
+}
+
+model Bookmark {
+  articleId String
+  userId    String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([articleId, userId])
+  @@map("bookmarks")
+}
+
+model ArticleView {
+  id        String   @id @default(cuid())
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  viewedAt  DateTime @default(now())
+
+  @@map("article_views")
+}
+
+// ---------- Site config ----------
+
+model Setting {
+  key   String @id
+  value String
+
+  @@map("settings")
+}
+
+model Redirect {
+  id          String @id @default(cuid())
+  source      String @unique
+  destination String
+  permanent   Boolean @default(true)
+
+  @@map("redirects")
+}
+
+// ---------- Knowledge Graph ----------
+
+model Entity {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  type      String
+  createdAt DateTime @default(now())
+
+  aliases      EntityAlias[]
+  metadata     EntityMetadata[]
+  articles     ArticleEntity[]
+  topics       TopicEntity[]
+  relationsA   EntityRelation[] @relation("EntityRelationA")
+  relationsB   EntityRelation[] @relation("EntityRelationB")
+
+  @@map("entities")
+}
+
+model EntityAlias {
+  id       String @id @default(cuid())
+  entityId String
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  alias    String
+
+  @@map("entity_aliases")
+}
+
+model EntityRelation {
+  id         String @id @default(cuid())
+  entityAId  String
+  entityBId  String
+  entityA    Entity @relation("EntityRelationA", fields: [entityAId], references: [id], onDelete: Cascade)
+  entityB    Entity @relation("EntityRelationB", fields: [entityBId], references: [id], onDelete: Cascade)
+  relation   String
+
+  @@map("entity_relations")
+}
+
+model EntityMetadata {
+  id       String @id @default(cuid())
+  entityId String
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  key      String
+  value    String
+
+  @@map("entity_metadata")
+}
+
+model ArticleEntity {
+  articleId String
+  entityId  String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  entity    Entity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, entityId])
+  @@map("article_entities")
+}
+
+model Topic {
+  id       String        @id @default(cuid())
+  slug     String        @unique
+  name     String
+  entities TopicEntity[]
+
+  @@map("topics")
+}
+
+model TopicEntity {
+  topicId  String
+  entityId String
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([topicId, entityId])
+  @@map("topic_entities")
+}
+
+model RelatedArticle {
+  articleId        String
+  relatedArticleId String
+  article          Article @relation("ArticleRelatedFrom", fields: [articleId], references: [id], onDelete: Cascade)
+  relatedArticle   Article @relation("ArticleRelatedTo", fields: [relatedArticleId], references: [id], onDelete: Cascade)
+  score            Float?
+
+  @@id([articleId, relatedArticleId])
+  @@map("related_articles")
+}

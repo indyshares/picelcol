@@ -1,0 +1,69 @@
+/*
+ * Design tokens — derived from Theme Setup.md
+ * Light theme: Fresh / Cute / Soft / Friendly / Clean
+ * Dark theme: Cozy / Premium / Soft Dark / Modern
+ */
+
+:root {
+  /* ---------- LIGHT ---------- */
+  --primary: #98d8f4;
+  --secondary: #ffc5d6;
+  --accent: #ff7e5f;
+  --accent-hover: #ff6b47;
+
+  --bg: #fffdf6;
+  --surface: #ffffff;
+
+  --text: #2f4255;
+  --text-light: #6f8090;
+  --text-muted: #aab5c0;
+
+  --border: #eaf2f8;
+
+  --navbar-bg: #98d8f4;
+  --navbar-text: #2f4255;
+  --navbar-hover: #ffffff;
+
+  --link: #4db6e8;
+  --link-hover: #2d9fd8;
+
+  --icon: #98d8f4;
+  --icon-active: #ff7e5f;
+
+  --shadow-card: 0 8px 30px rgb(0 0 0 / 0.06);
+  --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.08);
+
+  --hero-gradient: linear-gradient(135deg, #98d8f4 0%, #ffc5d6 100%);
+}
+
+.dark {
+  /* ---------- DARK ---------- */
+  --primary: #8fd7ff;
+  --secondary: #ffb8cc;
+  --accent: #ff8b6d;
+  --accent-hover: #ff7755;
+
+  --bg: #1a2230;
+  --surface: #273345;
+
+  --text: #f7f9fc;
+  --text-light: #d0d8e4;
+  --text-muted: #94a3b8;
+
+  --border: #39495f;
+
+  --navbar-bg: #1f2838;
+  --navbar-text: #f8fafc;
+  --navbar-hover: #ffffff;
+
+  --link: #8fd7ff;
+  --link-hover: #ffb8cc;
+
+  --icon: #8fd7ff;
+  --icon-active: #ff8b6d;
+
+  --shadow-card: 0 12px 35px rgb(0 0 0 / 0.4);
+  --shadow-soft: 0 12px 35px rgb(0 0 0 / 0.35);
+
+  --hero-gradient: linear-gradient(135deg, #1a2230, #273345, #2d3c52);
+}

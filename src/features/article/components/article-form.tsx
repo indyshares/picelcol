@@ -1,0 +1,172 @@
+"use client";
+
+import { useActionState, useState } from "react";
+import { ArticleEditor } from "./article-editor";
+import type { ArticleFormState } from "@/features/article/actions";
+import { slugify } from "@/utils/slugify";
+import { Button } from "@/components/ui/button";
+
+type CategoryOption = { id: string; name: string };
+type TagOption = { id: string; name: string };
+
+type ArticleFormProps = {
+  action: (state: ArticleFormState, formData: FormData) => Promise<ArticleFormState>;
+  categories: CategoryOption[];
+  tags: TagOption[];
+  defaultValues?: {
+    title?: string;
+    slug?: string;
+    excerpt?: string;
+    content?: string;
+    coverImage?: string;
+    published?: boolean;
+    categoryIds?: string[];
+    tagIds?: string[];
+  };
+  submitLabel?: string;
+};
+
+export function ArticleForm({
+  action,
+  categories,
+  tags,
+  defaultValues,
+  submitLabel = "บันทึกบทความ",
+}: ArticleFormProps) {
+  const [state, formAction, isPending] = useActionState<ArticleFormState, FormData>(action, {});
+  const [title, setTitle] = useState(defaultValues?.title ?? "");
+  const [slug, setSlug] = useState(defaultValues?.slug ?? "");
+  const [slugTouched, setSlugTouched] = useState(Boolean(defaultValues?.slug));
+  const [markdown, setMarkdown] = useState(defaultValues?.content ?? "");
+
+  return (
+    <form action={formAction} className="flex flex-col gap-6">
+      {state.error && (
+        <p className="rounded-[var(--radius-input)] border border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm text-[var(--accent)]">
+          {state.error}
+        </p>
+      )}
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="title" className="text-sm font-medium text-[var(--text)]">
+          ชื่อบทความ
+        </label>
+        <input
+          id="title"
+          name="title"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            if (!slugTouched) setSlug(slugify(e.target.value));
+          }}
+          className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+          required
+        />
+        {state.fieldErrors?.title && (
+          <p className="text-sm text-[var(--accent)]">{state.fieldErrors.title[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="slug" className="text-sm font-medium text-[var(--text)]">
+          Slug
+        </label>
+        <input
+          id="slug"
+          name="slug"
+          value={slug}
+          onChange={(e) => {
+            setSlugTouched(true);
+            setSlug(slugify(e.target.value));
+          }}
+          className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+          required
+        />
+        {state.fieldErrors?.slug && (
+          <p className="text-sm text-[var(--accent)]">{state.fieldErrors.slug[0]}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="excerpt" className="text-sm font-medium text-[var(--text)]">
+          คำโปรย (excerpt)
+        </label>
+        <textarea
+          id="excerpt"
+          name="excerpt"
+          defaultValue={defaultValues?.excerpt}
+          rows={2}
+          className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="coverImage" className="text-sm font-medium text-[var(--text)]">
+          Cover Image URL
+        </label>
+        <input
+          id="coverImage"
+          name="coverImage"
+          defaultValue={defaultValues?.coverImage}
+          className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-medium text-[var(--text)]">เนื้อหา</span>
+        <ArticleEditor markdown={markdown} onChange={setMarkdown} />
+        <input type="hidden" name="content" value={markdown} />
+        {state.fieldErrors?.content && (
+          <p className="text-sm text-[var(--accent)]">{state.fieldErrors.content[0]}</p>
+        )}
+      </div>
+
+      {categories.length > 0 && (
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm font-medium text-[var(--text)]">หมวดหมู่</legend>
+          <div className="flex flex-wrap gap-3">
+            {categories.map((c) => (
+              <label key={c.id} className="flex items-center gap-1.5 text-sm text-[var(--text)]">
+                <input
+                  type="checkbox"
+                  name="categoryIds"
+                  value={c.id}
+                  defaultChecked={defaultValues?.categoryIds?.includes(c.id)}
+                />
+                {c.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      {tags.length > 0 && (
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm font-medium text-[var(--text)]">แท็ก</legend>
+          <div className="flex flex-wrap gap-3">
+            {tags.map((t) => (
+              <label key={t.id} className="flex items-center gap-1.5 text-sm text-[var(--text)]">
+                <input
+                  type="checkbox"
+                  name="tagIds"
+                  value={t.id}
+                  defaultChecked={defaultValues?.tagIds?.includes(t.id)}
+                />
+                {t.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+
+      <label className="flex items-center gap-2 text-sm text-[var(--text)]">
+        <input type="checkbox" name="published" defaultChecked={defaultValues?.published} />
+        เผยแพร่บทความนี้
+      </label>
+
+      <Button type="submit" disabled={isPending} className="self-start">
+        {isPending ? "กำลังบันทึก..." : submitLabel}
+      </Button>
+    </form>
+  );
+}
