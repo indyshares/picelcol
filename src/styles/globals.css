@@ -75,3 +75,15 @@
   --baseBorderColor: #39495f;
   --baseCodeBg: #1e2a3c;
 }
+
+.dark .mdxeditor [contenteditable="true"],
+.dark .mdxeditor [contenteditable="true"] p,
+.dark .mdxeditor [contenteditable="true"] h1,
+.dark .mdxeditor [contenteditable="true"] h2,
+.dark .mdxeditor [contenteditable="true"] h3,
+.dark .mdxeditor [contenteditable="true"] h4,
+.dark .mdxeditor [contenteditable="true"] li,
+.dark .mdxeditor [contenteditable="true"] span,
+.dark .mdxeditor [contenteditable="true"] blockquote {
+  color: var(--text) !important;
+}

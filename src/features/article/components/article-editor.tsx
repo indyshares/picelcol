@@ -25,7 +25,7 @@ import {
   CodeToggle,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { uploadFile } from "@/lib/supabase/storage";
 
 function InsertImageButton({ editorRef }: { editorRef: React.RefObject<MDXEditorMethods | null> }) {
@@ -80,7 +80,20 @@ type ArticleEditorProps = {
 
 export const ArticleEditor = forwardRef<MDXEditorMethods, ArticleEditorProps>(
   function ArticleEditor({ markdown, onChange, placeholder }, ref) {
+    const [mounted, setMounted] = useState(false);
     const editorRef = useRef<MDXEditorMethods | null>(null);
+
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+
+    if (!mounted) {
+      return (
+        <div className="min-h-[320px] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-[var(--text-light)]">
+          Loading editor...
+        </div>
+      );
+    }
 
     return (
       <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)]">
@@ -93,7 +106,7 @@ export const ArticleEditor = forwardRef<MDXEditorMethods, ArticleEditorProps>(
           markdown={markdown}
           onChange={onChange}
           placeholder={placeholder ?? "เริ่มเขียนบทความ..."}
-          contentEditableClassName="prose dark:prose-invert max-w-none px-4 py-3 min-h-[320px] focus:outline-none"
+          contentEditableClassName="prose dark:prose-invert text-[var(--text)] max-w-none px-4 py-3 min-h-[320px] focus:outline-none"
           plugins={[
             headingsPlugin(),
             listsPlugin(),

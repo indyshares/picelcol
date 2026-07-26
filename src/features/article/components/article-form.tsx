@@ -1,12 +1,21 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { ArticleEditor } from "./article-editor";
+import dynamic from "next/dynamic";
 import type { ArticleFormState } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { uploadFile } from "@/lib/supabase/storage";
+
+const ArticleEditor = dynamic(() => import("./article-editor").then((m) => m.ArticleEditor), {
+  ssr: false,
+  loading: () => (
+    <div className="min-h-[320px] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-[var(--text-light)]">
+      Loading editor...
+    </div>
+  ),
+});
 
 type CategoryOption = { id: string; name: string };
 type TagOption = { id: string; name: string };
