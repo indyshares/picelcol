@@ -64,3 +64,14 @@
     }
   }
 }
+
+/* MDXEditor dark mode overrides */
+.dark .mdxeditor {
+  --baseText: #f7f9fc;
+  --basePageBg: #1a2230;
+  --baseBg: #273345;
+  --baseBgHover: #2d3c52;
+  --baseBgActive: #39495f;
+  --baseBorderColor: #39495f;
+  --baseCodeBg: #1e2a3c;
+}

@@ -93,7 +93,7 @@ export const ArticleEditor = forwardRef<MDXEditorMethods, ArticleEditorProps>(
           markdown={markdown}
           onChange={onChange}
           placeholder={placeholder ?? "เริ่มเขียนบทความ..."}
-          contentEditableClassName="prose max-w-none px-4 py-3 min-h-[320px] focus:outline-none"
+          contentEditableClassName="prose dark:prose-invert max-w-none px-4 py-3 min-h-[320px] focus:outline-none"
           plugins={[
             headingsPlugin(),
             listsPlugin(),
