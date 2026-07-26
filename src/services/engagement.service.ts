@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Article } from "@prisma/client";
 
 // ---------- Likes ----------
 
@@ -74,7 +75,7 @@ export async function countViews(articleId: string) {
 }
 
 /** Most-viewed published articles in the last `days` days. */
-export async function getTrendingArticles(days = 7, take = 5) {
+export async function getTrendingArticles(days = 7, take = 5): Promise<{ article: Article; views: number }[]> {
   const since = new Date();
   since.setDate(since.getDate() - days);
 

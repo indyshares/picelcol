@@ -1,7 +1,14 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Only run auth refresh + role check for /admin routes
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -12,7 +19,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
@@ -23,8 +30,16 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // Refresh the auth session so Server Components always see a valid user.
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+
+  if (!data.user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Role check deferred to admin layout (Node.js runtime).
+  // Edge Runtime + Prisma is unreliable — layout enforces the guard server-side.
 
   return response;
 }

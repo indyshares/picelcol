@@ -3,7 +3,13 @@ import { listArticles } from "@/services/article.service";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
-  const articles = await listArticles({ onlyPublished: true });
+
+  let articles: { slug: string; updatedAt: Date }[] = [];
+  try {
+    articles = await listArticles({ onlyPublished: true });
+  } catch {
+    // Database unavailable during build — return static entries only
+  }
 
   return [
     {

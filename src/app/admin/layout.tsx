@@ -2,12 +2,17 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
 import { signOutAction } from "@/features/auth/actions";
+import { isAdmin } from "@/services/user.service";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentAuthUser();
 
   if (!user) {
     redirect("/login?next=/admin/articles");
+  }
+
+  if (!(await isAdmin(user.id))) {
+    redirect("/");
   }
 
   return (
@@ -22,6 +27,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             className="text-sm font-medium text-[var(--text-light)] hover:text-[var(--text)]"
           >
             บทความ
+          </Link>
+          <Link
+            href="/"
+            className="text-sm font-medium text-[var(--text-light)] hover:text-[var(--text)]"
+          >
+            กลับหน้าแรก
           </Link>
         </nav>
         <div className="flex items-center gap-4 text-sm">

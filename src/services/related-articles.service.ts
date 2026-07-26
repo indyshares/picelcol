@@ -28,7 +28,7 @@ export async function getRelatedArticles(articleId: string, take = 3) {
         { tags: { some: { tagId: { in: tagIds } } } },
       ],
     },
-    include: { categories: true, tags: true },
+    include: { categories: { include: { category: true } }, tags: true },
     take: 20,
   });
 

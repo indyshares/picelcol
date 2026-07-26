@@ -1,9 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import type { ArticleInput } from "@/schemas/article.schema";
+import type { Prisma } from "@prisma/client";
+
+type ArticleInclude = {
+  author: { select: { profile: true } };
+  categories: { include: { category: true } };
+  tags: { include: { tag: true } };
+};
+
+type ArticleWithRelations = Prisma.ArticleGetPayload<{ include: ArticleInclude }>;
 
 export async function listArticles({
   onlyPublished = true,
-}: { onlyPublished?: boolean } = {}) {
+}: { onlyPublished?: boolean } = {}): Promise<ArticleWithRelations[]> {
   return prisma.article.findMany({
     where: onlyPublished ? { published: true } : undefined,
     orderBy: { publishedAt: "desc" },
@@ -21,7 +30,7 @@ export async function listArticles({
  * simple level — swap for `to_tsvector`/`websearch_to_tsquery` later if
  * ranked full-text search becomes necessary.
  */
-export async function searchArticles(query: string) {
+export async function searchArticles(query: string): Promise<ArticleWithRelations[]> {
   const q = query.trim();
   if (!q) return listArticles({ onlyPublished: true });
 
@@ -42,7 +51,7 @@ export async function searchArticles(query: string) {
   });
 }
 
-export async function getArticleBySlug(slug: string) {
+export async function getArticleBySlug(slug: string): Promise<ArticleWithRelations | null> {
   return prisma.article.findUnique({
     where: { slug },
     include: {

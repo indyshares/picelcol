@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Search, Bookmark } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
 import { signOutAction } from "@/features/auth/actions";
+import { SearchBar } from "@/components/search-bar";
 
 export async function SiteHeader() {
   const user = await getCurrentAuthUser();
@@ -20,18 +21,7 @@ export async function SiteHeader() {
           </span>
         </Link>
 
-        <form
-          action="/articles"
-          className="hidden flex-1 max-w-xs items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg)] px-4 py-2 sm:flex"
-        >
-          <Search className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
-          <input
-            type="search"
-            name="q"
-            placeholder="ค้นหาบทความ..."
-            className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
-          />
-        </form>
+        <SearchBar />
 
         <nav className="flex items-center gap-4 text-sm">
           <Link

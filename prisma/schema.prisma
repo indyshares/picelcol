@@ -9,9 +9,17 @@ datasource db {
 
 // ---------- Users ----------
 
+enum UserRole {
+  admin
+  user
+
+  @@map("user_role")
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
+  role      UserRole @default(user)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

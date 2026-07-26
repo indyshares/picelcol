@@ -19,3 +19,27 @@ export async function getUserWithProfile(userId: string) {
     include: { profile: true },
   });
 }
+
+export async function isAdmin(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  return user?.role === "admin";
+}
+
+export async function getUserRole(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  return user?.role ?? "user";
+}
+
+/** Promote a user to admin (useful for setting up the first admin). */
+export async function setAdminRole(userId: string) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { role: "admin" },
+  });
+}

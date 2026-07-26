@@ -46,7 +46,7 @@ export async function signUpAction(
     return { error: "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ (ตรวจสอบกล่องจดหมายของคุณ)" };
   }
 
-  redirect("/admin/articles");
+  redirect("/");
 }
 
 export async function signInAction(
@@ -73,7 +73,7 @@ export async function signInAction(
     await ensureUser(data.user.id, data.user.email ?? parsed.data.email);
   }
 
-  redirect("/admin/articles");
+  redirect("/");
 }
 
 export async function signOutAction() {
