@@ -3,8 +3,6 @@ import { ArticleForm } from "@/features/article/components/article-form";
 import { updateArticleAction } from "@/features/article/actions";
 import { getArticleById } from "@/services/article.service";
 import { listCategories, listTags } from "@/services/taxonomy.service";
-import type { ArticleFormState } from "@/features/article/actions";
-
 type Props = {
   params: Promise<{ id: string }>;
 };
@@ -21,8 +19,7 @@ export default async function EditArticlePage({ params }: Props) {
     notFound();
   }
 
-  const boundAction = async (state: ArticleFormState, formData: FormData) =>
-    updateArticleAction(id, state, formData);
+  const boundAction = updateArticleAction.bind(null, id);
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
