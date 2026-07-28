@@ -7,6 +7,7 @@ import {
   createArticle,
   deleteArticle,
   isSlugTaken,
+  searchArticles,
   updateArticle,
 } from "@/services/article.service";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
@@ -100,4 +101,8 @@ export async function deleteArticleAction(id: string) {
   await deleteArticle(id);
   revalidatePath("/articles");
   revalidatePath("/admin/articles");
+}
+
+export async function searchArticlesAction(q: string) {
+  return searchArticles(q);
 }

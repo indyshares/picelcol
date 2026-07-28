@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { listArticles, searchArticles } from "@/services/article.service";
+import { listArticles } from "@/services/article.service";
 import { getTrendingArticles } from "@/services/engagement.service";
 import { ArticleCard } from "@/features/article/components/article-card";
-import { EmptyState } from "@/components/empty-state";
+import { ArticleList } from "@/features/article/components/article-list";
 
 export const revalidate = 3600;
 
@@ -11,17 +11,10 @@ export const metadata: Metadata = {
   description: "รวมบทความทั้งหมด",
 };
 
-type Props = {
-  searchParams: Promise<{ q?: string }>;
-};
-
-export default async function ArticlesPage({ searchParams }: Props) {
-  const { q } = await searchParams;
-  const isSearching = Boolean(q?.trim());
-
+export default async function ArticlesPage() {
   const [articles, trending] = await Promise.all([
-    isSearching ? searchArticles(q!) : listArticles({ onlyPublished: true, take: 12 }),
-    isSearching ? Promise.resolve([]) : getTrendingArticles(),
+    listArticles({ onlyPublished: true, take: 12 }),
+    getTrendingArticles(),
   ]);
 
   return (
@@ -39,24 +32,12 @@ export default async function ArticlesPage({ searchParams }: Props) {
         </section>
       )}
 
-      <h1 className="mb-8 text-3xl font-[var(--font-heading)] font-semibold text-[var(--text)]">
-        {isSearching ? `ผลการค้นหา "${q}"` : "บทความทั้งหมด"}
-      </h1>
-
-      {articles.length === 0 ? (
-        <EmptyState
-          title={isSearching ? "ไม่พบบทความที่ค้นหา" : "ยังไม่มีบทความเผยแพร่"}
-          description={
-            isSearching ? "ลองค้นหาด้วยคำอื่นดูนะ" : "เร็วๆ นี้จะมีบทความใหม่มาให้อ่านกัน"
-          }
-        />
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
-      )}
+      <section>
+        <h1 className="mb-8 text-3xl font-[var(--font-heading)] font-semibold text-[var(--text)]">
+          บทความทั้งหมด
+        </h1>
+        <ArticleList fallback={articles as unknown as never[]} />
+      </section>
     </main>
   );
 }
