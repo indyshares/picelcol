@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getArticleWithStats } from "@/services/engagement.service";
+import { getArticleMetadata } from "@/services/article.service";
 
 // Uses the Node.js runtime (not edge) so it can query Prisma directly.
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ type Props = {
 
 export default async function ArticleOpengraphImage({ params }: Props) {
   const { slug } = await params;
-  const article = await getArticleWithStats(slug);
+  const article = await getArticleMetadata(slug);
   const title = article?.title ?? "บทความ";
   const category = article?.categories[0]?.category.name;
 

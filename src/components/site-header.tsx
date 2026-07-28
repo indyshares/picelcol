@@ -25,6 +25,12 @@ export async function SiteHeader() {
 
         <nav className="flex items-center gap-4 text-sm">
           <Link
+            href="/"
+            className="font-medium text-[var(--text)] hover:text-[var(--link)]"
+          >
+            หน้าแรก
+          </Link>
+          <Link
             href="/articles"
             className="font-medium text-[var(--text)] hover:text-[var(--link)]"
           >

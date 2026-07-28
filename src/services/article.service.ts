@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import type { ArticleInput } from "@/schemas/article.schema";
 import type { Prisma } from "@prisma/client";
@@ -122,6 +123,21 @@ export async function updateArticle(id: string, data: ArticleInput) {
 export async function deleteArticle(id: string) {
   return prisma.article.delete({ where: { id } });
 }
+
+export const getArticleMetadata = cache(async (slug: string) => {
+  return prisma.article.findUnique({
+    where: { slug },
+    select: {
+      title: true,
+      excerpt: true,
+      slug: true,
+      coverImage: true,
+      publishedAt: true,
+      updatedAt: true,
+      categories: { select: { category: { select: { name: true } } }, take: 1 },
+    },
+  });
+});
 
 export async function getArticleContent(slug: string) {
   return prisma.article.findUnique({

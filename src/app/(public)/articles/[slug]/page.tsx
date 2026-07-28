@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getArticleContent } from "@/services/article.service";
-import { getArticleWithStats } from "@/services/engagement.service";
+import { getArticleContent, getArticleMetadata } from "@/services/article.service";
 import { ArticleContent } from "@/features/article/components/article-content";
 import { siteConfig } from "@/constants/site";
 import { EngagementBar } from "@/features/engagement/components/engagement-bar";
@@ -16,30 +15,30 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleWithStats(slug);
+  const meta = await getArticleMetadata(slug);
 
-  if (!article) {
+  if (!meta) {
     return { title: "ไม่พบบทความ" };
   }
 
-  const url = `${siteConfig.url}/articles/${article.slug}`;
+  const url = `${siteConfig.url}/articles/${meta.slug}`;
 
   return {
-    title: article.title,
-    description: article.excerpt ?? undefined,
+    title: meta.title,
+    description: meta.excerpt ?? undefined,
     alternates: { canonical: url },
     openGraph: {
       type: "article",
-      title: article.title,
-      description: article.excerpt ?? undefined,
+      title: meta.title,
+      description: meta.excerpt ?? undefined,
       url,
-      images: article.coverImage ? [{ url: article.coverImage }] : undefined,
+      images: meta.coverImage ? [{ url: meta.coverImage }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt ?? undefined,
-      images: article.coverImage ? [article.coverImage] : undefined,
+      title: meta.title,
+      description: meta.excerpt ?? undefined,
+      images: meta.coverImage ? [meta.coverImage] : undefined,
     },
   };
 }
