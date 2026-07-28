@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-[var(--bg)]">
       <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6 py-4">
         <nav className="flex items-center gap-5">
-          <Link href="/admin/articles" className="font-semibold text-[var(--text)]">
+          <Link href="/admin/articles" className="font-heading font-semibold text-[var(--text)]">
             Admin
           </Link>
           <Link

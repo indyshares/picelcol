@@ -2,6 +2,25 @@
 @import "./theme.css";
 @plugin "@tailwindcss/typography";
 
+/*
+  Ensure prose inside .article-content uses the correct fonts.
+  These override the default serif that @tailwindcss/typography applies.
+*/
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6,
+.article-content blockquote {
+  font-family: var(--font-kanit), sans-serif;
+}
+
+.article-content p,
+.article-content li {
+  font-family: var(--font-sarabun), sans-serif;
+}
+
 @theme inline {
   --font-heading: var(--font-kanit);
   --font-body: var(--font-playpen);

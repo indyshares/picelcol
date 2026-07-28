@@ -1,38 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
+import { fontKanit, fontSarabun, fontPlaypen } from "@/lib/fonts";
 import { getLocale } from "@/lib/i18n";
 import "@/styles/globals.css";
-
-const playpenSansThai = localFont({
-  src: [
-    { path: "../../public/fonts/PlaypenSansThai/PlaypenSansThai-Regular.ttf", weight: "400" },
-    { path: "../../public/fonts/PlaypenSansThai/PlaypenSansThai-Medium.ttf", weight: "500" },
-    { path: "../../public/fonts/PlaypenSansThai/PlaypenSansThai-SemiBold.ttf", weight: "600" },
-    { path: "../../public/fonts/PlaypenSansThai/PlaypenSansThai-Bold.ttf", weight: "700" },
-  ],
-  variable: "--font-playpen",
-  display: "swap",
-});
-
-const kanit = localFont({
-  src: [
-    { path: "../../public/fonts/Kanit/Kanit-Medium.ttf", weight: "500" },
-    { path: "../../public/fonts/Kanit/Kanit-SemiBold.ttf", weight: "600" },
-    { path: "../../public/fonts/Kanit/Kanit-Bold.ttf", weight: "700" },
-  ],
-  variable: "--font-kanit",
-  display: "swap",
-});
-
-const sarabun = localFont({
-  src: [
-    { path: "../../public/fonts/Sarabun/Sarabun-Regular.ttf", weight: "400" },
-    { path: "../../public/fonts/Sarabun/Sarabun-Medium.ttf", weight: "500" },
-  ],
-  variable: "--font-sarabun",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -50,10 +20,12 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body
-        className={`${playpenSansThai.variable} ${kanit.variable} ${sarabun.variable} antialiased`}
-      >
+    <html
+      lang={locale}
+      className={`${fontKanit.variable} ${fontSarabun.variable} ${fontPlaypen.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-body antialiased">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
