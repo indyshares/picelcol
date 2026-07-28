@@ -38,7 +38,8 @@ export default async function HomePage() {
       categoryCount={categoryCount}
       viewCount={viewCount}
       likeCount={likeCount}
-      categoriesBar={<CategoriesBar />}
-    />
+    >
+      <CategoriesBar />
+    </HomeClient>
   );
 }

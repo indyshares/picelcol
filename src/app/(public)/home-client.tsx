@@ -28,10 +28,10 @@ type HomeClientProps = {
   categoryCount: number;
   viewCount: number;
   likeCount: number;
-  categoriesBar?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-export function HomeClient({ latest, publishedCount, categoryCount, viewCount, likeCount, categoriesBar }: HomeClientProps) {
+export function HomeClient({ latest, publishedCount, categoryCount, viewCount, likeCount, children }: HomeClientProps) {
   const { dict } = useLocale();
   const featured = latest[0];
 
@@ -88,7 +88,7 @@ export function HomeClient({ latest, publishedCount, categoryCount, viewCount, l
         </section>
       )}
 
-      {categoriesBar}
+      {children}
 
       {latest.length > 0 && (
         <section className="mx-auto max-w-5xl px-6 py-16">
