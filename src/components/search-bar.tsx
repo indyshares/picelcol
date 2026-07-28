@@ -70,6 +70,8 @@ export function SearchBar() {
           onFocus={() => setOpen(true)}
           placeholder="ค้นหาบทความ..."
           className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
+          id="search-input"
+          name="search"
         />
         {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--text-muted)]" />}
       </div>

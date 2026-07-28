@@ -70,7 +70,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading), sans-serif;
+    font-family: var(--font-body), sans-serif;
   }
 
   @media (prefers-reduced-motion: reduce) {
