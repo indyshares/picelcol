@@ -4,7 +4,6 @@ import Link from "next/link";
 import { DecorativeBlobs } from "@/components/decorative-blobs";
 import { HeroVisual } from "@/components/hero-visual";
 import { StatsBar } from "@/components/stats-bar";
-import { CategoriesBar } from "@/components/categories-bar";
 import { buttonVariants } from "@/components/ui/button";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { FeaturedArticleCard } from "@/features/article/components/featured-article-card";
@@ -29,9 +28,10 @@ type HomeClientProps = {
   categoryCount: number;
   viewCount: number;
   likeCount: number;
+  categoriesBar?: React.ReactNode;
 };
 
-export function HomeClient({ latest, publishedCount, categoryCount, viewCount, likeCount }: HomeClientProps) {
+export function HomeClient({ latest, publishedCount, categoryCount, viewCount, likeCount, categoriesBar }: HomeClientProps) {
   const { dict } = useLocale();
   const featured = latest[0];
 
@@ -88,7 +88,7 @@ export function HomeClient({ latest, publishedCount, categoryCount, viewCount, l
         </section>
       )}
 
-      <CategoriesBar />
+      {categoriesBar}
 
       {latest.length > 0 && (
         <section className="mx-auto max-w-5xl px-6 py-16">

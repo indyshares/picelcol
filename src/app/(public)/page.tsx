@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { listArticles } from "@/services/article.service";
+import { CategoriesBar } from "@/components/categories-bar";
 import { HomeClient } from "./home-client";
 
 export const revalidate = 3600;
@@ -37,6 +38,7 @@ export default async function HomePage() {
       categoryCount={categoryCount}
       viewCount={viewCount}
       likeCount={likeCount}
+      categoriesBar={<CategoriesBar />}
     />
   );
 }
