@@ -1,4 +1,16 @@
 {
-  "copyright": "\u00a9 {year} eiei. Made with \u2764\ufe0f",
-  "tagline": "Little things, big smiles."
+  "copyright": "© {year} eiei. Made with ❤️",
+  "tagline": "Little things, big smiles.",
+  "categories": "Categories",
+  "contact": "Contact Us",
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+  "cookies": "Cookie Policy",
+  "facebook": "Facebook",
+  "instagram": "Instagram",
+  "tiktok": "TikTok",
+  "facebookAria": "Follow us on Facebook",
+  "instagramAria": "Follow us on Instagram",
+  "tiktokAria": "Follow us on TikTok",
+  "brandUnder": "eiei is a brand under Picel Collections"
 }

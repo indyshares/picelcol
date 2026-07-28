@@ -2,26 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/constants/site";
+import { getLocale, getDictionary } from "@/lib/i18n";
 
 const socialLinks = [
   {
-    label: "Facebook",
+    labelKey: "facebook",
     href: "https://www.facebook.com/picelcollections",
-    ariaLabel: "ติดตามเราบน Facebook",
+    ariaLabelKey: "facebookAria",
   },
   {
-    label: "Instagram",
+    labelKey: "instagram",
     href: "#",
-    ariaLabel: "ติดตามเราบน Instagram",
+    ariaLabelKey: "instagramAria",
   },
   {
-    label: "TikTok",
+    labelKey: "tiktok",
     href: "#",
-    ariaLabel: "ติดตามเราบน TikTok",
+    ariaLabelKey: "tiktokAria",
   },
 ];
 
 export async function SiteFooter() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const { footer, common } = dict;
+
   let categories: { slug: string; name: string }[] = [];
   try {
     categories = await prisma.category.findMany({
@@ -67,47 +72,47 @@ export async function SiteFooter() {
             </span>
           </Link>
           <p className="text-xs leading-relaxed text-[var(--text-light)]">
-            ของเล็กๆ ที่ทำให้วันของคุณน่ารักขึ้น — stickers, stationery, and little things that make your day cuter.
+            {footer.tagline}
           </p>
           <p className="text-xs text-[var(--text-muted)]">
-            &copy; {currentYear} eiei. All rights reserved.
+            {footer.copyright.replace("{year}", String(currentYear))}
           </p>
         </div>
 
         {/* Zone 2: Important Pages */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
-            หน้าแรก
+            {common.nav.home}
           </h3>
           <ul className="space-y-2">
             <li>
               <Link href="/" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                หน้าแรก
+                {common.nav.home}
               </Link>
             </li>
             <li>
               <Link href="/articles" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                บทความ
+                {common.nav.articles}
               </Link>
             </li>
             <li>
               <Link href="/about" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                เกี่ยวกับ
+                {common.nav.about}
               </Link>
             </li>
             <li>
               <Link href="/privacy" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                นโยบายความเป็นส่วนตัว
+                {footer.privacy}
               </Link>
             </li>
             <li>
               <Link href="/terms" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                ข้อกำหนดการใช้งาน
+                {footer.terms}
               </Link>
             </li>
             <li>
               <Link href="/cookies" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
-                นโยบายคุกกี้
+                {footer.cookies}
               </Link>
             </li>
           </ul>
@@ -116,7 +121,7 @@ export async function SiteFooter() {
         {/* Zone 3: Top Categories */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
-            หมวดหมู่
+            {footer.categories}
           </h3>
           {categories.length > 0 ? (
             <ul className="space-y-2">
@@ -139,7 +144,7 @@ export async function SiteFooter() {
         {/* Zone 4: Contact & Social */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
-            ติดต่อเรา
+            {footer.contact}
           </h3>
           <ul className="space-y-2">
             <li>
@@ -154,14 +159,14 @@ export async function SiteFooter() {
           <div className="flex gap-3">
             {socialLinks.map((social) => (
               <a
-                key={social.label}
+                key={social.labelKey}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.ariaLabel}
+                aria-label={footer[social.ariaLabelKey]}
                 className="text-xs text-[var(--text-light)] underline decoration-dotted underline-offset-2 transition hover:text-[var(--link)]"
               >
-                {social.label}
+                {footer[social.labelKey]}
               </a>
             ))}
           </div>
@@ -170,7 +175,7 @@ export async function SiteFooter() {
 
       <div className="border-t border-[var(--border)] py-4 text-center text-xs text-[var(--text-muted)]">
         {siteConfig.url !== "https://example.com" && (
-          <span>eiei is a brand under Picel Collections.</span>
+          <span>{footer.brandUnder}</span>
         )}
       </div>
     </footer>

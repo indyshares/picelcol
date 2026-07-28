@@ -1,4 +1,16 @@
 {
-  "copyright": "\u00a9 {year} eiei. ทําด้วย \u2764\ufe0f",
-  "tagline": "ของเล็ก ๆ ที่ทำให้วันของคุณน่ารักขึ้น"
+  "copyright": "© {year} eiei. ทําด้วย ❤️",
+  "tagline": "ของเล็ก ๆ ที่ทำให้วันของคุณน่ารักขึ้น",
+  "categories": "หมวดหมู่",
+  "contact": "ติดต่อเรา",
+  "privacy": "นโยบายความเป็นส่วนตัว",
+  "terms": "ข้อกำหนดการใช้งาน",
+  "cookies": "นโยบายคุกกี้",
+  "facebook": "Facebook",
+  "instagram": "Instagram",
+  "tiktok": "TikTok",
+  "facebookAria": "ติดตามเราบน Facebook",
+  "instagramAria": "ติดตามเราบน Instagram",
+  "tiktokAria": "ติดตามเราบน TikTok",
+  "brandUnder": "eiei เป็นแบรนด์ภายใต้ Picel Collections"
 }

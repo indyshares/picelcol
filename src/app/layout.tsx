@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
+import { getLocale } from "@/lib/i18n";
 import "@/styles/globals.css";
 
 const playpenSansThai = localFont({
@@ -42,13 +43,14 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html lang="th" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${playpenSansThai.variable} ${kanit.variable} ${sarabun.variable} antialiased`}
       >

@@ -9,10 +9,14 @@ import { ArticleCard } from "@/features/article/components/article-card";
 import { FeaturedArticleCard } from "@/features/article/components/featured-article-card";
 import { listArticles } from "@/services/article.service";
 import { siteConfig } from "@/constants/site";
+import { getLocale, getDictionary } from "@/lib/i18n";
 
 export const revalidate = 3600;
 
 export default async function HomePage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   let latest: Awaited<ReturnType<typeof listArticles>> = [];
   let publishedCount = 0;
   let categoryCount = 0;
@@ -54,21 +58,23 @@ export default async function HomePage() {
             <span className="rounded-full bg-white/70 px-4 py-1.5 text-sm font-medium text-[var(--text)] shadow-sm backdrop-blur">
               {siteConfig.name}
             </span>
-            <h1 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight text-[var(--text)] sm:text-5xl">
-              เรื่องราวน่ารักๆ
-              <br />
-              ที่เขียนด้วยใจ
+            <h1 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight text-[var(--text)] sm:text-5xl whitespace-pre-line">
+              {dict.home.title}
             </h1>
-            <p className="max-w-xl text-[var(--text-light)]">{siteConfig.description}</p>
+            <p className="max-w-xl text-[var(--text-light)]">
+              {locale === "th"
+                ? "สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น"
+                : "Stickers, stationery, and little things that make your day a little cuter."}
+            </p>
             <div className="mt-2 flex flex-wrap justify-center gap-3 lg:justify-start">
               <Link href="/articles" className={buttonVariants({ size: "lg" })}>
-                อ่านบทความ
+                {dict.home.readArticles}
               </Link>
               <Link
                 href="/articles"
                 className={buttonVariants({ variant: "outline", size: "lg" })}
               >
-                ดูหมวดหมู่
+                {dict.home.viewCategories}
               </Link>
             </div>
           </div>
@@ -89,7 +95,7 @@ export default async function HomePage() {
         <section className="mx-auto max-w-5xl px-6 py-16">
           <div className="mb-8 flex items-center justify-between">
             <h2 className="font-[var(--font-heading)] text-2xl font-semibold text-[var(--text)]">
-              บทความแนะนำ
+              {dict.home.featured}
             </h2>
           </div>
           <FeaturedArticleCard article={featured} />
@@ -104,13 +110,13 @@ export default async function HomePage() {
         <section className="mx-auto max-w-5xl px-6 py-16">
           <div className="mb-8 flex items-center justify-between">
             <h2 className="font-[var(--font-heading)] text-2xl font-semibold text-[var(--text)]">
-              บทความล่าสุด
+              {dict.home.latest}
             </h2>
             <Link
               href="/articles"
               className="text-sm font-medium text-[var(--link)] hover:text-[var(--link-hover)]"
             >
-              ดูทั้งหมด →
+              {dict.home.viewAll}
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
