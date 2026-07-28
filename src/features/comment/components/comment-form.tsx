@@ -4,8 +4,8 @@ import { useActionState } from "react";
 import { addCommentAction, type CommentFormState } from "@/features/comment/actions";
 import { Button } from "@/components/ui/button";
 
-export function CommentForm({ articleId }: { articleId: string }) {
-  const boundAction = addCommentAction.bind(null, articleId);
+export function CommentForm({ articleId, articleSlug }: { articleId: string; articleSlug: string }) {
+  const boundAction = addCommentAction.bind(null, articleId, articleSlug);
   const [state, formAction, isPending] = useActionState<CommentFormState, FormData>(
     boundAction,
     {},

@@ -7,10 +7,11 @@ import { cn } from "@/lib/utils";
 
 type BookmarkButtonProps = {
   articleId: string;
+  articleSlug: string;
   initialBookmarked: boolean;
 };
 
-export function BookmarkButton({ articleId, initialBookmarked }: BookmarkButtonProps) {
+export function BookmarkButton({ articleId, articleSlug, initialBookmarked }: BookmarkButtonProps) {
   const [bookmarked, setBookmarked] = useState(initialBookmarked);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,7 @@ export function BookmarkButton({ articleId, initialBookmarked }: BookmarkButtonP
     setError(null);
 
     startTransition(async () => {
-      const result = await toggleBookmarkAction(articleId);
+      const result = await toggleBookmarkAction(articleId, articleSlug);
       if ("error" in result) {
         setBookmarked(!next);
         setError(result.error);

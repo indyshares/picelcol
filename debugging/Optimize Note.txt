@@ -1,0 +1,86 @@
+=== Optimize Note — Article Detail Page Query Optimization ===
+
+## Problem
+Article detail page (`/articles/[slug]`) fired 7 DB round-trips:
+1. getArticleBySlug — 1 query
+2. getCurrentAuthUser — 1 Supabase call
+3. countLikes — 1 query
+4. countBookmarks — 1 query
+5. countViews — 1 query
+6. isLikedByUser — 1 query
+7. isBookmarkedByUser — 1 query
+
+Total latency = sum of all 7 individual latencies.
+
+## Fix (v1 — Merged + Parallel)
+- Merged 3 count queries into getArticleStats() via $transaction
+- Merged 2 engagement lookups into getUserEngagement() via $transaction
+- Parallelized article fetch + auth fetch with Promise.all
+- Round-trips: 7 → 3
+
+## Fix (v2 — Single Query with _count + conditional includes)
+Replaced everything with a single `findUnique` using Prisma aggregate:
+
+File: `src/services/engagement.service.ts`
+```typescript
+getArticleWithStats(slug, userId)  // 1 query does it all
+```
+- `_count: { select: { likes, bookmarks, views } }` → counts all 3 stats
+- `likes: { where: { userId } }` + `bookmarks: { where: { userId } }` → engagement check
+- `author`, `categories`, `tags` included for rendering
+
+File: `src/app/(public)/articles/[slug]/page.tsx`
+```
+1. getCurrentAuthUser()      # Supabase session (fast, cookie-based)
+2. getArticleWithStats()     # 1 query: article + stats + engagement
+```
+- From 3 parallel transactions to 1 single query
+
+## Fix (v3 — React cache() Request Memoization)
+Wrapped data retrieval with React's `cache()` to deduplicate across `generateMetadata` + page:
+
+File: `src/services/engagement.service.ts`
+```typescript
+export const getArticleWithStats = cache(async (slug, userId?) => { ... })
+```
+
+- `generateMetadata()` and `ArticleOpengraphImage` now both call `getArticleWithStats(slug)` (same cached function as page)
+- When no auth user (most visitors): `generateMetadata` call populates cache → page call reuses it → **1 DB query total**
+- When logged in: different cache key due to userId → still **1 DB query** (auth fetch is cookie-based, near-zero latency)
+
+## Result
+- DB round-trips: 7 → **1** (86% reduction)
+- Removed `getArticleMeta()` (dead code, replaced by `getArticleWithStats`)
+- Removed `getArticleStats()`, `getUserEngagement()` (no longer needed)
+- Removed `getArticleBySlug` import from page (replaced by `getArticleWithStats`)
+
+## Fix (v4 — Deferred/Lazy Load Engagement & Comments)
+Moved non-critical data to client-side lazy loading:
+
+File: `src/app/(public)/articles/[slug]/page.tsx`
+```typescript
+// SSR query — only article content (extremely fast)
+const article = await getArticleContent(slug);
+
+// Everything below is lazy-loaded client-side:
+<EngagementBar slug={slug} articleId={article.id} />    // likes, bookmarks, views
+<CommentSection articleId={article.id} slug={article.slug} />  // comments
+<RelatedSection articleId={article.id} />                // related articles
+```
+
+New client components:
+- `EngagementBar` — fetches like/bookmark/view counts + user status after mount
+- `CommentSection` — fetches comments + currentUserId after mount  
+- `RelatedSection` — fetches related articles after mount
+
+Server actions for lazy loading:
+- `getEngagementData(slug)` in engagement/actions.ts
+- `getCommentsData(articleId)` in comment/actions.ts
+- `getRelatedData(articleId)` in related-articles/actions.ts
+
+## Result
+- **SSR HTML**: Only article content — renders immediately, no waiting for engagement/comments
+- **Lazy data**: Loads after page mount, shows skeleton while loading
+- First Contentful Paint is now much faster — non-critical queries moved off the critical path
+
+## Status: DONE

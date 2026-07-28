@@ -1,24 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Eye } from "lucide-react";
-import { getArticleBySlug } from "@/services/article.service";
+import { getArticleContent } from "@/services/article.service";
+import { getArticleWithStats } from "@/services/engagement.service";
 import { ArticleContent } from "@/features/article/components/article-content";
 import { siteConfig } from "@/constants/site";
-import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import {
-  countBookmarks,
-  countLikes,
-  countViews,
-  isBookmarkedByUser,
-  isLikedByUser,
-} from "@/services/engagement.service";
-import { LikeButton } from "@/features/engagement/components/like-button";
-import { BookmarkButton } from "@/features/engagement/components/bookmark-button";
-import { ViewTracker } from "@/features/engagement/components/view-tracker";
-import { CommentForm } from "@/features/comment/components/comment-form";
-import { CommentList } from "@/features/comment/components/comment-list";
-import { RelatedArticles } from "@/features/related-articles/components/related-articles";
+import { EngagementBar } from "@/features/engagement/components/engagement-bar";
+import { CommentSection } from "@/features/comment/components/comment-section";
+import { RelatedSection } from "@/features/related-articles/components/related-section";
 import { estimateReadingTime } from "@/utils/reading-time";
 
 type Props = {
@@ -27,9 +16,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const article = await getArticleWithStats(slug);
 
-  if (!article || !article.published) {
+  if (!article) {
     return { title: "ไม่พบบทความ" };
   }
 
@@ -57,22 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const article = await getArticleContent(slug);
 
-  if (!article || !article.published) {
+  if (!article) {
     notFound();
   }
 
   const url = `${siteConfig.url}/articles/${article.slug}`;
-
-  const authUser = await getCurrentAuthUser();
-  const [likeCount, bookmarkCount, viewCount, liked, bookmarked] = await Promise.all([
-    countLikes(article.id),
-    countBookmarks(article.id),
-    countViews(article.id),
-    authUser ? isLikedByUser(article.id, authUser.id) : Promise.resolve(false),
-    authUser ? isBookmarkedByUser(article.id, authUser.id) : Promise.resolve(false),
-  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -91,7 +71,6 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
-      <ViewTracker articleId={article.id} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -126,11 +105,6 @@ export default async function ArticleDetailPage({ params }: Props) {
         )}
         <span aria-hidden>·</span>
         <span>อ่าน {estimateReadingTime(article.content)} นาที</span>
-        <span aria-hidden>·</span>
-        <span className="flex items-center gap-1">
-          <Eye className="h-4 w-4" />
-          {viewCount.toLocaleString("th-TH")} ครั้ง
-        </span>
       </div>
 
       {article.coverImage && (
@@ -143,23 +117,9 @@ export default async function ArticleDetailPage({ params }: Props) {
         <ArticleContent markdown={article.content} />
       </div>
 
-      <div className="mt-10 flex items-center gap-3 border-t border-[var(--border)] pt-6">
-        <LikeButton articleId={article.id} initialLiked={liked} initialCount={likeCount} />
-        <BookmarkButton articleId={article.id} initialBookmarked={bookmarked} />
-        <span className="text-sm text-[var(--text-muted)]">บันทึกไว้ {bookmarkCount} คน</span>
-      </div>
-
-      <section className="mt-10 border-t border-[var(--border)] pt-8">
-        <h2 className="mb-4 font-[var(--font-heading)] text-xl font-semibold text-[var(--text)]">
-          ความคิดเห็น
-        </h2>
-        <div className="mb-6">
-          <CommentForm articleId={article.id} />
-        </div>
-        <CommentList articleId={article.id} articleSlug={article.slug} />
-      </section>
-
-      <RelatedArticles articleId={article.id} />
+      <EngagementBar slug={article.slug} articleId={article.id} />
+      <CommentSection articleId={article.id} articleSlug={article.slug} />
+      <RelatedSection articleId={article.id} />
     </main>
   );
 }

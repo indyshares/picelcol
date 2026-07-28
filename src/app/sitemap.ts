@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { listArticles } from "@/services/article.service";
+import { listArticleSitemapData } from "@/services/article.service";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
 
   let articles: { slug: string; updatedAt: Date }[] = [];
   try {
-    articles = await listArticles({ onlyPublished: true });
+    articles = await listArticleSitemapData();
   } catch {
     // Database unavailable during build — return static entries only
   }

@@ -1,17 +1,22 @@
-import { listCommentsForArticle } from "@/services/comment.service";
-import { getCurrentAuthUser } from "@/features/auth/get-current-user";
+"use client";
+
+import { useTransition } from "react";
 import { deleteCommentAction } from "@/features/comment/actions";
 
 type CommentListProps = {
-  articleId: string;
   articleSlug: string;
+  comments: {
+    id: string;
+    content: string;
+    createdAt: Date;
+    userId: string;
+    user: { id: string; profile: { displayName: string | null } | null };
+  }[];
+  currentUserId: string | null;
 };
 
-export async function CommentList({ articleId, articleSlug }: CommentListProps) {
-  const [comments, authUser] = await Promise.all([
-    listCommentsForArticle(articleId),
-    getCurrentAuthUser(),
-  ]);
+export function CommentList({ articleSlug, comments, currentUserId }: CommentListProps) {
+  const [isPending, startTransition] = useTransition();
 
   if (comments.length === 0) {
     return <p className="text-sm text-[var(--text-light)]">ยังไม่มีความคิดเห็น เป็นคนแรกเลย!</p>;
@@ -36,17 +41,19 @@ export async function CommentList({ articleId, articleSlug }: CommentListProps) 
                   day: "numeric",
                 })}
               </time>
-              {authUser?.id === comment.userId && (
-                <form
-                  action={async () => {
-                    "use server";
-                    await deleteCommentAction(comment.id, articleSlug);
+              {currentUserId === comment.userId && (
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => {
+                    startTransition(async () => {
+                      await deleteCommentAction(comment.id, articleSlug);
+                    });
                   }}
+                  className="text-xs font-medium text-[var(--accent)] disabled:opacity-50"
                 >
-                  <button type="submit" className="text-xs font-medium text-[var(--accent)]">
-                    ลบ
-                  </button>
-                </form>
+                  {isPending ? "กำลังลบ..." : "ลบ"}
+                </button>
               )}
             </div>
           </div>

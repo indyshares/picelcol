@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { ArticleInput } from "@/schemas/article.schema";
 import type { Prisma } from "@prisma/client";
+import { storeRelatedArticles } from "@/services/related-articles.service";
 
 type ArticleInclude = {
   author: { select: { profile: true } };
@@ -12,10 +13,14 @@ type ArticleWithRelations = Prisma.ArticleGetPayload<{ include: ArticleInclude }
 
 export async function listArticles({
   onlyPublished = true,
-}: { onlyPublished?: boolean } = {}): Promise<ArticleWithRelations[]> {
+  skip,
+  take,
+}: { onlyPublished?: boolean; skip?: number; take?: number } = {}): Promise<ArticleWithRelations[]> {
   return prisma.article.findMany({
     where: onlyPublished ? { published: true } : undefined,
     orderBy: { publishedAt: "desc" },
+    skip,
+    take,
     include: {
       author: { select: { profile: true } },
       categories: { include: { category: true } },
@@ -75,7 +80,7 @@ export async function getArticleById(id: string) {
 export async function createArticle(authorId: string, data: ArticleInput) {
   const { categoryIds, tagIds, ...article } = data;
 
-  return prisma.article.create({
+  const created = await prisma.article.create({
     data: {
       ...article,
       authorId,
@@ -88,12 +93,15 @@ export async function createArticle(authorId: string, data: ArticleInput) {
       },
     },
   });
+
+  await storeRelatedArticles(created.id);
+  return created;
 }
 
 export async function updateArticle(id: string, data: ArticleInput) {
   const { categoryIds, tagIds, ...article } = data;
 
-  return prisma.$transaction([
+  const [updated] = await prisma.$transaction([
     prisma.articleCategory.deleteMany({ where: { articleId: id } }),
     prisma.articleTag.deleteMany({ where: { articleId: id } }),
     prisma.article.update({
@@ -106,10 +114,39 @@ export async function updateArticle(id: string, data: ArticleInput) {
       },
     }),
   ]);
+
+  await storeRelatedArticles(id);
+  return updated;
 }
 
 export async function deleteArticle(id: string) {
   return prisma.article.delete({ where: { id } });
+}
+
+export async function getArticleContent(slug: string) {
+  return prisma.article.findUnique({
+    where: { slug, published: true },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      excerpt: true,
+      content: true,
+      coverImage: true,
+      publishedAt: true,
+      updatedAt: true,
+      author: { select: { profile: true } },
+      categories: { include: { category: true } },
+    },
+  });
+}
+
+export async function listArticleSitemapData() {
+  return prisma.article.findMany({
+    where: { published: true },
+    select: { slug: true, updatedAt: true },
+    orderBy: { publishedAt: "desc" },
+  });
 }
 
 export async function isSlugTaken(slug: string, excludeId?: string) {

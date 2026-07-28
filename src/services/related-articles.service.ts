@@ -1,15 +1,12 @@
 import { prisma } from "@/lib/prisma";
 
-/**
- * Finds published articles that share a category or tag with the given
- * article, ranked by overlap count. This is the Phase 2 heuristic —
- * Phase 3 (Knowledge Graph / entity relations) can replace or augment
- * this with a smarter `related_articles` table.
- */
-export async function getRelatedArticles(articleId: string, take = 3) {
+async function computeRelatedArticleIds(articleId: string) {
   const article = await prisma.article.findUnique({
     where: { id: articleId },
-    include: { categories: true, tags: true },
+    select: {
+      categories: { select: { categoryId: true } },
+      tags: { select: { tagId: true } },
+    },
   });
 
   if (!article) return [];
@@ -28,20 +25,54 @@ export async function getRelatedArticles(articleId: string, take = 3) {
         { tags: { some: { tagId: { in: tagIds } } } },
       ],
     },
-    include: { categories: { include: { category: true } }, tags: true },
+    select: {
+      id: true,
+      categories: { select: { categoryId: true } },
+      tags: { select: { tagId: true } },
+    },
     take: 20,
   });
 
-  const scored = candidates.map((candidate) => {
-    const sharedCategories = candidate.categories.filter((c) =>
-      categoryIds.includes(c.categoryId),
+  const scored = candidates.map((c) => {
+    const sharedCategories = c.categories.filter((cat) =>
+      categoryIds.includes(cat.categoryId),
     ).length;
-    const sharedTags = candidate.tags.filter((t) => tagIds.includes(t.tagId)).length;
-    return { article: candidate, score: sharedCategories * 2 + sharedTags };
+    const sharedTags = c.tags.filter((t) => tagIds.includes(t.tagId)).length;
+    return { id: c.id, score: sharedCategories * 2 + sharedTags };
   });
 
   return scored
     .sort((a, b) => b.score - a.score)
-    .slice(0, take)
-    .map((s) => s.article);
+    .slice(0, 3)
+    .map((s) => ({ relatedArticleId: s.id, score: s.score }));
+}
+
+export async function storeRelatedArticles(articleId: string) {
+  const related = await computeRelatedArticleIds(articleId);
+
+  await prisma.$transaction([
+    prisma.relatedArticle.deleteMany({ where: { articleId } }),
+    ...related.map((r) =>
+      prisma.relatedArticle.create({
+        data: { articleId, relatedArticleId: r.relatedArticleId, score: r.score },
+      }),
+    ),
+  ]);
+}
+
+export async function getRelatedArticles(articleId: string) {
+  const related = await prisma.relatedArticle.findMany({
+    where: { articleId },
+    orderBy: { score: "desc" },
+    include: {
+      relatedArticle: {
+        include: {
+          author: { select: { profile: true } },
+          categories: { include: { category: true } },
+        },
+      },
+    },
+  });
+
+  return related.map((r) => r.relatedArticle);
 }

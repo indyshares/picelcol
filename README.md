@@ -105,9 +105,10 @@ Tailwind v4 ผ่าน `@theme` ใน `src/styles/globals.css` (เช่น 
   redirect ไป `/login`; มี header แสดงอีเมลผู้ใช้ + ปุ่มออกจากระบบ
 - `features/article/actions.ts` ผูก `authorId` เข้ากับผู้ใช้ที่ล็อกอินจริงแล้ว (ผ่าน `ensureUser`)
 
-> หมายเหตุ: ยังไม่มีระบบ Role/Permission (เช่นแยก admin/editor/ผู้อ่าน) — ตอนนี้ทุกคนที่
-> ล็อกอินสำเร็จเข้า `/admin` ได้หมด ถ้าต้องการจำกัดสิทธิ์ ต้องเพิ่ม role บน `profiles`
-> หรือ custom claims ใน Supabase แล้วเช็คใน `admin/layout.tsx`
+> มีระบบ Role/Permission แล้ว: ผู้ใช้มี role `admin` หรือ `user` (ดู `UserRole` enum ใน
+> Prisma schema) — เฉพาะ `admin` เท่านั้นที่เข้า `/admin` ได้ (`src/app/admin/layout.tsx`
+> เรียก `isAdmin()` จาก `user.service.ts`); ผู้ใช้ใหม่จะได้ role `user` โดยอัตโนมัติ
+> ต้องใช้ `setAdminRole()` เพื่อเลื่อนสิทธิ์ให้ admin คนแรก
 
 ## Dynamic OG Image
 
@@ -164,7 +165,7 @@ Tailwind v4 ผ่าน `@theme` ใน `src/styles/globals.css` (เช่น 
 - [x] Related Articles (heuristic เบื้องต้น)
 - [x] Basic Full Text Search (`searchArticles`, ใช้ใน `SiteHeader`)
 - [x] UI Redesign — Cute Lifestyle Brand (ดูหัวข้อด้านบน)
-- [ ] Role/Permission (admin vs editor) — ยังไม่มี
+- [x] Role/Permission (admin vs user) — admin guard ที่ `/admin/layout.tsx`
 - [ ] Knowledge Graph, AI Tagging, AI Search, RAG (Phase 3-4) — **ข้ามโดยตั้งใจ**: เว็บนี้เป็น
       แบรนด์ส่วนตัวที่มีแอดมินคนเดียวเป็นคนลงบทความเอง ไม่ต้องการมี AI เกี่ยวข้องกับเว็บไซต์เลย
 

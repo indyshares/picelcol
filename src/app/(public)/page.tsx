@@ -18,14 +18,16 @@ export default async function HomePage() {
   let likeCount = 0;
 
   try {
-    const [articles, pubCount, catCount, views, likes] = await Promise.all([
-      listArticles({ onlyPublished: true }),
-      prisma.article.count({ where: { published: true } }),
-      prisma.category.count(),
-      prisma.articleView.count(),
-      prisma.articleLike.count(),
+    const [articles, [pubCount, catCount, views, likes]] = await Promise.all([
+      listArticles({ onlyPublished: true, take: 3 }),
+      prisma.$transaction([
+        prisma.article.count({ where: { published: true } }),
+        prisma.category.count(),
+        prisma.articleView.count(),
+        prisma.articleLike.count(),
+      ]),
     ]);
-    latest = articles.slice(0, 3);
+    latest = articles;
     publishedCount = pubCount;
     categoryCount = catCount;
     viewCount = views;

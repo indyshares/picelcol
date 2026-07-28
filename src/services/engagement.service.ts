@@ -1,18 +1,31 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
-import type { Article } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
+
+export const getArticleWithStats = cache(async (slug: string, userId?: string | null) => {
+  return prisma.article.findUnique({
+    where: { slug },
+    include: {
+      author: { select: { profile: true } },
+      categories: { include: { category: true } },
+      tags: { include: { tag: true } },
+      _count: {
+        select: { likes: true, bookmarks: true, views: true },
+      },
+      likes: { where: { userId: userId ?? "" }, take: 1 },
+      bookmarks: { where: { userId: userId ?? "" }, take: 1 },
+    },
+  });
+});
+
+const trendingInclude = {
+  author: { select: { profile: true } },
+  categories: { include: { category: true } },
+} as const;
+
+type TrendingArticle = Prisma.ArticleGetPayload<{ include: typeof trendingInclude }>;
 
 // ---------- Likes ----------
-
-export async function isLikedByUser(articleId: string, userId: string) {
-  const like = await prisma.articleLike.findUnique({
-    where: { articleId_userId: { articleId, userId } },
-  });
-  return Boolean(like);
-}
-
-export async function countLikes(articleId: string) {
-  return prisma.articleLike.count({ where: { articleId } });
-}
 
 export async function toggleLike(articleId: string, userId: string) {
   const existing = await prisma.articleLike.findUnique({
@@ -29,17 +42,6 @@ export async function toggleLike(articleId: string, userId: string) {
 }
 
 // ---------- Bookmarks ----------
-
-export async function isBookmarkedByUser(articleId: string, userId: string) {
-  const bookmark = await prisma.bookmark.findUnique({
-    where: { articleId_userId: { articleId, userId } },
-  });
-  return Boolean(bookmark);
-}
-
-export async function countBookmarks(articleId: string) {
-  return prisma.bookmark.count({ where: { articleId } });
-}
 
 export async function toggleBookmark(articleId: string, userId: string) {
   const existing = await prisma.bookmark.findUnique({
@@ -59,7 +61,14 @@ export async function listBookmarkedArticles(userId: string) {
   const bookmarks = await prisma.bookmark.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { article: true },
+    include: {
+      article: {
+        include: {
+          author: { select: { profile: true } },
+          categories: { include: { category: true } },
+        },
+      },
+    },
   });
   return bookmarks.map((b) => b.article);
 }
@@ -70,12 +79,8 @@ export async function recordView(articleId: string) {
   await prisma.articleView.create({ data: { articleId } });
 }
 
-export async function countViews(articleId: string) {
-  return prisma.articleView.count({ where: { articleId } });
-}
-
 /** Most-viewed published articles in the last `days` days. */
-export async function getTrendingArticles(days = 7, take = 5): Promise<{ article: Article; views: number }[]> {
+export async function getTrendingArticles(days = 7, take = 5): Promise<{ article: TrendingArticle; views: number }[]> {
   const since = new Date();
   since.setDate(since.getDate() - days);
 
@@ -89,6 +94,7 @@ export async function getTrendingArticles(days = 7, take = 5): Promise<{ article
 
   const articles = await prisma.article.findMany({
     where: { id: { in: grouped.map((g) => g.articleId) }, published: true },
+    include: trendingInclude,
   });
 
   const countById = new Map(grouped.map((g) => [g.articleId, g._count.articleId]));

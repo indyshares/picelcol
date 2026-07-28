@@ -7,11 +7,12 @@ import { cn } from "@/lib/utils";
 
 type LikeButtonProps = {
   articleId: string;
+  articleSlug: string;
   initialLiked: boolean;
   initialCount: number;
 };
 
-export function LikeButton({ articleId, initialLiked, initialCount }: LikeButtonProps) {
+export function LikeButton({ articleId, articleSlug, initialLiked, initialCount }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
   const [isPending, startTransition] = useTransition();
@@ -25,7 +26,7 @@ export function LikeButton({ articleId, initialLiked, initialCount }: LikeButton
     setError(null);
 
     startTransition(async () => {
-      const result = await toggleLikeAction(articleId);
+      const result = await toggleLikeAction(articleId, articleSlug);
       if ("error" in result) {
         // revert on failure (e.g. not logged in)
         setLiked(!nextLiked);

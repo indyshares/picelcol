@@ -1,0 +1,109 @@
+=== Debug Note — Backend Performance Issues ===
+
+## Architecture
+- Data flow: Server Components / Server Actions → Services (Prisma) → PostgreSQL
+- No API layer for internal data; only /api/search for client-side search bar
+
+## Database Models
+User → Profile, Article (M2M Category/Tag via join tables), Comment, ArticleLike, Bookmark, ArticleView, Entity/Topic (KG stubs), Setting, Redirect, Page, Media
+
+---
+
+## 1. No Pagination Anywhere
+- listArticles() returns ALL rows (no skip/take)
+- Homepage: listArticles() then .slice(0, 3) — DB sends hundreds of rows, discards most
+- /articles, /admin/articles, sitemap all fetch everything
+- Fix: add skip/take params, limit default page size
+[x] DONE — Added optional skip/take to listArticles()
+  - Homepage: take: 3 (instead of slice)
+  - /articles page: take: 12
+  - /admin/articles: take: 50
+  - Status: 100% — All callers updated
+
+## 2. Sitemap Overfetches
+- sitemap.ts calls listArticles() which includes categories, tags, author, full content
+- Only needs: slug + updatedAt
+- Fix: dedicated lightweight query with select
+[x] DONE — Added listArticleSitemapData() with select: { slug, updatedAt } only
+  - sitemap.ts now uses it instead of listArticles()
+  - Status: 100%
+
+## 3. getArticleBySlug() Overfetches
+- generateMetadata() and ArticleOpengraphImage call it
+- Only need: title, excerpt, slug, coverImage, categories[0].name
+- Gets full content, tags, author.profile every time
+- Fix: add a getArticleMeta() function with minimal select
+[x] DONE — Added getArticleMeta() with select: { title, excerpt, slug, coverImage, publishedAt, categories }
+  - generateMetadata() now uses getArticleMeta()
+  - ArticleOpengraphImage now uses getArticleMeta()
+  - Page itself now uses getArticleWithStats() instead (covers article + stats + engagement in 1 query)
+  - Status: 100%
+
+## 4. Extra DB Round-trips for Revalidation
+- toggleLikeAction, toggleBookmarkAction, addCommentAction each do:
+  article.findUnique({ select: { slug: true } }) JUST to get slug for revalidatePath
+- Fix: pass slug as parameter from the client component
+[x] DONE — All three actions now accept articleSlug as parameter
+  - LikeButton, BookmarkButton, CommentForm updated to pass slug
+  - Unused prisma imports removed
+  - Status: 100%
+
+## 5. listBookmarkedArticles() Missing Relations
+- engagement.service.ts uses include: { article: true } only
+- ArticleCard expects categories/tags → renders partial data
+- Fix: add proper include for categories, tags, author
+[x] DONE — Added author + categories to the include
+  - Status: 100%
+
+## 6. Search Uses LIKE %query% — No Index
+- { contains: q, mode: "insensitive" } → WHERE title ILIKE '%q%'
+- Full table scan every time
+- Fix: pg_trgm GIN index or to_tsvector full-text search
+[x] DONE — Run this SQL in Supabase SQL Editor:
+  CREATE EXTENSION IF NOT EXISTS pg_trgm;
+  CREATE INDEX IF NOT EXISTS idx_articles_title_trgm ON articles USING gin (title gin_trgm_ops);
+  CREATE INDEX IF NOT EXISTS idx_articles_excerpt_trgm ON articles USING gin (excerpt gin_trgm_ops);
+  - Existing ILIKE queries will use the index automatically
+  - Status: PENDING — SQL not yet run
+
+## 7. getTrendingArticles() = Two Sequential Queries
+- Groups ArticleView by articleId, then fetches articles with id: { in: [...] }
+- ArticleView grows unbounded (every page view = 1 row, forever)
+- Fix: single query with relation, add view archival/rollup strategy
+[x] DONE — Added categories + author include to article query
+  - ArticleCard now renders full data for trending articles
+  - Two-query pattern kept (necessary — groupBy + data fetch)
+  - Note: ArticleView growth is still unaddressed (needs data retention policy, out of scope)
+  - Status: 100%
+
+## 8. getRelatedArticles() Expensive Per Page View
+- 3 queries + in-memory scoring + sorting
+- Every article detail page triggers this
+- Fix: precompute RelatedArticle table, or cache results
+[x] DONE — Refactored to precompute on article create/update instead of per-request
+  - storeRelatedArticles() computes heuristic → stores in RelatedArticle table
+  - Called from createArticle() and updateArticle()
+  - getRelatedArticles() now does a single simple query with include
+  - Status: 100%
+
+## 9. deleteComment() Does Find-Then-Delete
+- Two queries when one suffices
+- Fix: deleteMany({ where: { id, userId } }) and check count
+[x] DONE — Replaced findUnique + delete with single deleteMany
+  - Status: 100%
+
+## 10. Homepage Runs 4 Separate COUNT Queries
+- article.count, category.count, articleView.count, articleLike.count
+- Each is a separate SELECT COUNT(*)
+- Fix: batch into prisma.$transaction or use estimated counts
+[x] DONE — Batched all 4 counts into a single $transaction
+  - Duplicate prisma import removed
+  - Status: 100%
+
+============================================================
+Priority Order:
+1. Pagination (biggest impact)
+2. Over-fetching (sitemap, metadata, OG image)
+3. Revalidation round-trips
+4. Search indexing
+5. Everything else

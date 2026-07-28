@@ -15,10 +15,8 @@ export async function createComment(articleId: string, userId: string, content: 
 }
 
 export async function deleteComment(id: string, userId: string) {
-  // Only the comment's author may delete it.
-  const comment = await prisma.comment.findUnique({ where: { id } });
-  if (!comment || comment.userId !== userId) {
+  const { count } = await prisma.comment.deleteMany({ where: { id, userId } });
+  if (count === 0) {
     throw new Error("ไม่มีสิทธิ์ลบความคิดเห็นนี้");
   }
-  return prisma.comment.delete({ where: { id } });
 }

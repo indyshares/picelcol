@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
 import { ensureUser } from "@/services/user.service";
-import { createComment, deleteComment } from "@/services/comment.service";
-import { prisma } from "@/lib/prisma";
+import { createComment, deleteComment, listCommentsForArticle } from "@/services/comment.service";
 
 export type CommentFormState = {
   error?: string;
@@ -24,6 +23,7 @@ async function requireUserId() {
 
 export async function addCommentAction(
   articleId: string,
+  articleSlug: string,
   _prevState: CommentFormState,
   formData: FormData,
 ): Promise<CommentFormState> {
@@ -38,14 +38,17 @@ export async function addCommentAction(
   }
 
   await createComment(articleId, userId, parsed.data.content);
-
-  const article = await prisma.article.findUnique({
-    where: { id: articleId },
-    select: { slug: true },
-  });
-  if (article) revalidatePath(`/articles/${article.slug}`);
+  revalidatePath(`/articles/${articleSlug}`);
 
   return {};
+}
+
+export async function getCommentsData(articleId: string) {
+  const [comments, authUser] = await Promise.all([
+    listCommentsForArticle(articleId),
+    getCurrentAuthUser(),
+  ]);
+  return { comments, currentUserId: authUser?.id ?? null };
 }
 
 export async function deleteCommentAction(commentId: string, articleSlug: string) {

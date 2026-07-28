@@ -18,7 +18,7 @@ export default async function ArticlesPage({ searchParams }: Props) {
   const isSearching = Boolean(q?.trim());
 
   const [articles, trending] = await Promise.all([
-    isSearching ? searchArticles(q!) : listArticles({ onlyPublished: true }),
+    isSearching ? searchArticles(q!) : listArticles({ onlyPublished: true, take: 12 }),
     isSearching ? Promise.resolve([]) : getTrendingArticles(),
   ]);
 
