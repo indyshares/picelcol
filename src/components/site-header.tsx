@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { AuthNav } from "@/features/auth/components/auth-nav";
@@ -7,15 +8,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span
-            aria-hidden
-            className="h-3 w-3 rounded-full"
-            style={{ background: "linear-gradient(135deg, #98D8F4, #FFC5D6)" }}
-          />
-          <span className="font-[var(--font-heading)] text-lg font-semibold text-[var(--text)]">
-            Eiei
-          </span>
+        <Link href="/" className="flex shrink-0 items-center">
+          <Image src="/logo.svg" alt="eiei" width={40} height={40} className="h-9 w-auto" />
         </Link>
 
         <SearchBar />

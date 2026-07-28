@@ -3,8 +3,9 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --font-heading: var(--font-poppins);
-  --font-body: var(--font-nunito-sans);
+  --font-heading: var(--font-kanit);
+  --font-body: var(--font-playpen);
+  --font-content: var(--font-sarabun);
 
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
