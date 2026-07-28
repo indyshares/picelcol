@@ -1,0 +1,60 @@
+=== ISR Implementation Plan ===
+
+## Root Cause
+(public)/layout.tsx renders SiteHeader which calls getCurrentAuthUser()
+→ This reads Supabase cookies via next/headers → marks ALL pages under (public) as Dynamic SSR
+→ No caching possible, Node.js rebuilds on every request
+
+## Phase 1 — Unblock Static Caching
+
+### 1.1 New API route: src/app/api/auth/me/route.ts
+- Lightweight GET endpoint
+- Reads Supabase session, returns { user: { email } | null }
+- Called only from client after mount
+
+### 1.2 New client component: AuthNav
+- useEffect → fetch("/api/auth/me") on mount
+- Shows login/logout/bookmarks with skeleton while loading
+- No server-side auth dependency
+
+### 1.3 Modify SiteHeader
+- Remove getCurrentAuthUser() call
+- Remove server-side auth rendering
+- Replace with <AuthNav /> client component
+- Layout becomes fully static
+
+## Phase 2 — Add ISR to Pages
+
+| Page | Change |
+|------|--------|
+| (public)/page.tsx | export const revalidate = 3600 |
+| (public)/articles/page.tsx | export const revalidate = 3600 |
+| (public)/articles/[slug]/page.tsx | export const revalidate = 3600 |
+| (public)/bookmarks/page.tsx | SKIP — user-specific, stays dynamic |
+
+## Phase 3 — Pre-generate Article Pages
+
+articles/[slug]/page.tsx:
+- Add generateStaticParams()
+- Query all published article slugs at build time
+- Pages pre-rendered to static HTML
+
+## Phase 4 — Build & Deploy
+- pnpm build → generates static HTML for all article pages + home + articles list
+- pnpm start → serves from cache, ISR revalidates every 3600s
+- New articles: first visitor triggers server render, then cached
+
+## Expected Result
+| Metric | Before | After |
+|--------|--------|-------|
+| TTFB | 500-2000ms | 20-50ms |
+| DB queries per nav | 1-3 | 0 (from cache) |
+| Render mode | Dynamic SSR | Static HTML + ISR |
+
+## Files Modified
+- NEW: src/app/api/auth/me/route.ts
+- NEW: src/features/auth/components/auth-nav.tsx
+- EDIT: src/components/site-header.tsx
+- EDIT: src/app/(public)/page.tsx
+- EDIT: src/app/(public)/articles/page.tsx
+- EDIT: src/app/(public)/articles/[slug]/page.tsx

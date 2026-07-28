@@ -4,6 +4,8 @@ import { getTrendingArticles } from "@/services/engagement.service";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { EmptyState } from "@/components/empty-state";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "บทความทั้งหมด",
   description: "รวมบทความทั้งหมด",

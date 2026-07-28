@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { prisma } from "@/lib/prisma";
 import { getArticleContent, getArticleMetadata } from "@/services/article.service";
 import { ArticleContent } from "@/features/article/components/article-content";
 import { siteConfig } from "@/constants/site";
@@ -8,6 +9,20 @@ import { EngagementBar } from "@/features/engagement/components/engagement-bar";
 import { CommentSection } from "@/features/comment/components/comment-section";
 import { RelatedSection } from "@/features/related-articles/components/related-section";
 import { estimateReadingTime } from "@/utils/reading-time";
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  try {
+    const articles = await prisma.article.findMany({
+      where: { published: true },
+      select: { slug: true },
+    });
+    return articles.map((a) => ({ slug: a.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type Props = {
   params: Promise<{ slug: string }>;

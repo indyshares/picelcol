@@ -10,6 +10,8 @@ import { FeaturedArticleCard } from "@/features/article/components/featured-arti
 import { listArticles } from "@/services/article.service";
 import { siteConfig } from "@/constants/site";
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
   let latest: Awaited<ReturnType<typeof listArticles>> = [];
   let publishedCount = 0;

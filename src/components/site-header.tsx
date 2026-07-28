@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { Bookmark } from "lucide-react";
-import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { signOutAction } from "@/features/auth/actions";
 import { SearchBar } from "@/components/search-bar";
+import { AuthNav } from "@/features/auth/components/auth-nav";
 
-export async function SiteHeader() {
-  const user = await getCurrentAuthUser();
-
+export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
@@ -36,29 +32,7 @@ export async function SiteHeader() {
           >
             บทความ
           </Link>
-          {user ? (
-            <>
-              <Link
-                href="/bookmarks"
-                className="flex items-center gap-1 font-medium text-[var(--text)] hover:text-[var(--link)]"
-              >
-                <Bookmark className="h-4 w-4" />
-                <span className="hidden sm:inline">บันทึก</span>
-              </Link>
-              <form action={signOutAction}>
-                <button type="submit" className="font-medium text-[var(--text-light)] hover:text-[var(--accent)]">
-                  ออกจากระบบ
-                </button>
-              </form>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-4 py-2 font-medium text-white transition hover:bg-[var(--accent-hover)]"
-            >
-              เข้าสู่ระบบ
-            </Link>
-          )}
+          <AuthNav />
         </nav>
       </div>
     </header>
