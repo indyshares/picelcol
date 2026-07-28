@@ -1,0 +1,19 @@
+{
+  "readingTime": "อ่าน {min} นาที",
+  "views": "{count} ครั้ง",
+  "bookmarked": "บันทึกไว้ {count} คน",
+  "related": "บทความที่เกี่ยวข้อง",
+  "recommended": "แนะนำ",
+  "trending": "มาแรง",
+  "trendingWeek": "มาแรงสัปดาห์นี้",
+  "likes": "ถูกใจ",
+  "comments": "ความคิดเห็น",
+  "share": "แชร์",
+  "allArticles": "บทความทั้งหมด",
+  "allArticlesDesc": "รวมบทความทั้งหมด",
+  "fallbackTitle": "บทความ",
+  "emptyPublished": "ยังไม่มีบทความเผยแพร่",
+  "comingSoon": "เร็วๆ นี้จะมีบทความใหม่มาให้อ่านกัน",
+  "emptyBookmarks": "ยังไม่มีบทความที่บันทึกไว้",
+  "emptyBookmarksDesc": "กดบันทึกบทความที่ชอบไว้อ่านทีหลังได้เลย"
+}

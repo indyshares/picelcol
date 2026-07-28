@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { AuthNav } from "@/features/auth/components/auth-nav";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function SiteHeader() {
   return (
@@ -20,18 +21,16 @@ export function SiteHeader() {
         <SearchBar />
 
         <nav className="flex items-center gap-4 text-sm">
-          <Link
-            href="/"
-            className="font-medium text-[var(--text)] hover:text-[var(--link)]"
-          >
+          <Link href="/" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
             หน้าแรก
           </Link>
-          <Link
-            href="/articles"
-            className="font-medium text-[var(--text)] hover:text-[var(--link)]"
-          >
+          <Link href="/articles" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
             บทความ
           </Link>
+          <Link href="/about" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
+            เกี่ยวกับ
+          </Link>
+          <LanguageSwitcher />
           <AuthNav />
         </nav>
       </div>

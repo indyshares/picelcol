@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "home": "Home",
+    "articles": "Articles",
+    "about": "About",
+    "bookmarks": "Bookmarks",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "loggingOut": "Signing out…"
+  },
+  "auth": {
+    "signInWithGoogle": "Continue with Google",
+    "signUpWithGoogle": "Join with Google",
+    "email": "Email",
+    "password": "Password",
+    "or": "or",
+    "processing": "One moment…",
+    "loginTitle": "Welcome back",
+    "registerTitle": "Join us",
+    "loginSubmit": "Sign In",
+    "registerSubmit": "Sign Up",
+    "noAccount": "Don\u0027t have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign Up"
+  },
+  "search": {
+    "placeholder": "Search articles…",
+    "loading": "Searching…",
+    "noResults": "Nothing found",
+    "results": "Search Results",
+    "tryOther": "Try a different keyword",
+    "searching": "Searching for \"{q}\"…"
+  },
+  "loading": "Loading…"
+}

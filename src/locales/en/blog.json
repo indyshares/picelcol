@@ -1,0 +1,19 @@
+{
+  "readingTime": "{min} min read",
+  "views": "{count} views",
+  "bookmarked": "{count} saved",
+  "related": "Related Articles",
+  "recommended": "Recommended",
+  "trending": "Trending",
+  "trendingWeek": "Trending This Week",
+  "likes": "Likes",
+  "comments": "Comments",
+  "share": "Share",
+  "allArticles": "All Articles",
+  "allArticlesDesc": "Browse every article in one place",
+  "fallbackTitle": "Article",
+  "emptyPublished": "No articles published yet",
+  "comingSoon": "New articles are on their way \u2014 stay tuned!",
+  "emptyBookmarks": "No saved articles yet",
+  "emptyBookmarksDesc": "Tap the bookmark icon on any article to save it for later"
+}

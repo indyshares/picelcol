@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "home": "หน้าแรก",
+    "articles": "บทความ",
+    "about": "เกี่ยวกับ",
+    "bookmarks": "บันทึกไว้",
+    "login": "เข้าสู่ระบบ",
+    "logout": "ออกจากระบบ",
+    "loggingOut": "กำลังออก..."
+  },
+  "auth": {
+    "signInWithGoogle": "เข้าสู่ระบบด้วย Google",
+    "signUpWithGoogle": "สมัครสมาชิกด้วย Google",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "or": "หรือ",
+    "processing": "อีกเดียวนะ...",
+    "loginTitle": "กลับมาเจอกันอีกแล้ว",
+    "registerTitle": "มาเป็นส่วนหนึ่งกับเรา",
+    "loginSubmit": "เข้าสู่ระบบ",
+    "registerSubmit": "สมัครสมาชิก",
+    "noAccount": "ยังไม่มีบัญชี?",
+    "hasAccount": "มีบัญชีอยู่แล้ว?",
+    "signUp": "สมัครสมาชิก"
+  },
+  "search": {
+    "placeholder": "ค้นหาบทความ...",
+    "loading": "กำลังค้นหา...",
+    "noResults": "ไม่พบบทความที่ค้นหา",
+    "results": "ผลการค้นหา",
+    "tryOther": "ลองค้นหาด้วยคำอื่นดูนะ",
+    "searching": "กำลังค้นหา \"{q}\"..."
+  },
+  "loading": "กำลังโหลด..."
+}

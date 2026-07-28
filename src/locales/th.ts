@@ -1,0 +1,46 @@
+export const th = {
+  nav: {
+    home: "หน้าแรก",
+    articles: "บทความ",
+    about: "เกี่ยวกับ",
+    bookmarks: "บันทึก",
+    login: "เข้าสู่ระบบ",
+    logout: "ออกจากระบบ",
+  },
+  article: {
+    readingTime: "อ่าน {min} นาที",
+    views: "{count} ครั้ง",
+    bookmarked: "บันทึกไว้ {count} คน",
+    related: "บทความที่เกี่ยวข้อง",
+    recommended: "แนะนำ",
+    trending: "มาแรง",
+    likes: "ถูกใจ",
+    comments: "ความคิดเห็น",
+    share: "แชร์",
+  },
+  home: {
+    title: "เรื่องราวน่ารักๆ\nที่เขียนด้วยใจ",
+    readArticles: "อ่านบทความ",
+    viewCategories: "ดูหมวดหมู่",
+    featured: "บทความแนะนำ",
+    latest: "บทความล่าสุด",
+    viewAll: "ดูทั้งหมด →",
+    stats: {
+      articles: "บทความที่เผยแพร่",
+      categories: "หมวดหมู่",
+      views: "อ่านทั้งหมด",
+      likes: "หัวใจจากผู้อ่าน",
+    },
+  },
+  search: {
+    placeholder: "ค้นหาบทความ...",
+    loading: "กำลังค้นหา...",
+    noResults: "ไม่พบบทความที่ค้นหา",
+    results: "ผลการค้นหา",
+    tryOther: "ลองค้นหาด้วยคำอื่นดูนะ",
+    searching: 'กำลังค้นหา "{q}"...',
+  },
+  about: {
+    title: "เกี่ยวกับเรา",
+  },
+};
