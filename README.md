@@ -1,4 +1,5 @@
-# Eiei App
+# eiei
+สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น
 
 เว็บไซต์บทความ SEO + User System + Knowledge Graph + AI Ready
 สร้างด้วย Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS v4

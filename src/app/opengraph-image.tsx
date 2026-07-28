@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { siteConfig } from "@/constants/site";
 
 export const runtime = "edge";
-export const alt = "Eiei App";
+export const alt = "eiei - สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

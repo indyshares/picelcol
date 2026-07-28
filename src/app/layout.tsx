@@ -35,10 +35,10 @@ const sarabun = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "Eiei App",
-    template: "%s | Eiei App",
+    default: "eiei",
+    template: "%s | eiei",
   },
-  description: "เว็บไซต์บทความแบรนด์ — เขียนโดยแอดมิน อ่านง่าย ค้นหาได้ SEO ครบ",
+  description: "สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 

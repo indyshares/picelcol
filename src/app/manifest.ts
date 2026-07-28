@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Eiei App",
-    short_name: "Eiei",
-    description: "เว็บไซต์บทความ SEO + User System + Knowledge Graph + AI Ready",
+    name: "eiei",
+    short_name: "eiei",
+    description: "สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น",
     start_url: "/",
     display: "standalone",
     background_color: "#FFFDF6",

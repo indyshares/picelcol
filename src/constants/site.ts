@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: "Eiei App",
-  description: "เว็บไซต์บทความแบรนด์ — เขียนโดยแอดมิน อ่านง่าย ค้นหาได้ SEO ครบ",
+  name: "eiei",
+  description: "สติ๊กเกอร์ เครื่องเขียน และของเล็กๆ น้อยๆ ที่ทำให้วันของคุณน่ารักขึ้น — Little things that make your day cuter.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com",
   locale: "th",
 } as const;

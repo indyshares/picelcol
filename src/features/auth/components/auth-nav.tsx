@@ -1,14 +1,22 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
-import { Bookmark, Loader2 } from "lucide-react";
+import { User, Bookmark, LayoutDashboard, LogOut, Loader2 } from "lucide-react";
 import { signOutAction } from "@/features/auth/actions";
 
+type UserData = {
+  id: string;
+  email: string;
+  role: "user" | "admin";
+};
+
 export function AuthNav() {
-  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -18,6 +26,16 @@ export function AuthNav() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   if (loading) {
@@ -30,22 +48,68 @@ export function AuthNav() {
 
   if (user) {
     return (
-      <div className="flex items-center gap-4 text-sm">
-        <Link
-          href="/bookmarks"
-          className="flex items-center gap-1 font-medium text-[var(--text)] hover:text-[var(--link)]"
-        >
-          <Bookmark className="h-4 w-4" />
-          <span className="hidden sm:inline">บันทึก</span>
-        </Link>
+      <div ref={menuRef} className="relative text-sm">
         <button
           type="button"
-          disabled={isPending}
-          onClick={() => startTransition(async () => { await signOutAction(); })}
-          className="font-medium text-[var(--text-light)] hover:text-[var(--accent)] disabled:opacity-50"
+          onClick={() => setOpen(!open)}
+          className="flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 font-medium text-[var(--text)] transition hover:border-[var(--primary)]"
         >
-          {isPending ? "กำลังออก..." : "ออกจากระบบ"}
+          <User className="h-4 w-4" />
+          <span className="hidden sm:inline">Profile</span>
         </button>
+
+        {open && (
+          <div className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-lg">
+            <div className="border-b border-[var(--border)] px-4 py-3">
+              <p className="truncate text-xs text-[var(--text-muted)]">{user.email}</p>
+            </div>
+
+            <Link
+              href={"/profile"}
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+            >
+              <User className="h-4 w-4 text-[var(--text-muted)]" />
+              Profile
+            </Link>
+
+            <Link
+              href="/bookmarks"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+            >
+              <Bookmark className="h-4 w-4 text-[var(--text-muted)]" />
+              Favorite
+            </Link>
+
+            {user.role === "admin" && (
+              <Link
+                href="/admin/articles"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+              >
+                <LayoutDashboard className="h-4 w-4 text-[var(--text-muted)]" />
+                Dashboard
+              </Link>
+            )}
+
+            <div className="border-t border-[var(--border)]">
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() =>
+                  startTransition(async () => {
+                    await signOutAction();
+                  })
+                }
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-light)] transition hover:bg-[var(--bg)] disabled:opacity-50"
+              >
+                <LogOut className="h-4 w-4" />
+                {isPending ? "Signing out..." : "Sign Out"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
