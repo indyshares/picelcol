@@ -1,23 +1,14 @@
-import type { Metadata } from "next";
-import { getLocale, getDictionary } from "@/lib/i18n";
-import { siteConfig } from "@/constants/site";
+"use client";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
-  return {
-    title: dict.about.metaTitle,
-    description: dict.about.metaDescription,
-  };
-}
+import { useLocale } from "@/lib/use-locale";
+import { siteConfig } from "@/constants/site";
 
 function renderBody(body: string) {
   return body.split("\n\n").map((p, i) => <p key={i}>{p}</p>);
 }
 
-export default async function AboutPage() {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
+export default function AboutPage() {
+  const { dict } = useLocale();
   const { about } = dict;
   const url = `${siteConfig.url}/about`;
 
@@ -60,7 +51,7 @@ export default async function AboutPage() {
           <li>{about.sections.getInTouch.instagram}</li>
           <li>{about.sections.getInTouch.line}</li>
         </ul>
-        <p>{locale === "th" ? about.thankYou : about.thankYou}</p>
+        <p>{about.seeYou}</p>
       </article>
     </main>
   );

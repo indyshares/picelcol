@@ -1,8 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/constants/site";
-import { getLocale, getDictionary } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
+import { useEffect, useState } from "react";
 
 const socialLinks = [
   {
@@ -22,20 +24,17 @@ const socialLinks = [
   },
 ];
 
-export async function SiteFooter() {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
+export function SiteFooter() {
+  const { dict } = useLocale();
   const { footer, common } = dict;
+  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
 
-  let categories: { slug: string; name: string }[] = [];
-  try {
-    categories = await prisma.category.findMany({
-      orderBy: { name: "asc" },
-      take: 6,
-    });
-  } catch {
-    // DB unavailable
-  }
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then(setCategories)
+      .catch(() => {});
+  }, []);
 
   const currentYear = new Date().getFullYear();
 
@@ -45,9 +44,7 @@ export async function SiteFooter() {
     name: "eiei",
     url: siteConfig.url,
     logo: `${siteConfig.url}/logo.svg`,
-    sameAs: [
-      "https://www.facebook.com/picelcollections",
-    ],
+    sameAs: ["https://www.facebook.com/picelcollections"],
     contactPoint: {
       "@type": "ContactPoint",
       email: "eiei.picel.contact@gmail.com",
@@ -63,7 +60,6 @@ export async function SiteFooter() {
       />
 
       <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-4">
-        {/* Zone 1: Brand & E-E-A-T */}
         <div className="space-y-3 md:col-span-1">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.svg" alt="eiei" width={36} height={36} className="h-8 w-auto" />
@@ -79,7 +75,6 @@ export async function SiteFooter() {
           </p>
         </div>
 
-        {/* Zone 2: Important Pages */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
             {common.nav.home}
@@ -118,7 +113,6 @@ export async function SiteFooter() {
           </ul>
         </div>
 
-        {/* Zone 3: Top Categories */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
             {footer.categories}
@@ -141,7 +135,6 @@ export async function SiteFooter() {
           )}
         </div>
 
-        {/* Zone 4: Contact & Social */}
         <div className="space-y-3">
           <h3 className="font-[var(--font-heading)] text-sm font-semibold text-[var(--text)]">
             {footer.contact}
@@ -163,10 +156,10 @@ export async function SiteFooter() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={footer[social.ariaLabelKey]}
+                aria-label={(footer as Record<string, string>)[social.ariaLabelKey]}
                 className="text-xs text-[var(--text-light)] underline decoration-dotted underline-offset-2 transition hover:text-[var(--link)]"
               >
-                {footer[social.labelKey]}
+                {(footer as Record<string, string>)[social.labelKey]}
               </a>
             ))}
           </div>

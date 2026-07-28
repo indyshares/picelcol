@@ -1,13 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { AuthNav } from "@/features/auth/components/auth-nav";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { getLocale, getDictionary } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
 
-export async function SiteHeader() {
-  const locale = await getLocale();
-  const dict = getDictionary(locale);
+export function SiteHeader() {
+  const { dict } = useLocale();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
