@@ -74,6 +74,7 @@ export async function createArticleAction(
     return { error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด" };
   }
 
+  revalidatePath("/");
   revalidatePath("/articles");
   revalidatePath("/admin/articles");
   redirect(`/admin/articles/${articleId}/edit`);
@@ -105,6 +106,7 @@ export async function updateArticleAction(
 
   try {
     await updateArticle(id, parsed.data);
+    revalidatePath("/");
     revalidatePath("/articles");
     revalidatePath(`/articles/${parsed.data.slug}`);
     revalidatePath("/admin/articles");
