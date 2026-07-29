@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import type { ArticleSummary } from "@/types";
-import { formatBangkokDate } from "@/utils/date";
+import { formatICTDate } from "@/utils/date";
 
 type FeaturedArticle = ArticleSummary & {
   categories?: { category: { name: string } }[];
@@ -51,7 +51,7 @@ export function FeaturedArticleCard({ article, priority }: { article: FeaturedAr
           {authorName && article.publishedAt && <span aria-hidden>·</span>}
           {article.publishedAt && (
             <time dateTime={article.publishedAt.toISOString()}>
-              {formatBangkokDate(article.publishedAt)}
+              {formatICTDate(article.publishedAt)}
             </time>
           )}
         </div>

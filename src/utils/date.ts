@@ -1,4 +1,4 @@
-export function formatBangkokDate(
+export function formatICTDate(
   date: Date | string,
   options: Intl.DateTimeFormatOptions = { year: "numeric", month: "short", day: "numeric" },
 ): string {
@@ -6,7 +6,7 @@ export function formatBangkokDate(
   return d.toLocaleDateString("th-TH", { ...options, timeZone: "Asia/Bangkok" });
 }
 
-export function formatBangkokDateTime(date: Date | string): string {
+export function formatICTDateTime(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toLocaleString("th-TH", {
     timeZone: "Asia/Bangkok",

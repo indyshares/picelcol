@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import type { ArticleFormState } from "@/features/article/actions";
 import { updateMediaAltAction } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
-import { formatBangkokDateTime } from "@/utils/date";
+import { formatICTDateTime } from "@/utils/date";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArticleFormSidebar } from "./article-form-sidebar";
@@ -232,7 +232,7 @@ export function ArticleForm({
             </Button>
             {defaultValues?.updatedAt && (
               <span className="text-xs text-[var(--text-muted)]">
-                แก้ไขล่าสุด: {formatBangkokDateTime(defaultValues.updatedAt)}
+                แก้ไขล่าสุด: {formatICTDateTime(defaultValues.updatedAt)}
               </span>
             )}
           </div>

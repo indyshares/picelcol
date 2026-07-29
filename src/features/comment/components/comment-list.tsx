@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { deleteCommentAction } from "@/features/comment/actions";
-import { formatBangkokDate } from "@/utils/date";
+import { formatICTDate } from "@/utils/date";
 
 type CommentListProps = {
   articleSlug: string;
@@ -36,7 +36,7 @@ export function CommentList({ articleSlug, comments, currentUserId }: CommentLis
             </span>
             <div className="flex items-center gap-3">
               <time className="text-xs text-[var(--text-muted)]">
-                {formatBangkokDate(comment.createdAt)}
+                {formatICTDate(comment.createdAt)}
               </time>
               {currentUserId === comment.userId && (
                 <button
