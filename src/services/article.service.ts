@@ -74,6 +74,8 @@ export async function getArticleById(id: string) {
     include: {
       categories: { include: { category: true } },
       tags: { include: { tag: true } },
+      keywords: { select: { keyword: true } },
+      entities: { select: { entityId: true } },
     },
   });
 }
@@ -121,24 +123,39 @@ export async function createArticle(authorId: string, data: ArticleInput) {
 }
 
 export async function updateArticle(id: string, data: ArticleInput) {
-  const { categoryIds, tagIds, ...article } = data;
+  const { categoryIds, tagNames, keywords, entityIds, ...article } = data;
 
-  const [updated] = await prisma.$transaction([
-    prisma.articleCategory.deleteMany({ where: { articleId: id } }),
-    prisma.articleTag.deleteMany({ where: { articleId: id } }),
-    prisma.article.update({
+  await prisma.$transaction(async (tx) => {
+    const tagRecords = await Promise.all(
+      tagNames.map((name) => {
+        const slug = name.toLowerCase().replace(/\s+/g, "-");
+        return tx.tag.upsert({
+          where: { slug },
+          update: { name },
+          create: { name, slug },
+        });
+      }),
+    );
+
+    await tx.articleCategory.deleteMany({ where: { articleId: id } });
+    await tx.articleTag.deleteMany({ where: { articleId: id } });
+    await tx.articleKeyword.deleteMany({ where: { articleId: id } });
+    await tx.articleEntity.deleteMany({ where: { articleId: id } });
+
+    await tx.article.update({
       where: { id },
       data: {
         ...article,
         publishedAt: article.published ? new Date() : null,
         categories: { create: categoryIds.map((categoryId) => ({ categoryId })) },
-        tags: { create: tagIds.map((tagId) => ({ tagId })) },
+        tags: { create: tagRecords.map((tag) => ({ tagId: tag.id })) },
+        keywords: { create: keywords.map((keyword) => ({ keyword })) },
+        entities: { create: entityIds.map((entityId) => ({ entityId })) },
       },
-    }),
-  ]);
+    });
+  });
 
   await storeRelatedArticles(id);
-  return updated;
 }
 
 export async function deleteArticle(id: string) {
