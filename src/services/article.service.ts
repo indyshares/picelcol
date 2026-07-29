@@ -79,20 +79,41 @@ export async function getArticleById(id: string) {
 }
 
 export async function createArticle(authorId: string, data: ArticleInput) {
-  const { categoryIds, tagIds, ...article } = data;
+  const { categoryIds, tagNames, keywords, entityIds, ...article } = data;
 
-  const created = await prisma.article.create({
-    data: {
-      ...article,
-      authorId,
-      publishedAt: article.published ? new Date() : null,
-      categories: {
-        create: categoryIds.map((categoryId) => ({ categoryId })),
+  const [created] = await prisma.$transaction(async (tx) => {
+    const tagRecords = await Promise.all(
+      tagNames.map((name) => {
+        const slug = name.toLowerCase().replace(/\s+/g, "-");
+        return tx.tag.upsert({
+          where: { slug },
+          update: { name },
+          create: { name, slug },
+        });
+      }),
+    );
+
+    const createdArticle = await tx.article.create({
+      data: {
+        ...article,
+        authorId,
+        publishedAt: article.published ? new Date() : null,
+        categories: {
+          create: categoryIds.map((categoryId) => ({ categoryId })),
+        },
+        tags: {
+          create: tagRecords.map((tag) => ({ tagId: tag.id })),
+        },
+        keywords: {
+          create: keywords.map((keyword) => ({ keyword })),
+        },
+        entities: {
+          create: entityIds.map((entityId) => ({ entityId })),
+        },
       },
-      tags: {
-        create: tagIds.map((tagId) => ({ tagId })),
-      },
-    },
+    });
+
+    return [createdArticle];
   });
 
   await storeRelatedArticles(created.id);
@@ -135,6 +156,7 @@ export const getArticleMetadata = cache(async (slug: string) => {
       publishedAt: true,
       updatedAt: true,
       categories: { select: { category: { select: { name: true } } }, take: 1 },
+      keywords: { select: { keyword: true } },
     },
   });
 });
@@ -151,8 +173,23 @@ export async function getArticleContent(slug: string) {
       coverImage: true,
       publishedAt: true,
       updatedAt: true,
-      author: { select: { profile: true } },
+      author: {
+        select: {
+          id: true,
+          email: true,
+          profile: true,
+        },
+      },
       categories: { include: { category: true } },
+      tags: { include: { tag: true } },
+      keywords: { select: { keyword: true } },
+      entities: {
+        select: {
+          entity: {
+            select: { id: true, name: true, type: true },
+          },
+        },
+      },
     },
   });
 }

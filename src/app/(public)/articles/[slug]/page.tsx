@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: meta.title,
     description: meta.excerpt ?? undefined,
+    keywords: meta.keywords.map((k) => k.keyword),
     alternates: { canonical: url },
     openGraph: {
       type: "article",
@@ -70,6 +71,8 @@ export default async function ArticleDetailPage({ params }: Props) {
   const url = `${siteConfig.url}/articles/${article.slug}`;
 
   const authorName = article.author?.profile?.displayName;
+  const authorAvatar = article.author?.profile?.avatarUrl;
+  const authorBio = article.author?.profile?.bio;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -80,6 +83,7 @@ export default async function ArticleDetailPage({ params }: Props) {
     datePublished: article.publishedAt?.toISOString(),
     dateModified: article.updatedAt.toISOString(),
     mainEntityOfPage: url,
+    keywords: article.keywords.map((k) => k.keyword).join(", "),
     author: authorName
       ? { "@type": "Person", name: authorName }
       : { "@type": "Organization", name: siteConfig.name },
@@ -87,6 +91,11 @@ export default async function ArticleDetailPage({ params }: Props) {
       "@type": "Organization",
       name: siteConfig.name,
     },
+    mentions: article.entities.map((e) => ({
+      "@type": "Thing",
+      name: e.entity.name,
+      additionalType: e.entity.type,
+    })),
   };
 
   return (
@@ -129,6 +138,20 @@ export default async function ArticleDetailPage({ params }: Props) {
             <span>อ่าน {estimateReadingTime(article.content)} นาที</span>
           </div>
 
+          {/* Tags */}
+          {article.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {article.tags.map(({ tag }) => (
+                <span
+                  key={tag.id}
+                  className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] text-[var(--text-light)]"
+                >
+                  #{tag.name}
+                </span>
+              ))}
+            </div>
+          )}
+
           {article.coverImage && (
             <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
               <Image src={article.coverImage} alt={article.title} fill priority className="object-cover" />
@@ -138,6 +161,29 @@ export default async function ArticleDetailPage({ params }: Props) {
           <div className="mt-10">
             <ArticleContent markdown={article.content} />
           </div>
+
+          {/* Author box */}
+          {article.author && (
+            <div className="mt-12 flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-5">
+              {authorAvatar ? (
+                <Image
+                  src={authorAvatar}
+                  alt={authorName ?? ""}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
+                />
+              ) : (
+                <div className="h-12 w-12 rounded-full bg-[var(--primary)]/20 flex items-center justify-center text-sm font-bold text-[var(--primary)]">
+                  {(authorName ?? "U")[0]}
+                </div>
+              )}
+              <div>
+                <p className="font-medium text-[var(--text)]">{authorName ?? "ผู้เขียน"}</p>
+                {authorBio && <p className="mt-1 text-sm text-[var(--text-light)]">{authorBio}</p>}
+              </div>
+            </div>
+          )}
 
           <EngagementBar slug={article.slug} articleId={article.id} />
           <ShareSection title={article.title} url={url} />

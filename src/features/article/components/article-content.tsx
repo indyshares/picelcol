@@ -41,7 +41,7 @@ export async function ArticleContent({ markdown }: ArticleContentProps) {
 
   return (
     <div
-      className="article-content prose prose-neutral max-w-none dark:prose-invert prose-headings:font-heading prose-p:font-content prose-blockquote:font-heading prose-a:text-[var(--link)] hover:prose-a:text-[var(--link-hover)]"
+      className="article-content prose max-w-none prose-headings:font-heading prose-p:font-content prose-blockquote:font-heading prose-a:text-[var(--link)] hover:prose-a:text-[var(--link-hover)]"
       dangerouslySetInnerHTML={{ __html: sanitized }}
     />
   );

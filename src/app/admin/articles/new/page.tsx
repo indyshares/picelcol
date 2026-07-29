@@ -1,17 +1,25 @@
 import { ArticleForm } from "@/features/article/components/article-form";
 import { createArticleAction } from "@/features/article/actions";
-import { listCategories, listTags } from "@/services/taxonomy.service";
+import { listCategories, listTags, listEntities } from "@/services/taxonomy.service";
+import { listUsers } from "@/services/user.service";
 
 export default async function NewArticlePage() {
-  const [categories, tags] = await Promise.all([listCategories(), listTags()]);
+  const [categories, tags, entities, users] = await Promise.all([
+    listCategories(),
+    listTags(),
+    listEntities(),
+    listUsers(),
+  ]);
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="mx-auto max-w-5xl px-6 py-12">
       <h1 className="mb-8 text-3xl font-semibold text-[var(--text)]">สร้างบทความใหม่</h1>
       <ArticleForm
         action={createArticleAction}
         categories={categories}
         tags={tags}
+        entities={entities}
+        users={users}
         submitLabel="สร้างบทความ"
       />
     </main>

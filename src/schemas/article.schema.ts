@@ -10,8 +10,10 @@ export const articleSchema = z.object({
   content: z.string().min(1, "กรุณากรอกเนื้อหาบทความ").max(100000, "เนื้อหาบทความยาวเกิน 100,000 ตัวอักษร"),
   coverImage: z.string().url().optional(),
   published: z.boolean().default(false),
-  categoryIds: z.array(z.string()).default([]),
-  tagIds: z.array(z.string()).default([]),
+  categoryIds: z.array(z.string()).min(1, "เลือกอย่างน้อย 1 หมวดหมู่").max(2, "เลือกได้สูงสุด 2 หมวดหมู่"),
+  tagNames: z.array(z.string().min(1)).max(5, "เพิ่มได้สูงสุด 5 แท็ก").default([]),
+  keywords: z.array(z.string().min(1)).max(5, "เพิ่มได้สูงสุด 5 คีย์เวิร์ด").default([]),
+  entityIds: z.array(z.string()).max(4, "เลือกได้สูงสุด 4 เอนทิตี").default([]),
 });
 
 export type ArticleInput = z.infer<typeof articleSchema>;

@@ -38,7 +38,9 @@ function parseFormData(formData: FormData) {
     coverImage: formData.get("coverImage") ? String(formData.get("coverImage")) : undefined,
     published: formData.get("published") === "on",
     categoryIds: formData.getAll("categoryIds").map(String),
-    tagIds: formData.getAll("tagIds").map(String),
+    tagNames: formData.getAll("tagNames").map(String),
+    keywords: formData.getAll("keywords").map(String),
+    entityIds: formData.getAll("entityIds").map(String),
   };
 }
 

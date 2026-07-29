@@ -36,6 +36,13 @@ export async function getUserRole(userId: string) {
   return user?.role ?? "user";
 }
 
+export async function listUsers() {
+  return prisma.user.findMany({
+    orderBy: { email: "asc" },
+    include: { profile: true },
+  });
+}
+
 /** Promote a user to admin (useful for setting up the first admin). */
 export async function setAdminRole(userId: string) {
   return prisma.user.update({

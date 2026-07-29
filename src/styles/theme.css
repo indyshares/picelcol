@@ -18,6 +18,9 @@
   --text-light: #6f8090;
   --text-muted: #aab5c0;
 
+  --foreground: #2f4255;
+  --muted-foreground: #6f8090;
+
   --border: #eaf2f8;
 
   --navbar-bg: #98d8f4;
@@ -49,6 +52,9 @@
   --text: #f7f9fc;
   --text-light: #d0d8e4;
   --text-muted: #94a3b8;
+
+  --foreground: #f7f9fc;
+  --muted-foreground: #d0d8e4;
 
   --border: #39495f;
 
