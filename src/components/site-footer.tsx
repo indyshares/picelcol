@@ -25,7 +25,16 @@ const socialLinks = [
 ];
 
 export function SiteFooter() {
-  const { dict } = useLocale();
+  const { dict, mounted } = useLocale();
+
+  if (!mounted) {
+    return (
+      <footer className="border-t border-[var(--border)] bg-[var(--surface)] text-sm">
+        <div className="mx-auto max-w-5xl px-6 py-12" />
+      </footer>
+    );
+  }
+
   const { footer, common } = dict;
   const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
 

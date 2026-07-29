@@ -8,7 +8,22 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLocale } from "@/lib/use-locale";
 
 export function SiteHeader() {
-  const { dict } = useLocale();
+  const { dict, mounted } = useLocale();
+
+  if (!mounted) {
+    return (
+      <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
+          <div className="h-9 w-9 rounded-full bg-[var(--border)]" />
+          <div className="flex items-center gap-4">
+            <div className="h-4 w-12 rounded bg-[var(--border)]" />
+            <div className="h-4 w-16 rounded bg-[var(--border)]" />
+            <div className="h-4 w-12 rounded bg-[var(--border)]" />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">

@@ -23,7 +23,7 @@ export default function RootLayout({
       className={`${fontKanit.variable} ${fontSarabun.variable} ${fontPlaypen.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-body antialiased">
+      <body className="font-body antialiased" suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

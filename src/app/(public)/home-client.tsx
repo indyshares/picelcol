@@ -32,7 +32,18 @@ type HomeClientProps = {
 };
 
 export function HomeClient({ latest, publishedCount, categoryCount, viewCount, likeCount, children }: HomeClientProps) {
-  const { dict } = useLocale();
+  const { dict, mounted } = useLocale();
+
+  if (!mounted) {
+    return (
+      <main>
+        <section className="relative overflow-hidden">
+          <div className="mx-auto flex max-w-5xl flex-col items-center px-6 py-24" />
+        </section>
+      </main>
+    );
+  }
+
   const featured = latest[0];
 
   return (

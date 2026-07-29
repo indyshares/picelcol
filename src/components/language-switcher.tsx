@@ -15,9 +15,11 @@ function setCookie(name: string, value: string) {
 }
 
 export function LanguageSwitcher() {
+  const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState<Locale>("th");
 
   useEffect(() => {
+    setMounted(true);
     const saved = getCookie("lang");
     if (saved === "en" || saved === "th") setLocale(saved);
   }, []);
@@ -34,10 +36,10 @@ export function LanguageSwitcher() {
       type="button"
       onClick={toggle}
       className="flex items-center gap-1 text-sm font-medium text-[var(--text-light)] hover:text-[var(--link)]"
-      title={locale === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}
+      title={!mounted ? "" : locale === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}
     >
       <Languages className="h-4 w-4" />
-      <span>{locale === "th" ? "EN" : "TH"}</span>
+      <span>{!mounted ? "" : locale === "th" ? "EN" : "TH"}</span>
     </button>
   );
 }

@@ -50,13 +50,16 @@ function getLangCookie(): Locale {
 }
 
 export function useLocale() {
+  const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState<Locale>("th");
 
   useEffect(() => {
+    setMounted(true);
     setLocale(getLangCookie());
   }, []);
 
   return {
+    mounted,
     locale,
     dict: dictionaries[locale],
   };

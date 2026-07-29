@@ -8,7 +8,21 @@ function renderBody(body: string) {
 }
 
 export default function AboutPage() {
-  const { dict } = useLocale();
+  const { dict, mounted } = useLocale();
+
+  if (!mounted) {
+    return (
+      <main className="mx-auto max-w-3xl px-6 py-16">
+        <div className="h-8 w-48 rounded bg-[var(--border)]" />
+        <div className="mt-6 space-y-4">
+          <div className="h-4 w-full rounded bg-[var(--border)]" />
+          <div className="h-4 w-5/6 rounded bg-[var(--border)]" />
+          <div className="h-4 w-4/6 rounded bg-[var(--border)]" />
+        </div>
+      </main>
+    );
+  }
+
   const { about } = dict;
   const url = `${siteConfig.url}/about`;
 

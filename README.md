@@ -89,9 +89,7 @@ Tailwind v4 ผ่าน `@theme` ใน `src/styles/globals.css` (เช่น 
 - หน้า public: `/articles` (list), `/articles/[slug]` (detail + dynamic metadata + Article JSON-LD)
 - หน้า admin: `/admin/articles` (list+delete), `/admin/articles/new`, `/admin/articles/[id]/edit`
 
-> หมายเหตุ: การผูก user ที่ล็อกอิน (Supabase Auth) เข้ากับ `authorId` ใน `actions.ts`
-> เป็นแบบชั่วคราว — รอระบบผู้ใช้ (User System) เพื่อ map Supabase user → Prisma `User`
-> ให้สมบูรณ์ และหน้า admin ยังไม่มีการเช็คสิทธิ์ (auth guard) จะต้องเพิ่มก่อนขึ้น production
+
 
 ## ระบบผู้ใช้ (User System / Auth)
 
@@ -172,7 +170,4 @@ Tailwind v4 ผ่าน `@theme` ใน `src/styles/globals.css` (เช่น 
 
 **Phase 1 + Phase 2 ครบ, UI ปรับเป็น Cute Lifestyle Brand แล้ว — Phase 3-4 ข้ามตามที่ตกลงกัน**
 
-## หมายเหตุการติดตั้ง
 
-โปรเจกต์นี้ยังไม่ได้รัน `pnpm install` มาให้ (ไม่มี network ในสภาพแวดล้อมที่สร้างไฟล์นี้)
-โปรดรัน `pnpm install` ในเครื่องของคุณเองก่อนเริ่ม `pnpm dev`
