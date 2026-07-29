@@ -203,7 +203,7 @@ export async function findOrCreateEntityAction(name: string): Promise<{ id: stri
   try {
     const trimmed = name.trim();
     if (!trimmed) return { error: "ชื่อเอนทิตีไม่ถูกต้อง" };
-    const slug = trimmed.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const slug = trimmed.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\u0E00-\u0E7F-]/g, "");
     if (!slug) return { error: "ชื่อเอนทิตีไม่ถูกต้อง" };
 
     const existing = await prisma.entity.findFirst({
@@ -223,7 +223,7 @@ export async function findOrCreateEntityAction(name: string): Promise<{ id: stri
 
 export async function createCategoryAction(name: string): Promise<{ id: string; name: string } | { error: string }> {
   try {
-    const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\u0E00-\u0E7F-]/g, "");
     if (!slug) return { error: "ชื่อหมวดหมู่ไม่ถูกต้อง" };
 
     const category = await prisma.category.create({ data: { name, slug } });

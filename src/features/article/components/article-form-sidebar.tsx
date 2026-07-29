@@ -192,6 +192,7 @@ export function ArticleFormSidebar({
                 onChange={(e) => setCategoryInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
+                    if (e.nativeEvent.isComposing) return;
                     e.preventDefault();
                     handleCreateCategory();
                   }
@@ -246,6 +247,7 @@ export function ArticleFormSidebar({
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  if (e.nativeEvent.isComposing) return;
                   e.preventDefault();
                   addTag(tagInput);
                 }
@@ -291,6 +293,7 @@ export function ArticleFormSidebar({
               onChange={(e) => setKeywordInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  if (e.nativeEvent.isComposing) return;
                   e.preventDefault();
                   addKeyword();
                 }
@@ -331,6 +334,7 @@ export function ArticleFormSidebar({
               onChange={(e) => setEntityInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  if (e.nativeEvent.isComposing) return;
                   e.preventDefault();
                   handleAddEntity(entityInput);
                 }
