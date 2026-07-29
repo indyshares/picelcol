@@ -32,49 +32,79 @@ function getRateLimiter(limit: number, windowMs: number) {
 const authLimiter = getRateLimiter(10, 60 * 1000);
 const searchLimiter = getRateLimiter(30, 60 * 1000);
 
+function addCorsHeaders(response: NextResponse, origin: string) {
+  response.headers.set("Access-Control-Allow-Origin", origin);
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
     ?? request.headers.get("x-real-ip")
     ?? "unknown";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+  // --- CORS preflight ---
+  if (request.method === "OPTIONS" && pathname.startsWith("/api/")) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": siteUrl,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
+  }
+
+  // --- Rate limiting ---
   if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
     const { allowed } = authLimiter(ip);
     if (!allowed) {
-      return new NextResponse("Too many requests", { status: 429 });
+      const res = new NextResponse("Too many requests", { status: 429 });
+      addCorsHeaders(res, siteUrl);
+      return res;
     }
   }
 
   if (pathname.startsWith("/api/search")) {
     const { allowed } = searchLimiter(ip);
     if (!allowed) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      const res = NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      addCorsHeaders(res, siteUrl);
+      return res;
     }
   }
 
   if (pathname.startsWith("/api/auth")) {
     const { allowed } = authLimiter(ip);
     if (!allowed) {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      const res = NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      addCorsHeaders(res, siteUrl);
+      return res;
     }
   }
 
-  // Origin validation for API routes (CSRF defense-in-depth)
+  // --- CSRF defense + CORS for API routes ---
   if (pathname.startsWith("/api/")) {
     const origin = request.headers.get("origin");
     const referer = request.headers.get("referer");
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
     if (request.method !== "GET") {
       const validOrigin = origin?.startsWith(siteUrl);
       const validReferer = referer?.startsWith(siteUrl);
       if (!validOrigin && !validReferer) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        const res = NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        addCorsHeaders(res, siteUrl);
+        return res;
       }
     }
+
+    const response = NextResponse.next({ request });
+    addCorsHeaders(response, siteUrl);
+    return response;
   }
 
-  // Only run auth refresh + role check for /admin routes
+  // --- Admin auth check ---
   if (!pathname.startsWith("/admin")) {
     return NextResponse.next({ request });
   }

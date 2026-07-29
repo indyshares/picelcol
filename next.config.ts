@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://eiei.picelcollections.site";
     return [
       {
         source: "/(.*)",
@@ -45,6 +46,14 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-DNS-Prefetch-Control", value: "on" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=(), usb=(), bluetooth=(), midi=(), payment=(), sync-xhr=(), accelerometer=(), gyroscope=(), magnetometer=(), autoplay=()" },
+        ],
+      },
+      {
+        source: "/api/(.*)",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: siteUrl },
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" },
         ],
       },
     ];
