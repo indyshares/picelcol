@@ -199,6 +199,28 @@ export async function searchArticlesAction(q: string) {
   return searchArticles(q);
 }
 
+export async function findOrCreateEntityAction(name: string): Promise<{ id: string; name: string; type: string } | { error: string }> {
+  try {
+    const trimmed = name.trim();
+    if (!trimmed) return { error: "ชื่อเอนทิตีไม่ถูกต้อง" };
+    const slug = trimmed.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    if (!slug) return { error: "ชื่อเอนทิตีไม่ถูกต้อง" };
+
+    const existing = await prisma.entity.findFirst({
+      where: { slug },
+    });
+    if (existing) {
+      return { id: existing.id, name: existing.name, type: existing.type };
+    }
+
+    const entity = await prisma.entity.create({ data: { name: trimmed, slug, type: "Thing" } });
+    revalidatePath("/admin/articles");
+    return { id: entity.id, name: entity.name, type: entity.type };
+  } catch {
+    return { error: "ไม่สามารถสร้างเอนทิตีได้" };
+  }
+}
+
 export async function createCategoryAction(name: string): Promise<{ id: string; name: string } | { error: string }> {
   try {
     const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");

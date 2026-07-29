@@ -116,6 +116,8 @@ export async function createArticle(authorId: string, data: ArticleInput) {
       },
     });
 
+    await syncContentMediaUrls(tx, articleData.content);
+
     return [createdArticle];
   });
 
@@ -138,6 +140,7 @@ export async function updateArticle(id: string, data: ArticleInput) {
       }),
     );
 
+    await syncContentMediaUrls(tx, articleData.content);
     await tx.articleCategory.deleteMany({ where: { articleId: id } });
     await tx.articleTag.deleteMany({ where: { articleId: id } });
     await tx.articleKeyword.deleteMany({ where: { articleId: id } });
@@ -158,6 +161,24 @@ export async function updateArticle(id: string, data: ArticleInput) {
   });
 
   await storeRelatedArticles(id);
+}
+
+const IMAGE_REGEX = /!\[([^\]]*)\]\(([^)]+)\)/g;
+
+async function syncContentMediaUrls(
+  tx: Prisma.TransactionClient,
+  content: string,
+) {
+  const matches = Array.from(content.matchAll(IMAGE_REGEX));
+  const seen = new Set<string>();
+  for (const [, alt, url] of matches) {
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    const existing = await tx.media.findFirst({ where: { url } });
+    if (!existing) {
+      await tx.media.create({ data: { url, alt: alt || null } });
+    }
+  }
 }
 
 export async function createMedia(data: { url: string; alt?: string | null }) {
