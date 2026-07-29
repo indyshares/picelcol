@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { siteConfig } from "@/constants/site";
 import { useLocale } from "@/lib/use-locale";
 import { useEffect, useState } from "react";
+import { siteConfig } from "@/constants/site";
 
 const socialLinks = [
   {
@@ -46,26 +46,8 @@ export function SiteFooter() {
   const { footer, common } = dict;
   const currentYear = new Date().getFullYear();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "eiei",
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/logo.svg`,
-    sameAs: ["https://www.facebook.com/picelcollections"],
-    contactPoint: {
-      "@type": "ContactPoint",
-      email: "eiei.picel.contact@gmail.com",
-      contactType: "customer service",
-    },
-  };
-
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--surface)] text-sm">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
 
       <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-4">
         <div className="space-y-3 md:col-span-1">
