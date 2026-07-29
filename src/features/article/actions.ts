@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/server";
 export type ArticleFormState = {
   error?: string;
   fieldErrors?: Record<string, string[]>;
+  success?: number;
 };
 
 export type MediaResult = { id: string; url: string; alt: string | null } | { error: string };
@@ -107,7 +108,7 @@ export async function updateArticleAction(
     return { error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด" };
   }
 
-  return {};
+  return { success: Date.now() };
 }
 
 export async function deleteArticleAction(id: string) {

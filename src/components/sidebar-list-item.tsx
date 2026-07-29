@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatBangkokDate } from "@/utils/date";
 
 type Item = {
   id: string;
@@ -26,11 +27,7 @@ export function SidebarListItem({ article }: { article: Item }) {
       </h3>
       {article.publishedAt && (
         <time className="mt-0.5 block text-xs text-[var(--text-muted)]">
-          {new Date(article.publishedAt).toLocaleDateString("th-TH", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+          {formatBangkokDate(article.publishedAt)}
         </time>
       )}
     </Link>

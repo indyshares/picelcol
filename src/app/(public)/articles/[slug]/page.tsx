@@ -10,6 +10,7 @@ import { EngagementBar } from "@/features/engagement/components/engagement-bar";
 import { CommentSection } from "@/features/comment/components/comment-section";
 import { ShareSection } from "@/features/article/components/share-section";
 import { estimateReadingTime } from "@/utils/reading-time";
+import { formatBangkokDate } from "@/utils/date";
 
 export const revalidate = 3600;
 
@@ -128,11 +129,7 @@ export default async function ArticleDetailPage({ params }: Props) {
           <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[var(--text-muted)]">
             {article.publishedAt && (
               <time dateTime={article.publishedAt.toISOString()}>
-                {new Date(article.publishedAt).toLocaleDateString("th-TH", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formatBangkokDate(article.publishedAt, { year: "numeric", month: "long", day: "numeric" })}
               </time>
             )}
             <span aria-hidden>·</span>

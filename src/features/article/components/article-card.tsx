@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { ArticleSummary } from "@/types";
+import { formatBangkokDate } from "@/utils/date";
 
 type ArticleCardArticle = ArticleSummary & {
   categories?: { category: { name: string } }[];
@@ -48,11 +49,7 @@ export function ArticleCard({ article }: { article: ArticleCardArticle }) {
           {authorName && article.publishedAt && <span aria-hidden>·</span>}
           {article.publishedAt && (
             <time dateTime={article.publishedAt.toISOString()}>
-              {new Date(article.publishedAt).toLocaleDateString("th-TH", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
+              {formatBangkokDate(article.publishedAt)}
             </time>
           )}
         </div>

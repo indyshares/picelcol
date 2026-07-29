@@ -53,6 +53,7 @@ export default async function EditArticlePage({ params }: Props) {
           coverImage: article.coverImage ?? undefined,
           coverImageMediaId: article.coverImageMediaId ?? undefined,
           coverAlt,
+          updatedAt: article.updatedAt.toISOString(),
           published: article.published,
           categoryIds: article.categories.map((c) => c.categoryId),
           tagNames: article.tags.map((t) => t.tag.name),

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { getMediaGalleryAction, updateMediaAltAction, uploadMediaAction } from "@/features/article/actions";
 
 type MediaItem = { id: string; url: string; alt: string | null };
@@ -47,6 +48,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
         setError(result.error);
         return;
       }
+      toast.success("อัปโหลดรูปภาพสำเร็จ");
       onSelect({ url: result.url, alt: result.alt, mediaId: result.id });
     } catch {
       setError("อัปโหลดล้มเหลว");
@@ -160,6 +162,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                       type="button"
                       onClick={async () => {
                         await updateMediaAltAction(selected.id, altText);
+                        toast.success("เลือกรูปภาพสำเร็จ");
                         onSelect({ url: selected.url, alt: altText, mediaId: selected.id });
                       }}
                       className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:opacity-90"

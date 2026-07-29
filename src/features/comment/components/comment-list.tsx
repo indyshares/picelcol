@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { deleteCommentAction } from "@/features/comment/actions";
+import { formatBangkokDate } from "@/utils/date";
 
 type CommentListProps = {
   articleSlug: string;
@@ -35,11 +36,7 @@ export function CommentList({ articleSlug, comments, currentUserId }: CommentLis
             </span>
             <div className="flex items-center gap-3">
               <time className="text-xs text-[var(--text-muted)]">
-                {new Date(comment.createdAt).toLocaleDateString("th-TH", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
+                {formatBangkokDate(comment.createdAt)}
               </time>
               {currentUserId === comment.userId && (
                 <button

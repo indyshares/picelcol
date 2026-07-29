@@ -1,10 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useEffect, useActionState, useState } from "react";
 import dynamic from "next/dynamic";
+import { toast } from "sonner";
 import type { ArticleFormState } from "@/features/article/actions";
 import { updateMediaAltAction } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
+import { formatBangkokDateTime } from "@/utils/date";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArticleFormSidebar } from "./article-form-sidebar";
@@ -38,6 +40,7 @@ type ArticleFormProps = {
     coverImage?: string;
     coverImageMediaId?: string;
     coverAlt?: string;
+    updatedAt?: string;
     published?: boolean;
     categoryIds?: string[];
     tagNames?: string[];
@@ -65,6 +68,14 @@ export function ArticleForm({
   const [coverImageMediaId, setCoverImageMediaId] = useState(defaultValues?.coverImageMediaId ?? "");
   const [coverAlt, setCoverAlt] = useState(defaultValues?.coverAlt ?? "");
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success("บันทึกบทความสำเร็จ");
+    } else if (state.error) {
+      toast.error("ไม่สามารถบันทึก: " + state.error);
+    }
+  }, [state.success, state.error]);
 
   return (
     <form action={formAction}>
@@ -208,9 +219,16 @@ export function ArticleForm({
             เผยแพร่บทความนี้
           </label>
 
-          <Button type="submit" disabled={isPending} className="self-start">
-            {isPending ? "กำลังบันทึก..." : submitLabel}
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button type="submit" disabled={isPending} className="self-start">
+              {isPending ? "กำลังบันทึก..." : submitLabel}
+            </Button>
+            {defaultValues?.updatedAt && (
+              <span className="text-xs text-[var(--text-muted)]">
+                แก้ไขล่าสุด: {formatBangkokDateTime(defaultValues.updatedAt)}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="mt-8 lg:mt-0">

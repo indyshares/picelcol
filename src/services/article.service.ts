@@ -81,7 +81,7 @@ export async function getArticleById(id: string) {
 }
 
 export async function createArticle(authorId: string, data: ArticleInput) {
-  const { categoryIds, tagNames, keywords, entityIds, ...article } = data;
+  const { categoryIds, tagNames, keywords, entityIds, coverImageMediaId, ...articleData } = data;
 
   const [created] = await prisma.$transaction(async (tx) => {
     const tagRecords = await Promise.all(
@@ -97,9 +97,10 @@ export async function createArticle(authorId: string, data: ArticleInput) {
 
     const createdArticle = await tx.article.create({
       data: {
-        ...article,
+        ...articleData,
         authorId,
-        publishedAt: article.published ? new Date() : null,
+        publishedAt: articleData.published ? new Date() : null,
+        coverImageMediaId: coverImageMediaId ?? undefined,
         categories: {
           create: categoryIds.map((categoryId) => ({ categoryId })),
         },
@@ -123,7 +124,7 @@ export async function createArticle(authorId: string, data: ArticleInput) {
 }
 
 export async function updateArticle(id: string, data: ArticleInput) {
-  const { categoryIds, tagNames, keywords, entityIds, ...article } = data;
+  const { categoryIds, tagNames, keywords, entityIds, coverImageMediaId, ...articleData } = data;
 
   await prisma.$transaction(async (tx) => {
     const tagRecords = await Promise.all(
@@ -145,8 +146,9 @@ export async function updateArticle(id: string, data: ArticleInput) {
     await tx.article.update({
       where: { id },
       data: {
-        ...article,
-        publishedAt: article.published ? new Date() : null,
+        ...articleData,
+        publishedAt: articleData.published ? new Date() : null,
+        coverImageMediaId: coverImageMediaId ?? null,
         categories: { create: categoryIds.map((categoryId) => ({ categoryId })) },
         tags: { create: tagRecords.map((tag) => ({ tagId: tag.id })) },
         keywords: { create: keywords.map((keyword) => ({ keyword })) },
