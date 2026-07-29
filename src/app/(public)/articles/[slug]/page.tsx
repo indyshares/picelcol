@@ -8,6 +8,7 @@ import { ArticleSidebar } from "@/features/article/components/article-sidebar";
 import { siteConfig } from "@/constants/site";
 import { EngagementBar } from "@/features/engagement/components/engagement-bar";
 import { CommentSection } from "@/features/comment/components/comment-section";
+import { ShareSection } from "@/features/article/components/share-section";
 import { estimateReadingTime } from "@/utils/reading-time";
 
 export const revalidate = 3600;
@@ -139,6 +140,7 @@ export default async function ArticleDetailPage({ params }: Props) {
           </div>
 
           <EngagementBar slug={article.slug} articleId={article.id} />
+          <ShareSection title={article.title} url={url} />
           <CommentSection articleId={article.id} articleSlug={article.slug} />
         </article>
 
