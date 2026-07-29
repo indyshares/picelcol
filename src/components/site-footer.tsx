@@ -72,7 +72,7 @@ export function SiteFooter() {
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.svg" alt="eiei" width={36} height={36} className="h-8 w-auto" />
             <span className="font-[var(--font-heading)] text-base font-semibold text-[var(--text)]">
-              eiei
+              by Picel Collections
             </span>
           </Link>
           <p className="text-xs leading-relaxed text-[var(--text-light)]">
@@ -175,7 +175,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-[var(--border)] py-4 text-center text-xs text-[var(--text-muted)]">
-        {siteConfig.url !== "https://example.com" && (
+        {siteConfig.url !== "https://eiei.picelcollections.site" && (
           <span>{footer.brandUnder}</span>
         )}
       </div>
