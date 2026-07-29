@@ -84,6 +84,33 @@ export const ArticleEditor = forwardRef<MDXEditorMethods, ArticleEditorProps>(
 
     return (
       <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)]">
+        <style>{`
+          .mdxeditor .article-content table {
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+          }
+          .mdxeditor .article-content th,
+          .mdxeditor .article-content td {
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            text-align: left;
+          }
+          .mdxeditor .article-content th {
+            background: var(--surface);
+            font-weight: 600;
+          }
+          .mdxeditor .article-content pre {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+          }
+          .mdxeditor .article-content code {
+            font-size: 0.875em;
+          }
+          .mdxeditor .article-content blockquote {
+            border-radius: 0 var(--radius-input) var(--radius-input) 0;
+          }
+        `}</style>
         <MDXEditor
           ref={(node) => {
             editorRef.current = node;
@@ -93,7 +120,7 @@ export const ArticleEditor = forwardRef<MDXEditorMethods, ArticleEditorProps>(
           markdown={markdown}
           onChange={onChange}
           placeholder={placeholder ?? "เริ่มเขียนบทความ..."}
-          contentEditableClassName="prose dark:prose-invert text-[var(--text)] max-w-none px-4 py-3 min-h-[320px] focus:outline-none"
+          contentEditableClassName="article-content prose dark:prose-invert max-w-none px-4 py-3 min-h-[320px] focus:outline-none prose-headings:text-[var(--text)] prose-bold:text-[var(--text)] prose-blockquote:text-[var(--text)] prose-blockquote:border-l-4 prose-blockquote:border-[var(--accent)] prose-blockquote:bg-[var(--surface)] prose-blockquote:py-1 prose-blockquote:px-4 prose-code:text-[var(--text)] prose-code:bg-[var(--border)]"
           plugins={[
             headingsPlugin(),
             listsPlugin(),
