@@ -3,7 +3,7 @@ import { ArticleForm } from "@/features/article/components/article-form";
 import { updateArticleAction } from "@/features/article/actions";
 import { getArticleById } from "@/services/article.service";
 import { listCategories, listTags, listEntities } from "@/services/taxonomy.service";
-import { listUsers } from "@/services/user.service";
+import { listAuthors } from "@/services/user.service";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,7 +16,7 @@ export default async function EditArticlePage({ params }: Props) {
     listCategories(),
     listTags(),
     listEntities(),
-    listUsers(),
+    listAuthors(),
   ]);
 
   if (!article) {
@@ -41,6 +41,7 @@ export default async function EditArticlePage({ params }: Props) {
           excerpt: article.excerpt ?? undefined,
           content: article.content,
           coverImage: article.coverImage ?? undefined,
+          coverImageMediaId: article.coverImageMediaId ?? undefined,
           published: article.published,
           categoryIds: article.categories.map((c) => c.categoryId),
           tagNames: article.tags.map((t) => t.tag.name),

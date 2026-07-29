@@ -1,14 +1,14 @@
 import { ArticleForm } from "@/features/article/components/article-form";
 import { createArticleAction } from "@/features/article/actions";
 import { listCategories, listTags, listEntities } from "@/services/taxonomy.service";
-import { listUsers } from "@/services/user.service";
+import { listAuthors } from "@/services/user.service";
 
 export default async function NewArticlePage() {
   const [categories, tags, entities, users] = await Promise.all([
     listCategories(),
     listTags(),
     listEntities(),
-    listUsers(),
+    listAuthors(),
   ]);
 
   return (

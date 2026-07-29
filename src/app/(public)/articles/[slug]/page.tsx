@@ -69,9 +69,10 @@ export default async function ArticleDetailPage({ params }: Props) {
   }
 
   const url = `${siteConfig.url}/articles/${article.slug}`;
+  const coverAlt = article.coverMedia?.alt ?? article.title;
 
-  const authorName = article.author?.profile?.displayName;
-  const authorAvatar = article.author?.profile?.avatarUrl;
+  const authorName = article.author?.displayName ?? article.author?.profile?.displayName;
+  const authorAvatar = article.author?.avatarUrl ?? article.author?.profile?.avatarUrl;
   const authorBio = article.author?.profile?.bio;
 
   const jsonLd = {
@@ -154,7 +155,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {article.coverImage && (
             <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-              <Image src={article.coverImage} alt={article.title} fill priority className="object-cover" />
+              <Image src={article.coverImage} alt={coverAlt} fill priority className="object-cover" />
             </div>
           )}
 

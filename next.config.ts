@@ -2,11 +2,11 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
   img-src 'self' https://*.supabase.co blob: data:;
   frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;
-  connect-src 'self' https://*.supabase.co;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.picelcollections.site;
   font-src 'self';
   object-src 'none';
   base-uri 'self';

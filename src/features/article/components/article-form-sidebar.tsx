@@ -5,7 +5,7 @@ import { useState } from "react";
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
 type Entity = { id: string; name: string; type: string };
-type UserOption = { id: string; email: string; profile: { displayName: string | null } | null };
+type UserOption = { id: string; email: string; displayName: string | null; role: string };
 
 type ArticleFormSidebarProps = {
   categories: Category[];
@@ -92,7 +92,7 @@ export function ArticleFormSidebar({
           <option value="" disabled>เลือกผู้เขียน</option>
           {users.map((u) => (
             <option key={u.id} value={u.id}>
-              {u.profile?.displayName ?? u.email}
+              {u.displayName ? `${u.displayName} (${u.role})` : `${u.email} (${u.role})`}
             </option>
           ))}
         </select>

@@ -43,6 +43,19 @@ export async function listUsers() {
   });
 }
 
+export async function listAuthors() {
+  return prisma.user.findMany({
+    where: { role: { in: ["admin", "writer"] } },
+    orderBy: { email: "asc" },
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      role: true,
+    },
+  });
+}
+
 /** Promote a user to admin (useful for setting up the first admin). */
 export async function setAdminRole(userId: string) {
   return prisma.user.update({

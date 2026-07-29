@@ -158,6 +158,13 @@ export async function updateArticle(id: string, data: ArticleInput) {
   await storeRelatedArticles(id);
 }
 
+export async function createMedia(data: { url: string; alt?: string | null }) {
+  return prisma.media.create({
+    data: { url: data.url, alt: data.alt ?? null },
+    select: { id: true, url: true, alt: true },
+  });
+}
+
 export async function deleteArticle(id: string) {
   return prisma.article.delete({ where: { id } });
 }
@@ -188,12 +195,15 @@ export async function getArticleContent(slug: string) {
       excerpt: true,
       content: true,
       coverImage: true,
+      coverMedia: { select: { id: true, url: true, alt: true } },
       publishedAt: true,
       updatedAt: true,
       author: {
         select: {
           id: true,
           email: true,
+          displayName: true,
+          avatarUrl: true,
           profile: true,
         },
       },

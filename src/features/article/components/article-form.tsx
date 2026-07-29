@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useState } from "react";
 import dynamic from "next/dynamic";
 import type { ArticleFormState } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { uploadFile } from "@/lib/supabase/storage";
 import { ArticleFormSidebar } from "./article-form-sidebar";
+import { MediaPickerModal } from "@/components/media-picker-modal";
 
 const ArticleEditor = dynamic(() => import("./article-editor").then((m) => m.ArticleEditor), {
   ssr: false,
@@ -21,7 +21,7 @@ const ArticleEditor = dynamic(() => import("./article-editor").then((m) => m.Art
 type CategoryOption = { id: string; name: string };
 type TagOption = { id: string; name: string };
 type EntityOption = { id: string; name: string; type: string };
-type UserOption = { id: string; email: string; profile: { displayName: string | null } | null };
+type UserOption = { id: string; email: string; displayName: string | null; role: string };
 
 type ArticleFormProps = {
   action: (state: ArticleFormState, formData: FormData) => Promise<ArticleFormState>;
@@ -35,6 +35,7 @@ type ArticleFormProps = {
     excerpt?: string;
     content?: string;
     coverImage?: string;
+    coverImageMediaId?: string;
     published?: boolean;
     categoryIds?: string[];
     tagNames?: string[];
@@ -59,8 +60,8 @@ export function ArticleForm({
   const [slugTouched, setSlugTouched] = useState(Boolean(defaultValues?.slug));
   const [markdown, setMarkdown] = useState(defaultValues?.content ?? "");
   const [coverImage, setCoverImage] = useState(defaultValues?.coverImage ?? "");
-  const [coverUploading, setCoverUploading] = useState(false);
-  const coverRef = useRef<HTMLInputElement>(null);
+  const [coverImageMediaId, setCoverImageMediaId] = useState(defaultValues?.coverImageMediaId ?? "");
+  const [coverPickerOpen, setCoverPickerOpen] = useState(false);
 
   return (
     <form action={formAction}>
@@ -127,38 +128,18 @@ export function ArticleForm({
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-[var(--text)]">Cover Image</label>
-            <input
-              ref={coverRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                setCoverUploading(true);
-                try {
-                  const url = await uploadFile(file, "articles/covers");
-                  setCoverImage(url);
-                } catch {
-                  alert("อัปโหลดรูปภาพไม่สำเร็จ");
-                } finally {
-                  setCoverUploading(false);
-                }
-              }}
-            />
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                disabled={coverUploading}
-                onClick={() => coverRef.current?.click()}
-                className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--hover-bg)] disabled:opacity-50"
+                onClick={() => setCoverPickerOpen(true)}
+                className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--hover-bg)]"
               >
-                {coverUploading ? "กำลังอัปโหลด..." : coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
+                {coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
               </button>
               {coverImage && (
                 <button
                   type="button"
-                  onClick={() => setCoverImage("")}
+                  onClick={() => { setCoverImage(""); setCoverImageMediaId(""); }}
                   className="text-sm text-[var(--accent)]"
                 >
                   ลบ
@@ -166,6 +147,7 @@ export function ArticleForm({
               )}
             </div>
             <input type="hidden" name="coverImage" value={coverImage} />
+            <input type="hidden" name="coverImageMediaId" value={coverImageMediaId} />
             {coverImage && (
               <div className="relative mt-1 h-40 w-full max-w-sm overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
                 <Image
@@ -179,6 +161,18 @@ export function ArticleForm({
             )}
             {state.fieldErrors?.coverImage && (
               <p className="text-sm text-[var(--accent)]">{state.fieldErrors.coverImage[0]}</p>
+            )}
+            {coverPickerOpen && (
+              <MediaPickerModal
+                onSelect={(result) => {
+                  if (result) {
+                    setCoverImage(result.url);
+                    setCoverImageMediaId(result.mediaId);
+                  }
+                  setCoverPickerOpen(false);
+                }}
+                onClose={() => setCoverPickerOpen(false)}
+              />
             )}
           </div>
 
