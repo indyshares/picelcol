@@ -1,8 +1,78 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const COOKIE_OPTIONS: Partial<CookieOptions> = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+};
+
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+function getRateLimiter(limit: number, windowMs: number) {
+  return (key: string): { allowed: boolean } => {
+    const now = Date.now();
+    const entry = rateLimitStore.get(key);
+
+    if (!entry || now > entry.resetAt) {
+      rateLimitStore.set(key, { count: 1, resetAt: now + windowMs });
+      return { allowed: true };
+    }
+
+    if (entry.count >= limit) {
+      return { allowed: false };
+    }
+
+    entry.count++;
+    return { allowed: true };
+  };
+}
+
+const authLimiter = getRateLimiter(10, 60 * 1000);
+const searchLimiter = getRateLimiter(30, 60 * 1000);
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    ?? request.headers.get("x-real-ip")
+    ?? "unknown";
+
+  if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
+    const { allowed } = authLimiter(ip);
+    if (!allowed) {
+      return new NextResponse("Too many requests", { status: 429 });
+    }
+  }
+
+  if (pathname.startsWith("/api/search")) {
+    const { allowed } = searchLimiter(ip);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+  }
+
+  if (pathname.startsWith("/api/auth")) {
+    const { allowed } = authLimiter(ip);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+  }
+
+  // Origin validation for API routes (CSRF defense-in-depth)
+  if (pathname.startsWith("/api/")) {
+    const origin = request.headers.get("origin");
+    const referer = request.headers.get("referer");
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+    if (request.method !== "GET") {
+      const validOrigin = origin?.startsWith(siteUrl);
+      const validReferer = referer?.startsWith(siteUrl);
+      if (!validOrigin && !validReferer) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+  }
 
   // Only run auth refresh + role check for /admin routes
   if (!pathname.startsWith("/admin")) {
@@ -23,7 +93,7 @@ export async function middleware(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
+            response.cookies.set(name, value, { ...COOKIE_OPTIONS, ...options }),
           );
         },
       },
@@ -37,9 +107,6 @@ export async function middleware(request: NextRequest) {
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
-
-  // Role check deferred to admin layout (Node.js runtime).
-  // Edge Runtime + Prisma is unreliable — layout enforces the guard server-side.
 
   return response;
 }

@@ -20,11 +20,6 @@ function buildProcessor() {
     .use(rehypeStringify, { allowDangerousHtml: true });
 }
 
-/**
- * Renders article Markdown content to sanitized-ish HTML with Shiki syntax
- * highlighting. Content is authored in the admin MDXEditor, so this is
- * trusted input — no additional sanitization pass is applied.
- */
 export async function renderMarkdown(markdown: string): Promise<string> {
   processor ??= buildProcessor();
   const file = await processor.process(markdown);

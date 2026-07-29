@@ -7,7 +7,7 @@ export const articleSchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, "slug ต้องเป็นตัวพิมพ์เล็ก ตัวเลข และ - เท่านั้น"),
   excerpt: z.string().max(300).optional(),
-  content: z.string().min(1, "กรุณากรอกเนื้อหาบทความ"),
+  content: z.string().min(1, "กรุณากรอกเนื้อหาบทความ").max(100000, "เนื้อหาบทความยาวเกิน 100,000 ตัวอักษร"),
   coverImage: z.string().url().optional(),
   published: z.boolean().default(false),
   categoryIds: z.array(z.string()).default([]),

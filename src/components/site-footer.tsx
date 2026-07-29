@@ -26,6 +26,14 @@ const socialLinks = [
 
 export function SiteFooter() {
   const { dict, mounted } = useLocale();
+  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then(setCategories)
+      .catch(() => {});
+  }, []);
 
   if (!mounted) {
     return (
@@ -36,15 +44,6 @@ export function SiteFooter() {
   }
 
   const { footer, common } = dict;
-  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
-
-  useEffect(() => {
-    fetch("/api/categories")
-      .then((r) => r.json())
-      .then(setCategories)
-      .catch(() => {});
-  }, []);
-
   const currentYear = new Date().getFullYear();
 
   const jsonLd = {

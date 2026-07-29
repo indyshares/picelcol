@@ -11,7 +11,7 @@ import {
   updateArticle,
 } from "@/services/article.service";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { ensureUser } from "@/services/user.service";
+import { ensureUser, isAdmin } from "@/services/user.service";
 
 export type ArticleFormState = {
   error?: string;
@@ -75,6 +75,11 @@ export async function updateArticleAction(
   _prevState: ArticleFormState,
   formData: FormData,
 ): Promise<ArticleFormState> {
+  const authUser = await getCurrentAuthUser();
+  if (!authUser || !(await isAdmin(authUser.id))) {
+    return { error: "เฉพาะผู้ดูแลระบบเท่านั้นที่แก้ไขบทความได้" };
+  }
+
   const parsed = articleSchema.safeParse(parseFormData(formData));
 
   if (!parsed.success) {
@@ -98,6 +103,11 @@ export async function updateArticleAction(
 }
 
 export async function deleteArticleAction(id: string) {
+  const authUser = await getCurrentAuthUser();
+  if (!authUser || !(await isAdmin(authUser.id))) {
+    throw new Error("เฉพาะผู้ดูแลระบบเท่านั้นที่ลบบทความได้");
+  }
+
   await deleteArticle(id);
   revalidatePath("/articles");
   revalidatePath("/admin/articles");
