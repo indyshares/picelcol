@@ -32,7 +32,9 @@ type ArticleFormSidebarProps = {
   onCoverAltChange: (alt: string) => void;
   onCoverSelect: (url: string, mediaId: string, alt: string | null) => void;
   isPending: boolean;
+  published: boolean;
   updatedAt?: string;
+  onPublish: () => void;
   onSaveDraft: () => void;
 };
 
@@ -73,7 +75,9 @@ export function ArticleFormSidebar({
   onRemoveCover,
   onCoverAltChange,
   isPending,
+  published,
   updatedAt,
+  onPublish,
   onSaveDraft,
 }: ArticleFormSidebarProps) {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(defaultValues?.categoryIds ?? []);
@@ -212,18 +216,6 @@ export function ArticleFormSidebar({
           {fieldErrors?.coverImage && (
             <p className="text-sm text-[var(--accent)]">{fieldErrors.coverImage[0]}</p>
           )}
-        </section>
-
-        {/* Save Draft */}
-        <section>
-          <button
-            type="button"
-            onClick={onSaveDraft}
-            disabled={isPending}
-            className="w-full rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--hover-bg)] disabled:opacity-50"
-          >
-            {isPending ? "กำลังบันทึก..." : "Save as Draft"}
-          </button>
         </section>
 
         {/* Author */}
@@ -444,6 +436,46 @@ export function ArticleFormSidebar({
           {fieldErrors?.entityIds && (
             <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.entityIds[0]}</p>
           )}
+        </section>
+
+        {/* Status */}
+        <section className="border-t border-[var(--border)] pt-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-[var(--text-muted)]">Status</span>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                published
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+              }`}
+            >
+              {published ? "Published" : "Draft"}
+            </span>
+          </div>
+        </section>
+
+        {/* Publish */}
+        <section>
+          <button
+            type="button"
+            onClick={onPublish}
+            disabled={isPending}
+            className="w-full rounded-[var(--radius-btn)] bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
+          >
+            {isPending ? "กำลังบันทึก..." : "Publish"}
+          </button>
+        </section>
+
+        {/* Save Draft */}
+        <section>
+          <button
+            type="button"
+            onClick={onSaveDraft}
+            disabled={isPending}
+            className="w-full rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--hover-bg)] disabled:opacity-50"
+          >
+            {isPending ? "กำลังบันทึก..." : "Save as Draft"}
+          </button>
         </section>
 
         {/* Last Updated */}

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import type { ArticleFormState } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
 import { siteConfig } from "@/constants/site";
-import { Button } from "@/components/ui/button";
 import { ArticleFormSidebar } from "./article-form-sidebar";
 import { MediaPickerModal } from "@/components/media-picker-modal";
 import { SectionGuide } from "@/components/section-guide";
@@ -170,11 +169,6 @@ export function ArticleForm({
               )}
             </div>
 
-            <div>
-              <Button type="button" onClick={() => handleSubmit(true)} disabled={isPending} className="w-full sm:w-auto">
-                {isPending ? "กำลังบันทึก..." : "Publish"}
-              </Button>
-            </div>
           </div>
 
           <div className="mt-8 lg:mt-0">
@@ -207,7 +201,9 @@ export function ArticleForm({
                   setCoverAlt(alt ?? "");
                 }}
                 isPending={isPending}
+                published={defaultValues?.published ?? false}
                 updatedAt={defaultValues?.updatedAt}
+                onPublish={() => handleSubmit(true)}
                 onSaveDraft={() => handleSubmit(false)}
               />
             </div>
