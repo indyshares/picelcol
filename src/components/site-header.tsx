@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { AuthNav } from "@/features/auth/components/auth-nav";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { useLocale } from "@/lib/use-locale";
 
 export function SiteHeader() {
@@ -44,6 +45,7 @@ export function SiteHeader() {
           <Link href="/about" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
             {dict.common.nav.about}
           </Link>
+          <ThemeSwitcher />
           <LanguageSwitcher />
           <AuthNav />
         </nav>
