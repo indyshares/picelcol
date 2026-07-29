@@ -196,3 +196,16 @@ export async function updateMediaAltAction(mediaId: string, alt: string) {
 export async function searchArticlesAction(q: string) {
   return searchArticles(q);
 }
+
+export async function createCategoryAction(name: string): Promise<{ id: string; name: string } | { error: string }> {
+  try {
+    const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    if (!slug) return { error: "ชื่อหมวดหมู่ไม่ถูกต้อง" };
+
+    const category = await prisma.category.create({ data: { name, slug } });
+    revalidatePath("/admin/articles");
+    return { id: category.id, name: category.name };
+  } catch {
+    return { error: "ไม่สามารถสร้างหมวดหมู่ได้" };
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createCategoryAction } from "@/features/article/actions";
 
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
@@ -45,6 +46,9 @@ export function ArticleFormSidebar({
   defaultValues,
 }: ArticleFormSidebarProps) {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(defaultValues?.categoryIds ?? []);
+  const [localCategories, setLocalCategories] = useState<Category[]>([]);
+  const [categoryInput, setCategoryInput] = useState("");
+  const [creatingCategory, setCreatingCategory] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [tagNames, setTagNames] = useState<string[]>(defaultValues?.tagNames ?? []);
   const [keywordInput, setKeywordInput] = useState("");
@@ -73,6 +77,18 @@ export function ArticleFormSidebar({
     setSelectedCategoryIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
+  }
+
+  async function handleCreateCategory() {
+    const name = categoryInput.trim();
+    if (!name || selectedCategoryIds.length >= 2) return;
+    setCreatingCategory(true);
+    const result = await createCategoryAction(name);
+    setCreatingCategory(false);
+    if ("error" in result) return;
+    setLocalCategories((prev) => [...prev, { id: result.id, name: result.name }]);
+    setSelectedCategoryIds((prev) => [...prev, result.id]);
+    setCategoryInput("");
   }
 
   function toggleEntity(id: string) {
@@ -108,28 +124,73 @@ export function ArticleFormSidebar({
         <h3 className="mb-2 text-sm font-semibold text-[var(--text)]">
           หมวดหมู่ <span className="text-[var(--text-muted)] font-normal">(เลือก 1-2)</span>
         </h3>
-        <div className="flex flex-wrap gap-2">
-          {categories.map((c) => {
-            const selected = selectedCategoryIds.includes(c.id);
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => toggleCategory(c.id)}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
-                  selected
-                    ? "border-[var(--primary)] bg-[var(--primary)]/15 text-[var(--text)]"
-                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-light)] hover:border-[var(--primary)]"
-                }`}
-              >
-                {c.name}
-              </button>
-            );
-          })}
-        </div>
-        {selectedCategoryIds.map((id) => (
-          <input key={id} type="hidden" name="categoryIds" value={id} />
-        ))}
+        {categories.length > 0 || localCategories.length > 0 ? (
+          <>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((c) => {
+                const selected = selectedCategoryIds.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => toggleCategory(c.id)}
+                    className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                      selected
+                        ? "border-[var(--primary)] bg-[var(--primary)]/15 text-[var(--text)]"
+                        : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-light)] hover:border-[var(--primary)]"
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                );
+              })}
+              {localCategories.map((c) => {
+                const selected = selectedCategoryIds.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => toggleCategory(c.id)}
+                    className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                      selected
+                        ? "border-[var(--primary)] bg-[var(--primary)]/15 text-[var(--text)]"
+                        : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-light)] hover:border-[var(--primary)]"
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedCategoryIds.map((id) => (
+              <input key={id} type="hidden" name="categoryIds" value={id} />
+            ))}
+          </>
+        ) : (
+          <div className="flex gap-1">
+            <input
+              value={categoryInput}
+              onChange={(e) => setCategoryInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleCreateCategory();
+                }
+              }}
+              placeholder="พิมพ์ชื่อหมวดหมู่"
+              disabled={creatingCategory || selectedCategoryIds.length >= 2}
+              className="flex-1 rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-xs text-[var(--text)] outline-none focus:border-[var(--primary)] disabled:opacity-40"
+            />
+            <button
+              type="button"
+              onClick={handleCreateCategory}
+              disabled={creatingCategory || !categoryInput.trim() || selectedCategoryIds.length >= 2}
+              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+            >
+              {creatingCategory ? "..." : "สร้างหมวดหมู่"}
+            </button>
+          </div>
+        )}
         {fieldErrors?.categoryIds && (
           <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.categoryIds[0]}</p>
         )}
