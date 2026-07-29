@@ -12,6 +12,7 @@ type ArticleFormSidebarProps = {
   tags: Tag[];
   entities: Entity[];
   users: UserOption[];
+  fieldErrors?: Record<string, string[]>;
   defaultValues?: {
     categoryIds?: string[];
     tagNames?: string[];
@@ -40,6 +41,7 @@ export function ArticleFormSidebar({
   tags: allTags,
   entities,
   users,
+  fieldErrors,
   defaultValues,
 }: ArticleFormSidebarProps) {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(defaultValues?.categoryIds ?? []);
@@ -96,6 +98,9 @@ export function ArticleFormSidebar({
             </option>
           ))}
         </select>
+        {fieldErrors?.authorId && (
+          <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.authorId[0]}</p>
+        )}
       </section>
 
       {/* Categories */}
@@ -125,6 +130,9 @@ export function ArticleFormSidebar({
         {selectedCategoryIds.map((id) => (
           <input key={id} type="hidden" name="categoryIds" value={id} />
         ))}
+        {fieldErrors?.categoryIds && (
+          <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.categoryIds[0]}</p>
+        )}
       </section>
 
       {/* Tags */}
@@ -169,6 +177,9 @@ export function ArticleFormSidebar({
         {tagNames.map((t) => (
           <input key={t} type="hidden" name="tagNames" value={t} />
         ))}
+        {fieldErrors?.tagNames && (
+          <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.tagNames[0]}</p>
+        )}
       </section>
 
       {/* Keywords */}
@@ -207,6 +218,9 @@ export function ArticleFormSidebar({
         {keywords.map((k) => (
           <input key={k} type="hidden" name="keywords" value={k} />
         ))}
+        {fieldErrors?.keywords && (
+          <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.keywords[0]}</p>
+        )}
       </section>
 
       {/* Entities */}
@@ -238,6 +252,9 @@ export function ArticleFormSidebar({
         {selectedEntityIds.map((id) => (
           <input key={id} type="hidden" name="entityIds" value={id} />
         ))}
+        {fieldErrors?.entityIds && (
+          <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.entityIds[0]}</p>
+        )}
       </section>
     </aside>
   );

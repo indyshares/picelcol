@@ -33,19 +33,18 @@ export default async function EditArticlePage({ params }: Props) {
     coverAlt = media?.alt ?? "";
   }
 
-  const boundAction = updateArticleAction.bind(null, id);
-
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
       <h1 className="mb-8 text-3xl font-semibold text-[var(--text)]">แก้ไขบทความ</h1>
       <ArticleForm
-        action={boundAction}
+        action={updateArticleAction}
         categories={categories}
         tags={tags}
         entities={entities}
         users={users}
         submitLabel="บันทึกการแก้ไข"
         defaultValues={{
+          articleId: article.id,
           title: article.title,
           slug: article.slug,
           excerpt: article.excerpt ?? undefined,

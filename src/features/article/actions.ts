@@ -80,10 +80,14 @@ export async function createArticleAction(
 }
 
 export async function updateArticleAction(
-  id: string,
   _prevState: ArticleFormState,
   formData: FormData,
 ): Promise<ArticleFormState> {
+  const id = formData.get("articleId");
+  if (!id || typeof id !== "string") {
+    return { error: "ไม่พบ ID บทความ" };
+  }
+
   const authUser = await getCurrentAuthUser();
   if (!authUser || !(await isAdmin(authUser.id))) {
     return { error: "เฉพาะผู้ดูแลระบบเท่านั้นที่แก้ไขบทความได้" };

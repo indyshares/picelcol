@@ -33,6 +33,7 @@ type ArticleFormProps = {
   entities: EntityOption[];
   users: UserOption[];
   defaultValues?: {
+    articleId?: string;
     title?: string;
     slug?: string;
     excerpt?: string;
@@ -72,13 +73,19 @@ export function ArticleForm({
   useEffect(() => {
     if (state.success) {
       toast.success("บันทึกบทความสำเร็จ");
+    } else if (state.fieldErrors) {
+      toast.error("กรุณาตรวจสอบข้อมูลที่กรอก");
     } else if (state.error) {
       toast.error("ไม่สามารถบันทึก: " + state.error);
     }
-  }, [state.success, state.error]);
+  }, [state.success, state.error, state.fieldErrors]);
 
   return (
     <form action={formAction}>
+      {defaultValues?.articleId && (
+        <input type="hidden" name="articleId" value={defaultValues.articleId} />
+      )}
+
       {state.error && (
         <p className="mb-6 rounded-[var(--radius-input)] border border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm text-[var(--accent)]">
           {state.error}
@@ -238,6 +245,7 @@ export function ArticleForm({
               tags={tags}
               entities={entities}
               users={users}
+              fieldErrors={state.fieldErrors}
               defaultValues={
                 defaultValues
                   ? {
