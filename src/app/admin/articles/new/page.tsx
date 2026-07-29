@@ -20,7 +20,6 @@ export default async function NewArticlePage() {
         tags={tags}
         entities={entities}
         users={users}
-        submitLabel="สร้างบทความ"
       />
     </main>
   );

@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useActionState, useState } from "react";
+import { useEffect, useActionState, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import type { ArticleFormState } from "@/features/article/actions";
-import { updateMediaAltAction } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
-import { formatICTDateTime } from "@/utils/date";
-import Image from "next/image";
+import { siteConfig } from "@/constants/site";
 import { Button } from "@/components/ui/button";
 import { ArticleFormSidebar } from "./article-form-sidebar";
 import { MediaPickerModal } from "@/components/media-picker-modal";
@@ -50,7 +48,6 @@ type ArticleFormProps = {
     keywords?: string[];
     entityIds?: string[];
   };
-  submitLabel?: string;
 };
 
 export function ArticleForm({
@@ -60,9 +57,10 @@ export function ArticleForm({
   entities,
   users,
   defaultValues,
-  submitLabel = "บันทึกบทความ",
 }: ArticleFormProps) {
   const [state, formAction, isPending] = useActionState<ArticleFormState, FormData>(action, {});
+  const formRef = useRef<HTMLFormElement>(null);
+  const publishedRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(defaultValues?.title ?? "");
   const [slug, setSlug] = useState(defaultValues?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(defaultValues?.slug));
@@ -82,12 +80,20 @@ export function ArticleForm({
     }
   }, [state.success, state.error, state.fieldErrors]);
 
+  function handleSubmit(published: boolean) {
+    if (publishedRef.current) {
+      publishedRef.current.value = published ? "on" : "";
+    }
+    formRef.current?.requestSubmit();
+  }
+
   return (
     <TooltipProvider delayDuration={300}>
-      <form action={formAction}>
+      <form ref={formRef} action={formAction}>
         {defaultValues?.articleId && (
           <input type="hidden" name="articleId" value={defaultValues.articleId} />
         )}
+        <input ref={publishedRef} type="hidden" name="published" defaultValue={defaultValues?.published ? "on" : ""} />
 
         {state.error && (
           <p className="mb-6 rounded-[var(--radius-input)] border border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm text-[var(--accent)]">
@@ -121,17 +127,20 @@ export function ArticleForm({
               <label htmlFor="slug" className="text-sm font-medium text-[var(--text)]">
                 Slug <SectionGuide text="Used for the main title and URL slug of the article." />
               </label>
-              <input
-                id="slug"
-                name="slug"
-                value={slug}
-                onChange={(e) => {
-                  setSlugTouched(true);
-                  setSlug(slugify(e.target.value));
-                }}
-                className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
-                required
-              />
+              <div className="flex items-center rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text-muted)]">
+                <span className="whitespace-nowrap shrink-0">{siteConfig.url}/article/</span>
+                <input
+                  id="slug"
+                  name="slug"
+                  value={slug}
+                  onChange={(e) => {
+                    setSlugTouched(true);
+                    setSlug(slugify(e.target.value));
+                  }}
+                  className="bg-transparent text-[var(--text)] flex-1 py-2 pl-1 outline-none"
+                  required
+                />
+              </div>
               {state.fieldErrors?.slug && (
                 <p className="text-sm text-[var(--accent)]">{state.fieldErrors.slug[0]}</p>
               )}
@@ -150,73 +159,6 @@ export function ArticleForm({
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-[var(--text)]">
-                Cover Image <SectionGuide text="Select an image to display as the article cover image." />
-              </label>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setCoverPickerOpen(true)}
-                  className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--hover-bg)]"
-                >
-                  {coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
-                </button>
-                {coverImage && (
-                  <button
-                    type="button"
-                    onClick={() => { setCoverImage(""); setCoverImageMediaId(""); }}
-                    className="text-sm text-[var(--accent)]"
-                  >
-                    ลบ
-                  </button>
-                )}
-              </div>
-              <input type="hidden" name="coverImage" value={coverImage} />
-              <input type="hidden" name="coverImageMediaId" value={coverImageMediaId} />
-              {coverImage && (
-                <>
-                  <div className="relative mt-1 h-40 w-full max-w-sm overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
-                    <Image
-                      src={coverImage}
-                      alt={coverAlt || "Cover preview"}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <input
-                    value={coverAlt}
-                    onChange={(e) => setCoverAlt(e.target.value)}
-                    onBlur={() => {
-                      if (coverImageMediaId) {
-                        updateMediaAltAction(coverImageMediaId, coverAlt);
-                      }
-                    }}
-                    placeholder="Alt Text สำหรับรูปภาพปก"
-                    maxLength={300}
-                    className="mt-2 w-full max-w-sm rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--primary)]"
-                  />
-                </>
-              )}
-              {state.fieldErrors?.coverImage && (
-                <p className="text-sm text-[var(--accent)]">{state.fieldErrors.coverImage[0]}</p>
-              )}
-              {coverPickerOpen && (
-                <MediaPickerModal
-                  onSelect={(result) => {
-                    if (result) {
-                      setCoverImage(result.url);
-                      setCoverImageMediaId(result.mediaId);
-                      setCoverAlt(result.alt ?? "");
-                    }
-                    setCoverPickerOpen(false);
-                  }}
-                  onClose={() => setCoverPickerOpen(false)}
-                />
-              )}
-            </div>
-
             <div className="flex flex-col gap-1">
               <span className="text-sm font-medium text-[var(--text)]">
                 เนื้อหา <SectionGuide text="Rich Text Editor for typing content. Insert images, code, tables here." />
@@ -228,20 +170,10 @@ export function ArticleForm({
               )}
             </div>
 
-            <label className="flex items-center gap-2 text-sm text-[var(--text)]">
-              <input type="checkbox" name="published" defaultChecked={defaultValues?.published} />
-              เผยแพร่บทความนี้
-            </label>
-
-            <div className="flex items-center gap-4">
-              <Button type="submit" disabled={isPending} className="self-start">
-                {isPending ? "กำลังบันทึก..." : submitLabel}
+            <div>
+              <Button type="button" onClick={() => handleSubmit(true)} disabled={isPending} className="w-full sm:w-auto">
+                {isPending ? "กำลังบันทึก..." : "Publish"}
               </Button>
-              {defaultValues?.updatedAt && (
-                <span className="text-xs text-[var(--text-muted)]">
-                  แก้ไขล่าสุด: {formatICTDateTime(defaultValues.updatedAt)}
-                </span>
-              )}
             </div>
           </div>
 
@@ -263,10 +195,38 @@ export function ArticleForm({
                       }
                     : undefined
                 }
+                coverImage={coverImage}
+                coverImageMediaId={coverImageMediaId}
+                coverAlt={coverAlt}
+                onOpenCoverPicker={() => setCoverPickerOpen(true)}
+                onRemoveCover={() => { setCoverImage(""); setCoverImageMediaId(""); }}
+                onCoverAltChange={setCoverAlt}
+                onCoverSelect={(url, mediaId, alt) => {
+                  setCoverImage(url);
+                  setCoverImageMediaId(mediaId);
+                  setCoverAlt(alt ?? "");
+                }}
+                isPending={isPending}
+                updatedAt={defaultValues?.updatedAt}
+                onSaveDraft={() => handleSubmit(false)}
               />
             </div>
           </div>
         </div>
+
+        {coverPickerOpen && (
+          <MediaPickerModal
+            onSelect={(result) => {
+              if (result) {
+                setCoverImage(result.url);
+                setCoverImageMediaId(result.mediaId);
+                setCoverAlt(result.alt ?? "");
+              }
+              setCoverPickerOpen(false);
+            }}
+            onClose={() => setCoverPickerOpen(false)}
+          />
+        )}
       </form>
     </TooltipProvider>
   );

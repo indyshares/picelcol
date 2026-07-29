@@ -42,7 +42,6 @@ export default async function EditArticlePage({ params }: Props) {
         tags={tags}
         entities={entities}
         users={users}
-        submitLabel="บันทึกการแก้ไข"
         defaultValues={{
           articleId: article.id,
           title: article.title,

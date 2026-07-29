@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { createCategoryAction, findOrCreateEntityAction } from "@/features/article/actions";
+import Image from "next/image";
+import { createCategoryAction, findOrCreateEntityAction, updateMediaAltAction } from "@/features/article/actions";
 import { SectionGuide } from "@/components/section-guide";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { formatICTDateTime } from "@/utils/date";
 
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
@@ -22,6 +24,16 @@ type ArticleFormSidebarProps = {
     keywords?: string[];
     entityIds?: string[];
   };
+  coverImage: string;
+  coverImageMediaId: string;
+  coverAlt: string;
+  onOpenCoverPicker: () => void;
+  onRemoveCover: () => void;
+  onCoverAltChange: (alt: string) => void;
+  onCoverSelect: (url: string, mediaId: string, alt: string | null) => void;
+  isPending: boolean;
+  updatedAt?: string;
+  onSaveDraft: () => void;
 };
 
 function Badge({
@@ -54,6 +66,15 @@ export function ArticleFormSidebar({
   users,
   fieldErrors,
   defaultValues,
+  coverImage,
+  coverImageMediaId,
+  coverAlt,
+  onOpenCoverPicker,
+  onRemoveCover,
+  onCoverAltChange,
+  isPending,
+  updatedAt,
+  onSaveDraft,
 }: ArticleFormSidebarProps) {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(defaultValues?.categoryIds ?? []);
   const [localCategories, setLocalCategories] = useState<Category[]>([]);
@@ -140,6 +161,71 @@ export function ArticleFormSidebar({
   return (
     <TooltipProvider delayDuration={300}>
       <aside className="space-y-6">
+        {/* Cover Image */}
+        <section>
+          <SectionTitle label="Cover Image" guide="Select an image to display as the article cover image." />
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onOpenCoverPicker}
+              className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--hover-bg)]"
+            >
+              {coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
+            </button>
+            {coverImage && (
+              <button
+                type="button"
+                onClick={onRemoveCover}
+                className="text-sm text-[var(--accent)]"
+              >
+                ลบ
+              </button>
+            )}
+          </div>
+          <input type="hidden" name="coverImage" value={coverImage} />
+          <input type="hidden" name="coverImageMediaId" value={coverImageMediaId} />
+          {coverImage && (
+            <>
+              <div className="relative mt-2 h-32 w-full overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
+                <Image
+                  src={coverImage}
+                  alt={coverAlt || "Cover preview"}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <input
+                value={coverAlt}
+                onChange={(e) => onCoverAltChange(e.target.value)}
+                onBlur={() => {
+                  if (coverImageMediaId) {
+                    updateMediaAltAction(coverImageMediaId, coverAlt);
+                  }
+                }}
+                placeholder="Alt Text สำหรับรูปภาพปก"
+                maxLength={300}
+                className="mt-2 w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--primary)]"
+              />
+            </>
+          )}
+          {fieldErrors?.coverImage && (
+            <p className="text-sm text-[var(--accent)]">{fieldErrors.coverImage[0]}</p>
+          )}
+        </section>
+
+        {/* Save Draft */}
+        <section>
+          <button
+            type="button"
+            onClick={onSaveDraft}
+            disabled={isPending}
+            className="w-full rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--hover-bg)] disabled:opacity-50"
+          >
+            {isPending ? "กำลังบันทึก..." : "Save as Draft"}
+          </button>
+        </section>
+
         {/* Author */}
         <section>
           <SectionTitle label="ผู้เขียน" guide="Select an author with the role of Admin or Writer." />
@@ -207,7 +293,7 @@ export function ArticleFormSidebar({
                 disabled={creatingCategory || !categoryInput.trim()}
                 className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
               >
-                {creatingCategory ? "..." : "Save"}
+                Save
               </button>
               <button
                 type="button"
@@ -359,6 +445,15 @@ export function ArticleFormSidebar({
             <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.entityIds[0]}</p>
           )}
         </section>
+
+        {/* Last Updated */}
+        {updatedAt && (
+          <section>
+            <p className="text-xs text-[var(--text-muted)] border-t border-[var(--border)] pt-4">
+              แก้ไขล่าสุด: {formatICTDateTime(updatedAt)}
+            </p>
+          </section>
+        )}
       </aside>
     </TooltipProvider>
   );
