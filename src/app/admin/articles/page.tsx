@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { listArticles } from "@/services/article.service";
+import { listArticlesForAdmin } from "@/services/article.service";
 import { deleteArticleAction } from "@/features/article/actions";
 
 export default async function AdminArticlesPage() {
-  const articles = await listArticles({ onlyPublished: false, take: 50 });
+  const articles = await listArticlesForAdmin({ take: 50 });
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">

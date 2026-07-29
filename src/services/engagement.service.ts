@@ -57,16 +57,24 @@ export async function toggleBookmark(articleId: string, userId: string) {
   return { bookmarked: true };
 }
 
+const bookmarkArticleSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  excerpt: true,
+  coverImage: true,
+  publishedAt: true,
+  author: { select: { profile: { select: { displayName: true } } } },
+  categories: { select: { category: { select: { name: true } } }, take: 1 },
+} as const;
+
 export async function listBookmarkedArticles(userId: string) {
   const bookmarks = await prisma.bookmark.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
       article: {
-        include: {
-          author: { select: { profile: true } },
-          categories: { include: { category: true } },
-        },
+        select: bookmarkArticleSelect,
       },
     },
   });

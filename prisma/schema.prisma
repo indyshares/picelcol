@@ -179,6 +179,7 @@ model Bookmark {
   createdAt DateTime @default(now())
 
   @@id([articleId, userId])
+  @@index([userId])
   @@map("bookmarks")
 }
 

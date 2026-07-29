@@ -157,6 +157,23 @@ export async function getArticleContent(slug: string) {
   });
 }
 
+/**
+ * Lean list for admin table view – avoids fetching large `content` and
+ * unnecessary joins.
+ */
+export async function listArticlesForAdmin({ take = 50 }: { take?: number } = {}) {
+  return prisma.article.findMany({
+    orderBy: { publishedAt: "desc" },
+    take,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      published: true,
+    },
+  });
+}
+
 export async function listArticleSitemapData() {
   return prisma.article.findMany({
     where: { published: true },
