@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky",
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
