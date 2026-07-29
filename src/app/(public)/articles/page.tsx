@@ -3,12 +3,25 @@ import { listArticles } from "@/services/article.service";
 import { getTrendingArticles } from "@/services/engagement.service";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { ArticleList } from "@/features/article/components/article-list";
+import { siteConfig } from "@/constants/site";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "บทความทั้งหมด",
   description: "รวมบทความทั้งหมด",
+  alternates: { canonical: `${siteConfig.url}/articles` },
+  openGraph: {
+    title: "บทความทั้งหมด",
+    description: "รวมบทความทั้งหมด",
+    url: `${siteConfig.url}/articles`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "บทความทั้งหมด",
+    description: "รวมบทความทั้งหมด",
+  },
 };
 
 export default async function ArticlesPage() {

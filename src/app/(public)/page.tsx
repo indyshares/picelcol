@@ -1,9 +1,26 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { listArticles } from "@/services/article.service";
 import { CategoriesBar } from "@/components/categories-bar";
 import { HomeClient } from "./home-client";
+import { siteConfig } from "@/constants/site";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  alternates: { canonical: siteConfig.url },
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+  },
+};
 
 export default async function HomePage() {
   let latest: Awaited<ReturnType<typeof listArticles>> = [];

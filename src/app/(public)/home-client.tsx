@@ -95,7 +95,7 @@ export function HomeClient({ latest, publishedCount, categoryCount, viewCount, l
               {dict.home.featured}
             </h2>
           </div>
-          <FeaturedArticleCard article={featured} />
+          <FeaturedArticleCard article={featured} priority />
         </section>
       )}
 

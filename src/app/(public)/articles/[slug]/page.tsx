@@ -68,6 +68,8 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   const url = `${siteConfig.url}/articles/${article.slug}`;
 
+  const authorName = article.author?.profile?.displayName;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -77,6 +79,9 @@ export default async function ArticleDetailPage({ params }: Props) {
     datePublished: article.publishedAt?.toISOString(),
     dateModified: article.updatedAt.toISOString(),
     mainEntityOfPage: url,
+    author: authorName
+      ? { "@type": "Person", name: authorName }
+      : { "@type": "Organization", name: siteConfig.name },
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
@@ -125,7 +130,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {article.coverImage && (
             <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-              <Image src={article.coverImage} alt={article.title} fill className="object-cover" />
+              <Image src={article.coverImage} alt={article.title} fill priority className="object-cover" />
             </div>
           )}
 

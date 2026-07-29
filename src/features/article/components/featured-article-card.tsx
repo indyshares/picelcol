@@ -8,7 +8,7 @@ type FeaturedArticle = ArticleSummary & {
   author?: { profile: { displayName: string | null } | null } | null;
 };
 
-export function FeaturedArticleCard({ article }: { article: FeaturedArticle }) {
+export function FeaturedArticleCard({ article, priority }: { article: FeaturedArticle; priority?: boolean }) {
   const category = article.categories?.[0]?.category.name;
   const authorName = article.author?.profile?.displayName;
 
@@ -23,6 +23,7 @@ export function FeaturedArticleCard({ article }: { article: FeaturedArticle }) {
             src={article.coverImage}
             alt={article.title}
             fill
+            priority={priority}
             className="object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
