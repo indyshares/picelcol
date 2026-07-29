@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import enCommon from "@/locales/en/common.json";
 import enHome from "@/locales/en/home.json";
@@ -19,6 +19,7 @@ import thFooter from "@/locales/th/footer.json";
 import thMetadata from "@/locales/th/metadata.json";
 
 import type { Locale } from "@/lib/i18n";
+import { useLocaleStore } from "@/stores/locale-store";
 
 const dictionaries = {
   en: {
@@ -49,18 +50,30 @@ function getLangCookie(): Locale {
   return "th";
 }
 
+function setLangCookie(locale: Locale) {
+  document.cookie = `lang=${encodeURIComponent(locale)};path=/;max-age=31536000`;
+}
+
 export function useLocale() {
-  const [mounted, setMounted] = useState(false);
-  const [locale, setLocale] = useState<Locale>("th");
+  const locale = useLocaleStore((s) => s.locale);
+  const mounted = useLocaleStore((s) => s.mounted);
+  const setLocale = useLocaleStore((s) => s.setLocale);
+  const setMounted = useLocaleStore((s) => s.setMounted);
 
   useEffect(() => {
     setMounted(true);
     setLocale(getLangCookie());
-  }, []);
+  }, [setMounted, setLocale]);
+
+  const switchLocale = (next: Locale) => {
+    setLangCookie(next);
+    setLocale(next);
+  };
 
   return {
     mounted,
     locale,
+    setLocale: switchLocale,
     dict: dictionaries[locale],
   };
 }

@@ -1,34 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Languages } from "lucide-react";
-import type { Locale } from "@/lib/i18n";
-
-function getCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-  return match ? decodeURIComponent(match[2]) : null;
-}
-
-function setCookie(name: string, value: string) {
-  document.cookie = `${name}=${encodeURIComponent(value)};path=/;max-age=31536000`;
-}
+import { useLocale } from "@/lib/use-locale";
 
 export function LanguageSwitcher() {
-  const [mounted, setMounted] = useState(false);
-  const [locale, setLocale] = useState<Locale>("th");
-
-  useEffect(() => {
-    setMounted(true);
-    const saved = getCookie("lang");
-    if (saved === "en" || saved === "th") setLocale(saved);
-  }, []);
+  const { locale, setLocale, mounted } = useLocale();
 
   function toggle() {
-    const next: Locale = locale === "th" ? "en" : "th";
-    setCookie("lang", next);
+    const next = locale === "th" ? "en" : "th";
     setLocale(next);
-    window.location.reload();
   }
 
   return (

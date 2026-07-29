@@ -1,19 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { User, Bookmark, LayoutDashboard, LogOut, Loader2 } from "lucide-react";
 import { signOutAction } from "@/features/auth/actions";
-
-type UserData = {
-  id: string;
-  email: string;
-  role: "user" | "admin";
-};
+import { useAuthStore } from "@/stores/auth-store";
 
 export function AuthNav() {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+  const { user, loading, setUser } = useAuthStore();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -21,12 +17,9 @@ export function AuthNav() {
   useEffect(() => {
     fetch("/api/auth/me")
       .then((res) => res.json())
-      .then((data) => {
-        setUser(data.user);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+      .then((data) => setUser(data.user))
+      .catch(() => setUser(null));
+  }, [pathname, setUser]);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -100,6 +93,7 @@ export function AuthNav() {
                 onClick={() =>
                   startTransition(async () => {
                     await signOutAction();
+                    setUser(null);
                   })
                 }
                 className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-light)] transition hover:bg-[var(--bg)] disabled:opacity-50"
