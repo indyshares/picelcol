@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import dynamic from "next/dynamic";
 import type { ArticleFormState } from "@/features/article/actions";
+import { updateMediaAltAction } from "@/features/article/actions";
 import { slugify } from "@/utils/slugify";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ type ArticleFormProps = {
     content?: string;
     coverImage?: string;
     coverImageMediaId?: string;
+    coverAlt?: string;
     published?: boolean;
     categoryIds?: string[];
     tagNames?: string[];
@@ -61,6 +63,7 @@ export function ArticleForm({
   const [markdown, setMarkdown] = useState(defaultValues?.content ?? "");
   const [coverImage, setCoverImage] = useState(defaultValues?.coverImage ?? "");
   const [coverImageMediaId, setCoverImageMediaId] = useState(defaultValues?.coverImageMediaId ?? "");
+  const [coverAlt, setCoverAlt] = useState(defaultValues?.coverAlt ?? "");
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
 
   return (
@@ -149,15 +152,29 @@ export function ArticleForm({
             <input type="hidden" name="coverImage" value={coverImage} />
             <input type="hidden" name="coverImageMediaId" value={coverImageMediaId} />
             {coverImage && (
-              <div className="relative mt-1 h-40 w-full max-w-sm overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
-                <Image
-                  src={coverImage}
-                  alt="Cover preview"
-                  fill
-                  className="object-cover"
-                  unoptimized
+              <>
+                <div className="relative mt-1 h-40 w-full max-w-sm overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
+                  <Image
+                    src={coverImage}
+                    alt={coverAlt || "Cover preview"}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+                <input
+                  value={coverAlt}
+                  onChange={(e) => setCoverAlt(e.target.value)}
+                  onBlur={() => {
+                    if (coverImageMediaId) {
+                      updateMediaAltAction(coverImageMediaId, coverAlt);
+                    }
+                  }}
+                  placeholder="Alt Text สำหรับรูปภาพปก"
+                  maxLength={300}
+                  className="mt-2 w-full max-w-sm rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--primary)]"
                 />
-              </div>
+              </>
             )}
             {state.fieldErrors?.coverImage && (
               <p className="text-sm text-[var(--accent)]">{state.fieldErrors.coverImage[0]}</p>
@@ -168,6 +185,7 @@ export function ArticleForm({
                   if (result) {
                     setCoverImage(result.url);
                     setCoverImageMediaId(result.mediaId);
+                    setCoverAlt(result.alt ?? "");
                   }
                   setCoverPickerOpen(false);
                 }}

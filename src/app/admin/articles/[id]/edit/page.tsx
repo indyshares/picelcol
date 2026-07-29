@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import { ArticleForm } from "@/features/article/components/article-form";
 import { updateArticleAction } from "@/features/article/actions";
 import { getArticleById } from "@/services/article.service";
@@ -23,6 +24,15 @@ export default async function EditArticlePage({ params }: Props) {
     notFound();
   }
 
+  let coverAlt = "";
+  if (article.coverImageMediaId) {
+    const media = await prisma.media.findUnique({
+      where: { id: article.coverImageMediaId },
+      select: { alt: true },
+    });
+    coverAlt = media?.alt ?? "";
+  }
+
   const boundAction = updateArticleAction.bind(null, id);
 
   return (
@@ -42,6 +52,7 @@ export default async function EditArticlePage({ params }: Props) {
           content: article.content,
           coverImage: article.coverImage ?? undefined,
           coverImageMediaId: article.coverImageMediaId ?? undefined,
+          coverAlt,
           published: article.published,
           categoryIds: article.categories.map((c) => c.categoryId),
           tagNames: article.tags.map((t) => t.tag.name),
