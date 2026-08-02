@@ -70,7 +70,7 @@ const bookmarkArticleSelect = {
 
 export async function listBookmarkedArticles(userId: string) {
   const bookmarks = await prisma.bookmark.findMany({
-    where: { userId },
+    where: { userId, article: { is: { published: true } } },
     orderBy: { createdAt: "desc" },
     select: {
       article: {

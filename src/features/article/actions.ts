@@ -13,7 +13,7 @@ import {
   updateArticle,
 } from "@/services/article.service";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { ensureUser, isAdmin } from "@/services/user.service";
+import { ensureUser, getUserRole, isAdmin } from "@/services/user.service";
 import { createClient } from "@/lib/supabase/server";
 
 export type ArticleFormState = {
@@ -32,6 +32,11 @@ async function getCurrentUserId() {
   }
 
   const user = await ensureUser(authUser.id, authUser.email ?? "");
+  const role = await getUserRole(user.id);
+  if (role !== "admin" && role !== "writer") {
+    throw new Error("เฉพาะผู้ดูแลระบบและผู้เขียนเท่านั้นที่สร้างบทความได้");
+  }
+
   return user.id;
 }
 
@@ -90,8 +95,12 @@ export async function updateArticleAction(
   }
 
   const authUser = await getCurrentAuthUser();
-  if (!authUser || !(await isAdmin(authUser.id))) {
-    return { error: "เฉพาะผู้ดูแลระบบเท่านั้นที่แก้ไขบทความได้" };
+  if (!authUser) {
+    return { error: "ต้องเข้าสู่ระบบก่อน" };
+  }
+  const role = await getUserRole(authUser.id);
+  if (role !== "admin" && role !== "writer") {
+    return { error: "เฉพาะผู้ดูแลระบบและผู้เขียนเท่านั้นที่แก้ไขบทความได้" };
   }
 
   const parsed = articleSchema.safeParse(parseFormData(formData));

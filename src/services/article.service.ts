@@ -208,15 +208,19 @@ export const getArticleMetadata = cache(async (slug: string) => {
   });
 });
 
-export async function getArticleContent(slug: string) {
+export async function getArticleContent(
+  slug: string,
+  { includeUnpublished = false }: { includeUnpublished?: boolean } = {},
+) {
   return prisma.article.findUnique({
-    where: { slug, published: true },
+    where: includeUnpublished ? { slug } : { slug, published: true },
     select: {
       id: true,
       slug: true,
       title: true,
       excerpt: true,
       content: true,
+      published: true,
       coverImage: true,
       coverMedia: { select: { id: true, url: true, alt: true } },
       publishedAt: true,

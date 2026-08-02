@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
 import { getArticleContent, getArticleMetadata } from "@/services/article.service";
+import { getCurrentAuthUser } from "@/features/auth/get-current-user";
+import { getUserRole } from "@/services/user.service";
 import { ArticleContent } from "@/features/article/components/article-content";
 import { ArticleSidebar } from "@/features/article/components/article-sidebar";
 import { siteConfig } from "@/constants/site";
@@ -11,20 +12,6 @@ import { CommentSection } from "@/features/comment/components/comment-section";
 import { ShareSection } from "@/features/article/components/share-section";
 import { estimateReadingTime } from "@/utils/reading-time";
 import { formatICTDate } from "@/utils/date";
-
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  try {
-    const articles = await prisma.article.findMany({
-      where: { published: true },
-      select: { slug: true },
-    });
-    return articles.map((a) => ({ slug: a.slug }));
-  } catch {
-    return [];
-  }
-}
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -63,9 +50,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = await getArticleContent(slug);
 
-  if (!article) {
+  const authUser = await getCurrentAuthUser();
+  const role = authUser ? await getUserRole(authUser.id) : "user";
+  const canPreviewDraft = role === "admin" || role === "writer";
+
+  const article = await getArticleContent(slug, { includeUnpublished: canPreviewDraft });
+
+  if (!article || (!article.published && !canPreviewDraft)) {
     notFound();
   }
 
