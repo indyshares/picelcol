@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTrafficData, type TrafficRange } from "@/services/dashboard.service";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { isAdmin } from "@/services/user.service";
+import { isStaff } from "@/services/user.service";
 
 const VALID_RANGES = new Set<TrafficRange>(["24h", "7d", "30d", "year", "all"]);
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentAuthUser();
-  if (!user || !(await isAdmin(user.id))) {
+  if (!user || !(await isStaff(user.id))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

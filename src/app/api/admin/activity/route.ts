@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getActivityPage } from "@/services/dashboard.service";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { isAdmin } from "@/services/user.service";
+import { isStaff } from "@/services/user.service";
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentAuthUser();
-  if (!user || !(await isAdmin(user.id))) {
+  if (!user || !(await isStaff(user.id))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

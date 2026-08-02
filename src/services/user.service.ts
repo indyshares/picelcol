@@ -28,6 +28,15 @@ export async function isAdmin(userId: string) {
   return user?.role === "admin";
 }
 
+/** Admin or Writer – allowed into the admin area (but not user management). */
+export async function isStaff(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  return user?.role === "admin" || user?.role === "writer";
+}
+
 export async function getUserRole(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
