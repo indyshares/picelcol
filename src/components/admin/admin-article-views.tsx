@@ -27,13 +27,20 @@ type ViewsProps = {
 function StatusBadge({ published }: { published: boolean }) {
   return (
     <span
-      className={`clay-badge inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+      title={published ? "เผยแพร่แล้ว" : "แบบร่าง"}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
         published
-          ? "border border-emerald-200/60 bg-emerald-100 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-950/80 dark:text-emerald-300"
-          : "border border-amber-200/60 bg-amber-100 text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/80 dark:text-amber-300"
+          ? "bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+          : "bg-amber-100/80 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
       }`}
     >
-      {published ? "เผยแพร่แล้ว" : "แบบร่าง"}
+      <span
+        aria-hidden
+        className={`h-2 w-2 animate-pulse rounded-full ${
+          published ? "bg-emerald-500" : "bg-amber-500"
+        }`}
+      />
+      {published ? "Published" : "Draft"}
     </span>
   );
 }
