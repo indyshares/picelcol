@@ -95,11 +95,11 @@ export function AdminActivityBell() {
       {open && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="clay-card absolute right-0 top-full z-40 mt-3 w-[22rem] max-w-[calc(100vw-2rem)] rounded-3xl p-4 bg-white/90 backdrop-blur-md border border-white/80 dark:bg-slate-900/95 dark:border-slate-800 shadow-2xl">
+          <div className="clay-card absolute right-0 top-full z-40 mt-3 w-[22rem] max-w-[calc(100vw-2rem)] rounded-3xl p-4 bg-white/90 text-slate-800 backdrop-blur-md border border-white/80 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 dark:shadow-slate-950/50 dark:text-slate-100">
             <div className="mb-3 flex items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
               <div className="flex items-center gap-2">
                 <Bell className="h-4 w-4 text-[var(--accent)]" />
-                <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">Latest Activity</h2>
+                <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">Latest Activity</h2>
               </div>
               {data && (
                 <span className="text-xs text-[var(--text-muted)]">
@@ -135,7 +135,7 @@ export function AdminActivityBell() {
                       <Link
                         href={`/articles/${item.articleSlug}`}
                         title={item.content}
-                        className="clay-card clay-bounce block rounded-2xl p-3 border border-slate-100 bg-slate-50/90 transition-all motion-reduce:transition-none hover:bg-amber-50/80 dark:border-slate-700/50 dark:bg-slate-800/50 dark:hover:bg-slate-800"
+                        className="clay-card clay-bounce block rounded-2xl p-3 border border-slate-100 bg-slate-50/90 transition-all motion-reduce:transition-none hover:bg-amber-50/80 dark:border-slate-700/50 dark:bg-slate-800/60 dark:hover:bg-slate-800"
                       >
                         <div className="flex gap-3">
                           <div className="clay-card h-9 w-9 shrink-0 overflow-hidden rounded-full">
@@ -159,7 +159,7 @@ export function AdminActivityBell() {
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                               {item.authorName} <span aria-hidden>•</span> {timeAgo(item.createdAt)}
                             </p>
-                            <p className="my-0.5 line-clamp-2 text-sm font-semibold text-slate-800 dark:text-slate-100">
+                            <p className="my-0.5 line-clamp-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
                               {item.content}
                             </p>
                             <p className="flex items-center gap-1 truncate text-xs text-slate-400 dark:text-slate-500">
