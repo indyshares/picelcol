@@ -2,13 +2,28 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { FileText, Globe, LayoutDashboard, LogOut, Menu, Sparkles, Users, X } from "lucide-react";
+import {
+  FileText,
+  Globe,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Sparkles,
+  Users,
+  X,
+} from "lucide-react";
 import { signOutAction } from "@/features/auth/actions";
 
 type AdminSidebarProps = {
-  user: { email: string };
+  user: {
+    email: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+    role: string;
+  };
 };
 
 const NAV_ITEMS: { href: Route; label: string; icon: typeof LayoutDashboard }[] = [
@@ -25,6 +40,7 @@ function isActive(pathname: string, href: string) {
 export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   useEffect(() => {
     setOpen(false);
@@ -32,7 +48,10 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        setConfirmLogout(false);
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -79,13 +98,42 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
     </nav>
   );
 
+  const displayName = user.displayName || user.email.split("@")[0] || "ผู้ดูแลระบบ";
+  const roleLabel =
+    user.role === "admin" ? "Admin" : user.role === "writer" ? "Writer" : "User";
+
   const bottom = (
     <div className="mt-auto space-y-3 border-t border-[var(--border)] pt-4">
-      <div className="flex items-center gap-2 px-2">
-        <div className="clay-badge flex h-8 w-8 shrink-0 items-center justify-center bg-[var(--clay-bg-soft)] text-xs font-semibold text-[var(--text)]">
-          {user.email.charAt(0).toUpperCase()}
+      <div className="clay-card flex items-center gap-3 rounded-2xl p-3">
+        <div className="relative shrink-0">
+          <div className="clay-badge flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)]">
+            {user.avatarUrl ? (
+              <Image
+                src={user.avatarUrl}
+                alt={displayName}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <span className="text-sm font-bold text-[var(--accent-contrast)]">
+                {displayName.charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <span
+            className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 animate-pulse rounded-full border-2 border-[var(--surface)] bg-emerald-500"
+            title="ออนไลน์"
+          />
         </div>
-        <span className="truncate text-sm text-[var(--text-light)]">{user.email}</span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-bold text-[var(--text)]" title={user.email}>
+            {displayName}
+          </p>
+          <span className="clay-badge mt-1 inline-flex items-center rounded-full bg-[var(--primary)]/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--text)]">
+            {roleLabel}
+          </span>
+        </div>
       </div>
       <div className="flex gap-2">
         <Link
@@ -95,15 +143,14 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         >
           <Globe className="h-4 w-4" />
         </Link>
-        <form action={signOutAction} className="flex-1">
-          <button
-            type="submit"
-            className="clay-button clay-bounce flex w-full items-center justify-center gap-2 bg-[var(--clay-bg-soft)] px-3 py-2 text-sm font-medium text-[var(--text)] motion-reduce:transition-none hover:bg-[var(--clay-bg-soft)]"
-          >
-            <LogOut className="h-4 w-4" />
-            ออกจากระบบ
-          </button>
-        </form>
+        <button
+          type="button"
+          onClick={() => setConfirmLogout(true)}
+          className="clay-button clay-bounce inline-flex flex-1 items-center justify-center gap-2 border border-rose-200/60 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-600 motion-reduce:transition-none hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/60"
+        >
+          <LogOut className="h-4 w-4" />
+          ออกจากระบบ
+        </button>
       </div>
     </div>
   );
@@ -128,7 +175,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
           </button>
           <span className="truncate text-base font-semibold text-[var(--text)]">eiei Admin</span>
         </div>
-        <span className="truncate text-sm text-[var(--text-muted)]">{user.email}</span>
+        <span className="truncate text-sm text-[var(--text-muted)]">{displayName}</span>
       </header>
 
       {open && (
@@ -148,6 +195,61 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             {brand}
             {nav}
             {bottom}
+          </div>
+        </div>
+      )}
+
+      {confirmLogout && (
+        <div
+          className="clay-fade-in fixed inset-0 z-[60] flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm"
+          onClick={() => setConfirmLogout(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-confirm-title"
+            className="clay-pop-in clay-card w-full max-w-sm space-y-4 rounded-3xl p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rose-100 p-3 text-rose-500 dark:bg-rose-500/15 dark:text-rose-400">
+                <LogOut className="h-6 w-6" />
+              </div>
+              <div className="min-w-0 flex-1 pt-1">
+                <h2 id="logout-confirm-title" className="text-lg font-semibold text-[var(--text)]">
+                  ออกจากระบบ?
+                </h2>
+                <p className="mt-1 text-sm text-[var(--text-light)]">
+                  คุณแน่ใจหรือว่าต้องการออกจากระบบ? คุณจะต้องเข้าสู่ระบบใหม่เพื่อกลับมาใช้งาน
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setConfirmLogout(false)}
+                className="clay-bounce flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--clay-bg-soft)] text-[var(--text-muted)] motion-reduce:transition-none hover:text-[var(--text)]"
+                aria-label="ปิด"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex flex-wrap justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmLogout(false)}
+                className="clay-button clay-bounce bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 motion-reduce:transition-none hover:bg-gray-200"
+              >
+                ยกเลิก
+              </button>
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  className="clay-button clay-bounce inline-flex items-center gap-2 border border-rose-200/60 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-600 motion-reduce:transition-none hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/60"
+                >
+                  <LogOut className="h-4 w-4" />
+                  ยืนยันออกจากระบบ
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       )}
