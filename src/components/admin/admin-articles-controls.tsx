@@ -2,7 +2,7 @@
 
 import { ChevronDown, FilterX, Search, X } from "lucide-react";
 
-export type SortOption = "updated_desc" | "created_desc" | "title_asc";
+export type SortOption = "updated_desc" | "created_desc" | "title_asc" | "views_desc";
 export type StatusFilter = "all" | "published" | "draft";
 
 type CategoryOption = { id: string; name: string };
@@ -112,6 +112,7 @@ export function AdminArticlesControls({
             <option value="updated_desc">แก้ไขล่าสุด (ใหม่ - เก่า)</option>
             <option value="created_desc">สร้างล่าสุด (ใหม่ - เก่า)</option>
             <option value="title_asc">ชื่อบทความ (A - Z)</option>
+            <option value="views_desc">ยอดเข้าชม (มาก - น้อย)</option>
           </select>
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
         </div>

@@ -23,6 +23,24 @@ export type TrafficData = {
 
 export type TrafficParams = { range?: TrafficRange; from?: string; to?: string };
 
+export type ActivityItem = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  authorName: string;
+  authorAvatar: string | null;
+  articleTitle: string;
+  articleSlug: string;
+};
+
+export type ActivityPage = {
+  items: ActivityItem[];
+  page: number;
+  totalPages: number;
+  total: number;
+  unread: number;
+};
+
 export type DashboardData = {
   stats: {
     articles: { total: number; published: number; drafts: number };
@@ -44,14 +62,6 @@ export type DashboardData = {
     title: string;
     excerpt: string | null;
     updatedAt: Date;
-  }[];
-  activity: {
-    id: string;
-    content: string;
-    createdAt: Date;
-    authorName: string;
-    articleTitle: string;
-    articleSlug: string;
   }[];
 };
 
@@ -207,6 +217,56 @@ export async function getTrafficData(params?: TrafficParams): Promise<TrafficDat
   return { granularity, points, stats: { total, average, growth } };
 }
 
+export async function getActivityPage({
+  page = 1,
+  pageSize = 6,
+  since,
+}: { page?: number; pageSize?: number; since?: number } = {}): Promise<ActivityPage> {
+  const safePage = Math.max(1, page);
+  const [total, comments, unread] = await Promise.all([
+    prisma.comment.count(),
+    prisma.comment.findMany({
+      orderBy: { createdAt: "desc" },
+      skip: (safePage - 1) * pageSize,
+      take: pageSize,
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        user: {
+          select: {
+            email: true,
+            avatarUrl: true,
+            profile: { select: { displayName: true, avatarUrl: true } },
+          },
+        },
+        article: { select: { title: true, slug: true } },
+      },
+    }),
+    since
+      ? prisma.comment.count({ where: { createdAt: { gt: new Date(since) } } })
+      : Promise.resolve(0),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return {
+    items: comments.map((c) => ({
+      id: c.id,
+      content: c.content,
+      createdAt: c.createdAt,
+      authorName: c.user.profile?.displayName ?? c.user.email.split("@")[0] ?? "ผู้ใช้",
+      authorAvatar: c.user.profile?.avatarUrl ?? c.user.avatarUrl,
+      articleTitle: c.article.title,
+      articleSlug: c.article.slug,
+    })),
+    page: safePage,
+    totalPages,
+    total,
+    unread,
+  };
+}
+
 export async function getDashboardData(): Promise<DashboardData> {
   const [
     traffic7d,
@@ -218,7 +278,6 @@ export async function getDashboardData(): Promise<DashboardData> {
     admins,
     topRead,
     recentDrafts,
-    recentComments,
   ] = await Promise.all([
     getTrafficData({ range: "7d" }),
     prisma.article.count({ where: { published: true } }),
@@ -252,22 +311,6 @@ export async function getDashboardData(): Promise<DashboardData> {
         updatedAt: true,
       },
     }),
-    prisma.comment.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        user: {
-          select: {
-            email: true,
-            profile: { select: { displayName: true } },
-          },
-        },
-        article: { select: { title: true, slug: true } },
-      },
-    }),
   ]);
 
   return {
@@ -291,14 +334,6 @@ export async function getDashboardData(): Promise<DashboardData> {
       title: a.title,
       excerpt: a.excerpt,
       updatedAt: a.updatedAt,
-    })),
-    activity: recentComments.map((c) => ({
-      id: c.id,
-      content: c.content,
-      createdAt: c.createdAt,
-      authorName: c.user.profile?.displayName ?? c.user.email.split("@")[0] ?? "ผู้ใช้",
-      articleTitle: c.article.title,
-      articleSlug: c.article.slug,
     })),
   };
 }

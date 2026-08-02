@@ -25,9 +25,13 @@ type CategoryOption = { id: string; name: string };
 export function AdminArticlesList({
   articles,
   categories,
+  initialStatus,
+  initialSort,
 }: {
   articles: AdminArticle[];
   categories: CategoryOption[];
+  initialStatus?: StatusFilter;
+  initialSort?: SortOption;
 }) {
   const router = useRouter();
   const [selected, setSelected] = useState<AdminArticle | null>(null);
@@ -36,9 +40,9 @@ export function AdminArticlesList({
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
+  const [status, setStatus] = useState<StatusFilter>(initialStatus ?? "all");
   const [categoryId, setCategoryId] = useState("");
-  const [sort, setSort] = useState<SortOption>("updated_desc");
+  const [sort, setSort] = useState<SortOption>(initialSort ?? "updated_desc");
 
   useEffect(() => {
     const timer = setTimeout(() => setSearch(searchInput), 300);
@@ -77,6 +81,7 @@ export function AdminArticlesList({
     return [...list].sort((a, b) => {
       if (sort === "updated_desc") return b.updatedAt.getTime() - a.updatedAt.getTime();
       if (sort === "created_desc") return b.createdAt.getTime() - a.createdAt.getTime();
+      if (sort === "views_desc") return b.views - a.views;
       return a.title.localeCompare(b.title, "th");
     });
   }, [articles, search, status, categoryId, sort]);
@@ -128,13 +133,13 @@ export function AdminArticlesList({
           )}
         </div>
       ) : viewMode === "grid" ? (
-        <ArticleGrid articles={filtered} onDelete={setSelected} />
+        <ArticleGrid articles={filtered} onDelete={setSelected} showRanks={sort === "views_desc"} />
       ) : viewMode === "list" ? (
-        <ArticleSlimList articles={filtered} onDelete={setSelected} />
+        <ArticleSlimList articles={filtered} onDelete={setSelected} showRanks={sort === "views_desc"} />
       ) : viewMode === "table" ? (
-        <ArticleTable articles={filtered} onDelete={setSelected} />
+        <ArticleTable articles={filtered} onDelete={setSelected} showRanks={sort === "views_desc"} />
       ) : (
-        <ArticleFeed articles={filtered} onDelete={setSelected} />
+        <ArticleFeed articles={filtered} onDelete={setSelected} showRanks={sort === "views_desc"} />
       )}
 
       <DeleteArticleModal

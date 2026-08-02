@@ -6,7 +6,6 @@ import {
   FileText,
   Folder,
   ImageIcon,
-  MessageSquare,
   Pencil,
   PenSquare,
   TrendingDown,
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
 import { getDashboardData } from "@/services/dashboard.service";
-import { formatICTDate, formatICTDateTime } from "@/utils/date";
+import { formatICTDate } from "@/utils/date";
 import { TrafficChart } from "@/components/admin/dashboard/traffic-chart";
 
 export default async function AdminDashboardPage() {
@@ -134,7 +133,7 @@ export default async function AdminDashboardPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-[var(--text)]">บทความยอดนิยม</h2>
             <Link
-              href="/admin/articles"
+              href="/admin/articles?sort=views_desc"
               className="clay-bounce text-sm font-medium text-[var(--link)] motion-reduce:transition-none hover:text-[var(--link-hover)]"
             >
               ดูทั้งหมด
@@ -191,7 +190,7 @@ export default async function AdminDashboardPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-[var(--text)]">แบบร่างล่าสุด</h2>
             <Link
-              href="/admin/articles"
+              href="/admin/articles?status=draft&sort=updated_desc"
               className="clay-bounce text-sm font-medium text-[var(--link)] motion-reduce:transition-none hover:text-[var(--link-hover)]"
             >
               ดูทั้งหมด
@@ -221,37 +220,6 @@ export default async function AdminDashboardPage() {
               ))}
             </ul>
           )}
-
-          <div className="mt-5 border-t border-[var(--border)] pt-4">
-            <h3 className="mb-3 text-sm font-semibold text-[var(--text)]">กิจกรรมล่าสุด</h3>
-            {data.activity.length === 0 ? (
-              <p className="text-sm text-[var(--text-light)]">ยังไม่มีกิจกรรมล่าสุด</p>
-            ) : (
-              <ul className="space-y-3">
-                {data.activity.map((ev) => (
-                  <li key={ev.id} className="flex gap-3">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--secondary)]/30 text-[var(--text-light)]">
-                      <MessageSquare className="h-3 w-3" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-sm leading-snug text-[var(--text)]">
-                        <span className="font-medium">{ev.authorName}</span> แสดงความคิดเห็นใน{" "}
-                        <Link
-                          href={`/articles/${ev.articleSlug}`}
-                          className="text-[var(--link)] hover:underline"
-                        >
-                          {ev.articleTitle}
-                        </Link>
-                      </p>
-                      <time className="text-xs text-[var(--text-muted)]">
-                        {formatICTDateTime(ev.createdAt)}
-                      </time>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
         </section>
       </div>
     </main>

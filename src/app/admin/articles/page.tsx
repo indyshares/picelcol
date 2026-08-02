@@ -3,11 +3,27 @@ import { listArticlesForAdmin } from "@/services/article.service";
 import { listCategories } from "@/services/taxonomy.service";
 import { AdminArticlesList } from "@/components/admin/admin-articles-list";
 
-export default async function AdminArticlesPage() {
-  const [articles, categories] = await Promise.all([
+const STATUS_FILTERS = ["all", "published", "draft"] as const;
+const SORT_OPTIONS = ["updated_desc", "created_desc", "title_asc", "views_desc"] as const;
+
+export default async function AdminArticlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; sort?: string }>;
+}) {
+  const sp = await searchParams;
+  const initialStatus = STATUS_FILTERS.find((f) => f === sp.status);
+  const initialSort = SORT_OPTIONS.find((s) => s === sp.sort);
+
+  const [rawArticles, categories] = await Promise.all([
     listArticlesForAdmin({ take: 50 }),
     listCategories(),
   ]);
+
+  const articles = rawArticles.map(({ _count, ...article }) => ({
+    ...article,
+    views: _count.views,
+  }));
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
@@ -27,6 +43,8 @@ export default async function AdminArticlesPage() {
       <AdminArticlesList
         articles={articles}
         categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+        initialStatus={initialStatus}
+        initialSort={initialSort}
       />
     </main>
   );

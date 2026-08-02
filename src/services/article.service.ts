@@ -266,6 +266,7 @@ export async function listArticlesForAdmin({ take = 50 }: { take?: number } = {}
       categories: {
         select: { category: { select: { id: true, name: true, slug: true } } },
       },
+      _count: { select: { views: true } },
     },
   });
 }

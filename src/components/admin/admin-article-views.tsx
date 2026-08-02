@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, ImageIcon, Pencil, Trash2 } from "lucide-react";
+import { Crown, Eye, ImageIcon, Medal, Pencil, Trash2 } from "lucide-react";
 import { formatICTDate } from "@/utils/date";
 
 export type AdminArticle = {
@@ -17,12 +17,34 @@ export type AdminArticle = {
   excerpt: string | null;
   content: string;
   categories: { category: { id: string; name: string; slug: string } }[];
+  views: number;
 };
 
 type ViewsProps = {
   articles: AdminArticle[];
   onDelete: (article: AdminArticle) => void;
+  showRanks?: boolean;
 };
+
+function RankBadge({ rank }: { rank: number }) {
+  const styles: Record<number, string> = {
+    1: "bg-amber-200 text-amber-900 ring-amber-300/80 dark:bg-amber-400/25 dark:text-amber-300 dark:ring-amber-300/30",
+    2: "bg-slate-200 text-slate-700 ring-slate-300/80 dark:bg-slate-400/25 dark:text-slate-300 dark:ring-slate-300/30",
+    3: "bg-orange-200 text-orange-800 ring-orange-300/80 dark:bg-orange-400/25 dark:text-orange-300 dark:ring-orange-300/30",
+  };
+
+  const Icon = rank === 1 ? Crown : Medal;
+
+  return (
+    <span
+      title={`อันดับ ${rank} ยอดเข้าชมสูงสุด`}
+      className={`clay-badge inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold ring-2 ring-inset ${styles[rank] ?? ""}`}
+    >
+      <Icon className="h-3 w-3" />
+      #{rank}
+    </span>
+  );
+}
 
 function StatusBadge({ published }: { published: boolean }) {
   return (
@@ -115,10 +137,10 @@ function RowActions({
   );
 }
 
-export function ArticleGrid({ articles, onDelete }: ViewsProps) {
+export function ArticleGrid({ articles, onDelete, showRanks }: ViewsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {articles.map((article) => (
+      {articles.map((article, i) => (
         <div
           key={article.id}
           className="clay-card clay-bounce flex flex-col overflow-hidden rounded-3xl p-3 motion-reduce:transition-none"
@@ -131,7 +153,10 @@ export function ArticleGrid({ articles, onDelete }: ViewsProps) {
               <h3 className="line-clamp-2 text-base font-semibold leading-snug text-[var(--text)]">
                 {article.title}
               </h3>
-              <StatusBadge published={article.published} />
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <StatusBadge published={article.published} />
+                {showRanks && i < 3 && <RankBadge rank={i + 1} />}
+              </div>
             </div>
             {article.excerpt && (
               <p className="line-clamp-2 text-sm text-[var(--text-light)]">{article.excerpt}</p>
@@ -147,10 +172,10 @@ export function ArticleGrid({ articles, onDelete }: ViewsProps) {
   );
 }
 
-export function ArticleSlimList({ articles, onDelete }: ViewsProps) {
+export function ArticleSlimList({ articles, onDelete, showRanks }: ViewsProps) {
   return (
     <div>
-      {articles.map((article) => (
+      {articles.map((article, i) => (
         <div
           key={article.id}
           className="clay-card mb-2 flex items-center gap-3 rounded-2xl p-3"
@@ -163,6 +188,7 @@ export function ArticleSlimList({ articles, onDelete }: ViewsProps) {
             <p className="truncate text-xs text-[var(--text-muted)]">/{article.slug}</p>
           </div>
           <StatusBadge published={article.published} />
+          {showRanks && i < 3 && <RankBadge rank={i + 1} />}
           <RowActions article={article} onDelete={onDelete} compact />
         </div>
       ))}
@@ -170,7 +196,7 @@ export function ArticleSlimList({ articles, onDelete }: ViewsProps) {
   );
 }
 
-export function ArticleTable({ articles, onDelete }: ViewsProps) {
+export function ArticleTable({ articles, onDelete, showRanks }: ViewsProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-separate border-spacing-y-2 text-left">
@@ -184,7 +210,7 @@ export function ArticleTable({ articles, onDelete }: ViewsProps) {
           </tr>
         </thead>
         <tbody>
-          {articles.map((article) => (
+          {articles.map((article, i) => (
             <tr key={article.id} className="clay-card rounded-2xl">
               <td className="rounded-l-2xl px-4 py-3">
                 <div className="clay-well w-max rounded-xl p-1">
@@ -192,10 +218,15 @@ export function ArticleTable({ articles, onDelete }: ViewsProps) {
                 </div>
               </td>
               <td className="px-4 py-3">
-                <p className="max-w-[16rem] truncate font-medium text-[var(--text)]">
-                  {article.title}
-                </p>
-                <p className="truncate text-xs text-[var(--text-muted)]">/{article.slug}</p>
+                <div className="flex items-center gap-2">
+                  {showRanks && i < 3 && <RankBadge rank={i + 1} />}
+                  <div className="min-w-0">
+                    <p className="max-w-[14rem] truncate font-medium text-[var(--text)]">
+                      {article.title}
+                    </p>
+                    <p className="truncate text-xs text-[var(--text-muted)]">/{article.slug}</p>
+                  </div>
+                </div>
               </td>
               <td className="px-4 py-3">
                 <StatusBadge published={article.published} />
@@ -214,10 +245,10 @@ export function ArticleTable({ articles, onDelete }: ViewsProps) {
   );
 }
 
-export function ArticleFeed({ articles, onDelete }: ViewsProps) {
+export function ArticleFeed({ articles, onDelete, showRanks }: ViewsProps) {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      {articles.map((article) => (
+      {articles.map((article, i) => (
         <article
           key={article.id}
           className="clay-card clay-bounce flex flex-col overflow-hidden rounded-3xl motion-reduce:transition-none"
@@ -226,7 +257,10 @@ export function ArticleFeed({ articles, onDelete }: ViewsProps) {
           <div className="flex flex-1 flex-col gap-3 p-6">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-[var(--text)]">{article.title}</h3>
-              <StatusBadge published={article.published} />
+              <div className="flex shrink-0 items-center gap-2">
+                {showRanks && i < 3 && <RankBadge rank={i + 1} />}
+                <StatusBadge published={article.published} />
+              </div>
             </div>
             {article.excerpt && (
               <p className="line-clamp-3 text-sm text-[var(--text-light)]">{article.excerpt}</p>
