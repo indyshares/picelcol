@@ -3,11 +3,24 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Loader2, MessageSquare } from "lucide-react";
 import type { ActivityPage } from "@/services/dashboard.service";
-import { formatICTDateTime } from "@/utils/date";
 
 const STORAGE_KEY = "eiei-admin-activity-seen";
+
+function timeAgo(date: Date | string) {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const diff = Math.max(0, Date.now() - d.getTime());
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (seconds < 60) return "just now";
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
 
 export function AdminActivityBell() {
   const [open, setOpen] = useState(false);
@@ -116,38 +129,46 @@ export function AdminActivityBell() {
                   ยังไม่มีกิจกรรมล่าสุด
                 </p>
               ) : (
-                <ul className="space-y-2">
+                <ul>
                   {(data?.items ?? []).map((item) => (
-                    <li key={item.id} className="flex gap-3 rounded-2xl p-2 hover:bg-[var(--clay-bg-soft)]">
-                      {item.authorAvatar ? (
-                        <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full">
-                          <Image
-                            src={item.authorAvatar}
-                            alt={item.authorName}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
+                    <li key={item.id} className="mb-2 last:mb-0">
+                      <Link
+                        href={`/articles/${item.articleSlug}`}
+                        title={item.content}
+                        className="clay-card clay-bounce block rounded-2xl p-3 transition-all motion-reduce:transition-none hover:bg-gray-50/50 dark:hover:bg-white/5"
+                      >
+                        <div className="flex gap-3">
+                          <div className="clay-card h-9 w-9 shrink-0 overflow-hidden rounded-full">
+                            {item.authorAvatar ? (
+                              <div className="relative h-full w-full">
+                                <Image
+                                  src={item.authorAvatar}
+                                  alt={item.authorName}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized
+                                />
+                              </div>
+                            ) : (
+                              <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] text-sm font-bold text-[var(--accent-contrast)]">
+                                {item.authorName.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                              {item.authorName} <span aria-hidden>•</span> {timeAgo(item.createdAt)}
+                            </p>
+                            <p className="my-0.5 line-clamp-2 text-sm font-semibold text-gray-800 dark:text-gray-100">
+                              {item.content}
+                            </p>
+                            <p className="flex items-center gap-1 truncate text-xs text-gray-400 dark:text-gray-500">
+                              <MessageSquare className="h-3 w-3 shrink-0" />
+                              In the article: {item.articleTitle}
+                            </p>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] text-sm font-bold text-[var(--accent-contrast)]">
-                          {item.authorName.charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm leading-snug text-[var(--text)]">
-                          <span className="font-medium">{item.authorName}</span> แสดงความคิดเห็นใน{" "}
-                          <Link
-                            href={`/articles/${item.articleSlug}`}
-                            className="text-[var(--link)] hover:underline"
-                          >
-                            {item.articleTitle}
-                          </Link>
-                        </p>
-                        <time className="mt-0.5 block text-xs text-[var(--text-muted)]">
-                          {formatICTDateTime(item.createdAt)}
-                        </time>
-                      </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>
