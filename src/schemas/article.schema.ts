@@ -1,13 +1,17 @@
 import { z } from "zod";
 
 export const articleSchema = z.object({
-  title: z.string().min(1, "กรุณากรอกชื่อบทความ").max(200),
+  title: z.string().min(1, "กรุณากรอกชื่อบทความ").max(120, "Text exceeds the limit"),
   slug: z
     .string()
     .min(1)
+    .max(80, "Text exceeds the limit")
     .regex(/^[a-z0-9-]+$/, "slug ต้องเป็นตัวพิมพ์เล็ก ตัวเลข และ - เท่านั้น"),
-  excerpt: z.string().max(300).optional(),
-  content: z.string().min(1, "กรุณากรอกเนื้อหาบทความ").max(100000, "เนื้อหาบทความยาวเกิน 100,000 ตัวอักษร"),
+  excerpt: z.string().max(250, "Text exceeds the limit").optional(),
+  content: z
+    .string()
+    .min(1, "กรุณากรอกเนื้อหาบทความ")
+    .max(50000, "Text exceeds the limit"),
   coverImage: z.string().url().optional(),
   coverImageMediaId: z.string().optional(),
   published: z.boolean().default(false),

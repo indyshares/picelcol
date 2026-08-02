@@ -25,6 +25,40 @@ type TagOption = { id: string; name: string };
 type EntityOption = { id: string; name: string; type: string };
 type UserOption = { id: string; email: string; displayName: string | null; role: string };
 
+const LIMITS = {
+  title: 120,
+  slug: 80,
+  excerpt: 250,
+  content: 50000,
+} as const;
+
+function countChars(value: string) {
+  return Array.from(value).length;
+}
+
+function clampText(value: string, max: number) {
+  if (countChars(value) <= max) return value;
+  return Array.from(value).slice(0, max).join("");
+}
+
+function CharacterCounter({ value, max }: { value: string; max: number }) {
+  const len = countChars(value);
+  const ratio = max > 0 ? len / max : 1;
+  const tone =
+    ratio >= 1
+      ? "text-rose-500 font-bold"
+      : ratio >= 0.9
+        ? "text-amber-500 font-medium"
+        : "text-slate-400 dark:text-slate-500";
+  return (
+    <span
+      className={`pointer-events-none absolute bottom-2 right-3 text-xs transition-colors ${tone}`}
+    >
+      {len.toLocaleString()}/{max.toLocaleString()}
+    </span>
+  );
+}
+
 type ArticleFormProps = {
   action: (state: ArticleFormState, formData: FormData) => Promise<ArticleFormState>;
   categories: CategoryOption[];
@@ -64,6 +98,7 @@ export function ArticleForm({
   const [slug, setSlug] = useState(defaultValues?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(defaultValues?.slug));
   const [markdown, setMarkdown] = useState(defaultValues?.content ?? "");
+  const [excerpt, setExcerpt] = useState(defaultValues?.excerpt ?? "");
   const [coverImage, setCoverImage] = useState(defaultValues?.coverImage ?? "");
   const [coverImageMediaId, setCoverImageMediaId] = useState(defaultValues?.coverImageMediaId ?? "");
   const [coverAlt, setCoverAlt] = useState(defaultValues?.coverAlt ?? "");
@@ -106,17 +141,22 @@ export function ArticleForm({
               <label htmlFor="title" className="text-sm font-medium text-[var(--text)]">
                 ชื่อบทความ <SectionGuide text="Used for the main title and URL slug of the article." />
               </label>
-              <input
-                id="title"
-                name="title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  if (!slugTouched) setSlug(slugify(e.target.value));
-                }}
-                className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
-                required
-              />
+              <div className="relative">
+                <input
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => {
+                    const v = clampText(e.target.value, LIMITS.title);
+                    setTitle(v);
+                    if (!slugTouched) setSlug(clampText(slugify(v), LIMITS.slug));
+                  }}
+                  maxLength={LIMITS.title}
+                  className="w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 pr-16 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+                  required
+                />
+                <CharacterCounter value={title} max={LIMITS.title} />
+              </div>
               {state.fieldErrors?.title && (
                 <p className="text-sm text-[var(--accent)]">{state.fieldErrors.title[0]}</p>
               )}
@@ -126,19 +166,23 @@ export function ArticleForm({
               <label htmlFor="slug" className="text-sm font-medium text-[var(--text)]">
                 Slug <SectionGuide text="Used for the main title and URL slug of the article." />
               </label>
-              <div className="flex items-center rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text-muted)]">
-                <span className="whitespace-nowrap shrink-0">{siteConfig.url}/article/</span>
-                <input
-                  id="slug"
-                  name="slug"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlugTouched(true);
-                    setSlug(slugify(e.target.value));
-                  }}
-                  className="bg-transparent text-[var(--text)] flex-1 py-2 pl-1 outline-none"
-                  required
-                />
+              <div className="relative">
+                <div className="flex items-center rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 text-sm text-[var(--text-muted)]">
+                  <span className="whitespace-nowrap shrink-0">{siteConfig.url}/article/</span>
+                  <input
+                    id="slug"
+                    name="slug"
+                    value={slug}
+                    onChange={(e) => {
+                      setSlugTouched(true);
+                      setSlug(clampText(slugify(e.target.value), LIMITS.slug));
+                    }}
+                    maxLength={LIMITS.slug}
+                    className="bg-transparent flex-1 py-2 pl-1 pr-16 text-[var(--text)] outline-none"
+                    required
+                  />
+                </div>
+                <CharacterCounter value={slug} max={LIMITS.slug} />
               </div>
               {state.fieldErrors?.slug && (
                 <p className="text-sm text-[var(--accent)]">{state.fieldErrors.slug[0]}</p>
@@ -149,20 +193,31 @@ export function ArticleForm({
               <label htmlFor="excerpt" className="text-sm font-medium text-[var(--text)]">
                 คำโปรย (excerpt)
               </label>
-              <textarea
-                id="excerpt"
-                name="excerpt"
-                defaultValue={defaultValues?.excerpt}
-                rows={2}
-                className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none focus:border-[var(--primary)]"
-              />
+              <div className="relative">
+                <textarea
+                  id="excerpt"
+                  name="excerpt"
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(clampText(e.target.value, LIMITS.excerpt))}
+                  rows={2}
+                  maxLength={LIMITS.excerpt}
+                  className="w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 pr-16 text-[var(--text)] outline-none focus:border-[var(--primary)]"
+                />
+                <CharacterCounter value={excerpt} max={LIMITS.excerpt} />
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">
               <span className="text-sm font-medium text-[var(--text)]">
                 เนื้อหา <SectionGuide text="Rich Text Editor for typing content. Insert images, code, tables here." />
               </span>
-              <ArticleEditor markdown={markdown} onChange={setMarkdown} />
+              <div className="relative">
+                <ArticleEditor
+                  markdown={markdown}
+                  onChange={(v) => setMarkdown(clampText(v, LIMITS.content))}
+                />
+                <CharacterCounter value={markdown} max={LIMITS.content} />
+              </div>
               <input type="hidden" name="content" value={markdown} />
               {state.fieldErrors?.content && (
                 <p className="text-sm text-[var(--accent)]">{state.fieldErrors.content[0]}</p>
