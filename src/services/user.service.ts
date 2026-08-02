@@ -43,6 +43,34 @@ export async function listUsers() {
   });
 }
 
+export type AdminUser = {
+  id: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  role: "admin" | "writer" | "user";
+};
+
+/** Safe listing for the admin users page. Never exposes email or internal ids for display. */
+export async function listAdminUsers(): Promise<AdminUser[]> {
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      role: true,
+      displayName: true,
+      avatarUrl: true,
+      profile: { select: { displayName: true, avatarUrl: true } },
+    },
+  });
+
+  return users.map((u) => ({
+    id: u.id,
+    displayName: u.profile?.displayName ?? u.displayName,
+    avatarUrl: u.profile?.avatarUrl ?? u.avatarUrl,
+    role: u.role,
+  }));
+}
+
 export async function listAuthors() {
   return prisma.user.findMany({
     where: { role: "writer" },
