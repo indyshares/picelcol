@@ -3,7 +3,7 @@ import { create } from "zustand";
 export type AuthUser = {
   id: string;
   email: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "writer";
 };
 
 type AuthState = {

@@ -16,6 +16,7 @@ import { getCurrentAuthUser } from "@/features/auth/get-current-user";
 import { getDashboardData } from "@/services/dashboard.service";
 import { formatICTDate } from "@/utils/date";
 import { TrafficChart } from "@/components/admin/dashboard/traffic-chart";
+import { PermissionToast } from "@/components/admin/permission-toast";
 
 export default async function AdminDashboardPage() {
   const [user, data] = await Promise.all([getCurrentAuthUser(), getDashboardData()]);
@@ -26,6 +27,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <main className="mx-auto max-w-6xl py-6">
+      <PermissionToast />
       {/* Hero */}
       <section className="clay-card mb-6 rounded-3xl p-6">
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">

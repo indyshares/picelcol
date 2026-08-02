@@ -10,6 +10,39 @@ const COOKIE_OPTIONS: Partial<CookieOptions> = {
 
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
+const roleCache = new Map<string, { role: string | null; fetchedAt: number }>();
+const ROLE_CACHE_TTL_MS = 30_000;
+
+/** Reads a user's app role from the `users` table via PostgREST (service role bypasses RLS). */
+async function fetchUserRole(userId: string): Promise<string | null> {
+  const cached = roleCache.get(userId);
+  if (cached && Date.now() - cached.fetchedAt < ROLE_CACHE_TTL_MS) {
+    return cached.role;
+  }
+
+  try {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!base || !serviceKey) return null;
+
+    const res = await fetch(`${base}/rest/v1/users?id=eq.${userId}&select=role`, {
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+
+    const rows = (await res.json()) as { role?: string }[];
+    const role = rows?.[0]?.role ?? null;
+    roleCache.set(userId, { role, fetchedAt: Date.now() });
+    return role;
+  } catch {
+    return null;
+  }
+}
+
 function getRateLimiter(limit: number, windowMs: number) {
   return (key: string): { allowed: boolean } => {
     const now = Date.now();
@@ -136,6 +169,18 @@ export async function middleware(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  const role = await fetchUserRole(data.user.id);
+
+  if (pathname.startsWith("/admin/users")) {
+    if (role !== "admin") {
+      const deniedUrl = new URL("/admin", request.url);
+      deniedUrl.searchParams.set("denied", "1");
+      return NextResponse.redirect(deniedUrl);
+    }
+  } else if (role !== "admin" && role !== "writer") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentAuthUser } from "@/features/auth/get-current-user";
-import { getUserWithProfile, isAdmin } from "@/services/user.service";
+import { getUserRole, getUserWithProfile } from "@/services/user.service";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminBreadcrumbs } from "@/components/admin/admin-breadcrumbs";
 import { AdminActivityBell } from "@/components/admin/admin-activity-bell";
@@ -12,7 +12,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login?next=/admin/articles");
   }
 
-  if (!(await isAdmin(user.id))) {
+  const role = await getUserRole(user.id);
+  if (role !== "admin" && role !== "writer") {
     redirect("/");
   }
 

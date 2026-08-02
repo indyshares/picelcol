@@ -75,7 +75,7 @@ export function AuthNav() {
               Favorite
             </Link>
 
-            {user.role === "admin" && (
+            {(user.role === "admin" || user.role === "writer") && (
               <Link
                 href="/admin/articles"
                 onClick={() => setOpen(false)}

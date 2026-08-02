@@ -32,6 +32,11 @@ const NAV_ITEMS: { href: Route; label: string; icon: typeof LayoutDashboard }[] 
   { href: "/admin/users" as Route, label: "Users", icon: Users },
 ];
 
+function visibleNavItems(role: string) {
+  if (role === "admin") return NAV_ITEMS;
+  return NAV_ITEMS.filter((item) => item.href !== "/admin/users");
+}
+
 function isActive(pathname: string, href: string) {
   if (href === "/admin") return pathname === "/admin";
   return pathname === href || pathname.startsWith(href + "/");
@@ -78,7 +83,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
   const nav = (
     <nav className="space-y-2">
-      {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+      {visibleNavItems(user.role).map(({ href, label, icon: Icon }) => {
         const active = isActive(pathname, href);
         return (
           <Link
