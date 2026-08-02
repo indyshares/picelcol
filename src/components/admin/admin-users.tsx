@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
   Check,
@@ -380,6 +381,71 @@ export function AdminUsers({ users: initialUsers }: { users: AdminUser[] }) {
   );
 }
 
+function PortalMenu({
+  anchorRef,
+  open,
+  onClose,
+  widthClass,
+  children,
+}: {
+  anchorRef: React.RefObject<HTMLElement | null>;
+  open: boolean;
+  onClose: () => void;
+  widthClass: string;
+  children: React.ReactNode;
+}) {
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const updatePosition = useCallback(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    const rect = anchor.getBoundingClientRect();
+    const menuWidth = menuRef.current?.offsetWidth ?? 176;
+    const top = rect.bottom + 8;
+    const left = Math.max(8, rect.right - menuWidth);
+    const maxLeft = window.innerWidth - menuWidth - 8;
+    setPos({ top, left: Math.min(left, maxLeft) });
+  }, [anchorRef]);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePosition();
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [open, updatePosition]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <>
+      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <div
+        ref={menuRef}
+        role="menu"
+        className={`clay-card fixed z-50 rounded-2xl p-2 shadow-xl backdrop-blur-md ${widthClass}`}
+        style={pos ? { top: pos.top, left: pos.left } : { visibility: "hidden" }}
+      >
+        {children}
+      </div>
+    </>,
+    document.body,
+  );
+}
+
 function RowActions({
   user,
   pending,
@@ -390,10 +456,12 @@ function RowActions({
   onRoleChange: (role: Role) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <div className="relative inline-block text-left">
+    <>
       <button
+        ref={anchorRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={pending}
@@ -408,38 +476,35 @@ function RowActions({
           <MoreVertical className="h-4 w-4" />
         )}
       </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div
-            role="menu"
-            className="clay-card absolute right-0 top-full z-40 mt-2 w-44 rounded-2xl p-2 shadow-xl backdrop-blur-md"
+      <PortalMenu
+        anchorRef={anchorRef}
+        open={open}
+        onClose={() => setOpen(false)}
+        widthClass="w-44"
+      >
+        <p className="px-3 py-1 text-xs font-medium text-[var(--text-muted)]">
+          เปลี่ยนบทบาท
+        </p>
+        {ROLE_ORDER.map((r) => (
+          <button
+            key={r}
+            type="button"
+            role="menuitem"
+            disabled={pending}
+            onClick={() => {
+              setOpen(false);
+              onRoleChange(r);
+            }}
+            className="clay-bounce flex w-full items-center justify-between gap-2 rounded-xl px-3 py-1.5 text-left text-sm text-[var(--text)] transition-colors motion-reduce:transition-none hover:bg-[var(--clay-bg-soft)] disabled:opacity-50"
           >
-            <p className="px-3 py-1 text-xs font-medium text-[var(--text-muted)]">
-              เปลี่ยนบทบาท
-            </p>
-            {ROLE_ORDER.map((r) => (
-              <button
-                key={r}
-                type="button"
-                role="menuitem"
-                disabled={pending}
-                onClick={() => {
-                  setOpen(false);
-                  onRoleChange(r);
-                }}
-                className="clay-bounce flex w-full items-center justify-between gap-2 rounded-xl px-3 py-1.5 text-left text-sm text-[var(--text)] transition-colors motion-reduce:transition-none hover:bg-[var(--clay-bg-soft)] disabled:opacity-50"
-              >
-                <span className="flex items-center gap-2">
-                  <span className={`h-2 w-2 rounded-full ${ROLE_STYLES[r].dot}`} />
-                  {ROLE_STYLES[r].label}
-                </span>
-                {r === user.role && <Check className="h-4 w-4 text-[var(--accent)]" />}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+            <span className="flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${ROLE_STYLES[r].dot}`} />
+              {ROLE_STYLES[r].label}
+            </span>
+            {r === user.role && <Check className="h-4 w-4 text-[var(--accent)]" />}
+          </button>
+        ))}
+      </PortalMenu>
+    </>
   );
 }
