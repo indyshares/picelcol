@@ -257,6 +257,10 @@ export async function listArticlesForAdmin({ take = 50 }: { take?: number } = {}
       title: true,
       slug: true,
       published: true,
+      coverImage: true,
+      coverMedia: { select: { url: true } },
+      createdAt: true,
+      updatedAt: true,
     },
   });
 }
