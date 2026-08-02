@@ -43,7 +43,7 @@ export function LikeButton({ articleId, articleSlug, initialLiked, initialCount 
         onClick={handleClick}
         disabled={isPending}
         className={cn(
-          "clay-button flex items-center gap-2 px-4 py-2 text-sm font-medium",
+          "clay-button clay-bounce flex items-center gap-2 px-4 py-2 text-sm font-medium motion-reduce:transition-none",
           liked
             ? "bg-[var(--accent)]/15 text-[var(--accent)]"
             : "bg-[var(--clay-bg-soft)] text-[var(--text)]",

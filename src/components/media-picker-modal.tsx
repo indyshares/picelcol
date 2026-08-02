@@ -64,14 +64,14 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
       <div className="flex h-[80vh] w-full max-w-2xl flex-col rounded-xl bg-[var(--surface)] shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
           <h2 className="text-lg font-semibold text-[var(--text)]">เลือกรูปภาพ</h2>
-          <button type="button" onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--text)]">&times;</button>
+          <button type="button" onClick={onClose} className="clay-bounce text-[var(--text-muted)] motion-reduce:transition-none hover:text-[var(--text)]">&times;</button>
         </div>
 
         <div className="flex border-b border-[var(--border)]">
           <button
             type="button"
             onClick={() => setTab("upload")}
-            className={`flex-1 py-3 text-sm font-medium transition ${
+            className={`clay-bounce flex-1 py-3 text-sm font-medium motion-reduce:transition-none ${
               tab === "upload" ? "border-b-2 border-[var(--accent)] text-[var(--accent)]" : "text-[var(--text-muted)]"
             }`}
           >
@@ -80,7 +80,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
           <button
             type="button"
             onClick={() => { setTab("gallery"); setSelectedId(null); }}
-            className={`flex-1 py-3 text-sm font-medium transition ${
+            className={`clay-bounce flex-1 py-3 text-sm font-medium motion-reduce:transition-none ${
               tab === "gallery" ? "border-b-2 border-[var(--accent)] text-[var(--accent)]" : "text-[var(--text-muted)]"
             }`}
           >
@@ -116,7 +116,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                 type="button"
                 onClick={handleUpload}
                 disabled={!file || uploading}
-                className="rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] hover:opacity-90 disabled:opacity-50"
+                className="clay-bounce rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none hover:opacity-90 disabled:opacity-50"
               >
                 {uploading ? "กำลังอัปโหลด..." : "อัปโหลดและเลือก"}
               </button>
@@ -137,7 +137,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                         setSelectedId(item.id);
                         setAltText(item.alt ?? "");
                       }}
-                      className={`relative aspect-square overflow-hidden rounded-lg border-2 transition ${
+                      className={`clay-bounce relative aspect-square overflow-hidden rounded-lg border-2 motion-reduce:transition-none ${
                         selectedId === item.id ? "border-[var(--accent)] ring-2 ring-[var(--accent)]" : "border-[var(--border)] hover:border-[var(--accent)]"
                       }`}
                     >
@@ -165,7 +165,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                         toast.success("เลือกรูปภาพสำเร็จ");
                         onSelect({ url: selected.url, alt: altText, mediaId: selected.id });
                       }}
-                      className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--accent-contrast)] hover:opacity-90"
+                      className="clay-bounce rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none hover:opacity-90"
                     >
                       เลือกรูปนี้
                     </button>

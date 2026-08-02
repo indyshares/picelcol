@@ -11,7 +11,7 @@ export default async function AdminArticlesPage() {
         <h1 className="text-3xl font-semibold text-[var(--text)]">จัดการบทความ</h1>
         <Link
           href="/admin/articles/new"
-          className="clay-button bg-[var(--accent)] px-4 py-2 font-medium text-[var(--accent-contrast)]"
+          className="clay-button clay-bounce bg-[var(--accent)] px-4 py-2 font-medium text-[var(--accent-contrast)] motion-reduce:transition-none"
         >
           + สร้างบทความใหม่
         </Link>

@@ -45,7 +45,7 @@ export function AuthNav() {
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="clay-button flex items-center gap-2 bg-[var(--clay-bg-soft)] px-3 py-1.5 font-medium text-[var(--text)]"
+          className="clay-button clay-bounce flex items-center gap-2 bg-[var(--clay-bg-soft)] px-3 py-1.5 font-medium text-[var(--text)] motion-reduce:transition-none"
         >
           <User className="h-4 w-4" />
           <span className="hidden sm:inline">Profile</span>
@@ -60,7 +60,7 @@ export function AuthNav() {
             <Link
               href={"/profile"}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+              className="clay-bounce flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] motion-reduce:transition-none hover:bg-[var(--bg)]"
             >
               <User className="h-4 w-4 text-[var(--text-muted)]" />
               Profile
@@ -69,7 +69,7 @@ export function AuthNav() {
             <Link
               href="/bookmarks"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+              className="clay-bounce flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] motion-reduce:transition-none hover:bg-[var(--bg)]"
             >
               <Bookmark className="h-4 w-4 text-[var(--text-muted)]" />
               Favorite
@@ -79,7 +79,7 @@ export function AuthNav() {
               <Link
                 href="/admin/articles"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] transition hover:bg-[var(--bg)]"
+                className="clay-bounce flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text)] motion-reduce:transition-none hover:bg-[var(--bg)]"
               >
                 <LayoutDashboard className="h-4 w-4 text-[var(--text-muted)]" />
                 Dashboard
@@ -96,7 +96,7 @@ export function AuthNav() {
                     setUser(null);
                   })
                 }
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-light)] transition hover:bg-[var(--bg)] disabled:opacity-50"
+                className="clay-bounce flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-light)] motion-reduce:transition-none hover:bg-[var(--bg)] disabled:opacity-50"
               >
                 <LogOut className="h-4 w-4" />
                 {isPending ? "Signing out..." : "Sign Out"}
@@ -112,7 +112,7 @@ export function AuthNav() {
     <div className="flex items-center gap-4 text-sm">
       <Link
         href="/login"
-        className="clay-button bg-[var(--accent)] px-4 py-2 font-medium text-[var(--accent-contrast)]"
+        className="clay-button clay-bounce bg-[var(--accent)] px-4 py-2 font-medium text-[var(--accent-contrast)] motion-reduce:transition-none"
       >
         เข้าสู่ระบบ
       </Link>

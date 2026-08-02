@@ -7,7 +7,7 @@ export function SectionGuide({ text }: { text: string }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="inline-block align-middle cursor-help">
+        <span className="clay-bounce inline-block align-middle cursor-help motion-reduce:transition-none">
           <Info className="h-4 w-4 text-[var(--text-muted)] hover:text-[var(--text)] transition-colors" />
         </span>
       </TooltipTrigger>

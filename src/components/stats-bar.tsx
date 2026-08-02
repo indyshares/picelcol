@@ -25,7 +25,7 @@ export function StatsBar({
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="clay-card clay-card-hover flex flex-col items-center gap-1.5 px-4 py-6 text-center"
+              className="clay-card clay-bounce flex flex-col items-center gap-1.5 px-4 py-6 text-center motion-reduce:transition-none"
               style={{
                 background: `color-mix(in srgb, ${tones[i]} 16%, var(--clay-bg))`,
                 boxShadow: "var(--clay-shadow-card)",

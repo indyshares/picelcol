@@ -37,7 +37,7 @@ export function BookmarkButton({ articleId, articleSlug, initialBookmarked }: Bo
         onClick={handleClick}
         disabled={isPending}
         className={cn(
-          "clay-button flex items-center gap-2 px-4 py-2 text-sm font-medium",
+          "clay-button clay-bounce flex items-center gap-2 px-4 py-2 text-sm font-medium motion-reduce:transition-none",
           bookmarked
             ? "bg-[var(--primary)]/20 text-[var(--text)]"
             : "bg-[var(--clay-bg-soft)] text-[var(--text)]",

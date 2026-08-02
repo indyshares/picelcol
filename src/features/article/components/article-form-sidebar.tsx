@@ -48,7 +48,7 @@ function Badge({
   return (
     <span className="clay-badge inline-flex items-center gap-1 bg-[var(--primary)]/20 px-2.5 py-0.5 text-xs font-medium text-[var(--text)]">
       {label}
-      <button type="button" onClick={onRemove} className="hover:text-[var(--accent)]">&times;</button>
+      <button type="button" onClick={onRemove} className="clay-bounce motion-reduce:transition-none hover:text-[var(--accent)]">&times;</button>
     </span>
   );
 }
@@ -172,7 +172,7 @@ export function ArticleFormSidebar({
             <button
               type="button"
               onClick={onOpenCoverPicker}
-              className="clay-button bg-[var(--clay-bg-soft)] px-3 py-2 text-sm text-[var(--text)]"
+              className="clay-button clay-bounce bg-[var(--clay-bg-soft)] px-3 py-2 text-sm text-[var(--text)] motion-reduce:transition-none"
             >
               {coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
             </button>
@@ -180,7 +180,7 @@ export function ArticleFormSidebar({
               <button
                 type="button"
                 onClick={onRemoveCover}
-                className="text-sm text-[var(--accent)]"
+                className="text-sm text-[var(--accent)] motion-reduce:transition-none"
               >
                 ลบ
               </button>
@@ -251,7 +251,7 @@ export function ArticleFormSidebar({
                   key={c.id}
                   type="button"
                   onClick={() => toggleCategory(c.id)}
-                  className={`clay-badge px-3 py-1 text-xs font-medium transition ${
+                  className={`clay-badge clay-bounce px-3 py-1 text-xs font-medium motion-reduce:transition-none ${
                     selected
                       ? "bg-[var(--primary)]/20 text-[var(--text)]"
                       : "bg-[var(--clay-bg-soft)] text-[var(--text-light)]"
@@ -285,14 +285,14 @@ export function ArticleFormSidebar({
                 type="button"
                 onClick={handleCreateCategory}
                 disabled={creatingCategory || !categoryInput.trim()}
-                className="clay-button bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] disabled:opacity-40"
+                className="clay-button clay-bounce bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] motion-reduce:transition-none disabled:opacity-40"
               >
                 Save
               </button>
               <button
                 type="button"
                 onClick={() => { setShowCategoryInput(false); setCategoryInput(""); }}
-                className="clay-button bg-[var(--clay-bg-soft)] px-3 py-1.5 text-xs font-medium text-[var(--text)]"
+                className="clay-button clay-bounce bg-[var(--clay-bg-soft)] px-3 py-1.5 text-xs font-medium text-[var(--text)] motion-reduce:transition-none"
               >
                 Cancel
               </button>
@@ -301,7 +301,7 @@ export function ArticleFormSidebar({
             <button
               type="button"
               onClick={() => setShowCategoryInput(true)}
-              className="mt-1 text-xs font-medium text-[var(--accent)] hover:underline"
+              className="clay-bounce mt-1 text-xs font-medium text-[var(--accent)] motion-reduce:transition-none hover:underline"
             >
               + Add New Category
             </button>
@@ -340,7 +340,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={() => addTag(tagInput)}
               disabled={tagNames.length >= 5 || !tagInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+                className="clay-bounce rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] motion-reduce:transition-none hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               +
             </button>
@@ -386,7 +386,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={addKeyword}
               disabled={keywords.length >= 5 || !keywordInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+                className="clay-bounce rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] motion-reduce:transition-none hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               +
             </button>
@@ -427,7 +427,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={() => handleAddEntity(entityInput)}
               disabled={creatingEntity || selectedEntityIds.length >= 4 || !entityInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+                className="clay-bounce rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] motion-reduce:transition-none hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               {creatingEntity ? "..." : "+"}
             </button>
@@ -462,7 +462,7 @@ export function ArticleFormSidebar({
             type="button"
             onClick={onPublish}
             disabled={isPending}
-            className="clay-button w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-[var(--accent-contrast)] disabled:opacity-50"
+            className="clay-button clay-bounce w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none disabled:opacity-50"
           >
             {isPending ? "กำลังบันทึก..." : "Publish"}
           </button>
@@ -474,7 +474,7 @@ export function ArticleFormSidebar({
             type="button"
             onClick={onSaveDraft}
             disabled={isPending}
-            className="clay-button w-full bg-[var(--clay-bg-soft)] px-4 py-2.5 text-sm font-medium text-[var(--text)] disabled:opacity-50"
+            className="clay-button clay-bounce w-full bg-[var(--clay-bg-soft)] px-4 py-2.5 text-sm font-medium text-[var(--text)] motion-reduce:transition-none disabled:opacity-50"
           >
             {isPending ? "กำลังบันทึก..." : "Save as Draft"}
           </button>

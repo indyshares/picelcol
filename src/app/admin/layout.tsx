@@ -38,7 +38,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="flex items-center gap-4 text-sm">
           <span className="text-[var(--text-light)]">{user.email}</span>
           <form action={signOutAction}>
-            <button type="submit" className="font-medium text-[var(--accent)]">
+            <button type="submit" className="clay-bounce font-medium text-[var(--accent)] motion-reduce:transition-none">
               ออกจากระบบ
             </button>
           </form>

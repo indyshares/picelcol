@@ -15,7 +15,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={toggle}
-      className="clay-button flex h-9 items-center gap-1 bg-[var(--clay-bg-soft)] px-3 text-sm font-medium text-[var(--text-light)] hover:text-[var(--link)]"
+      className="clay-button clay-bounce flex h-9 items-center gap-1 bg-[var(--clay-bg-soft)] px-3 text-sm font-medium text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]"
       title={!mounted ? "" : locale === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย"}
     >
       <Languages className="h-4 w-4" />

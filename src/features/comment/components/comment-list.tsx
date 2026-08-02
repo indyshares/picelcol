@@ -47,7 +47,7 @@ export function CommentList({ articleSlug, comments, currentUserId }: CommentLis
                       await deleteCommentAction(comment.id, articleSlug);
                     });
                   }}
-                  className="text-xs font-medium text-[var(--accent)] disabled:opacity-50"
+                  className="clay-bounce text-xs font-medium text-[var(--accent)] motion-reduce:transition-none disabled:opacity-50"
                 >
                   {isPending ? "กำลังลบ..." : "ลบ"}
                 </button>

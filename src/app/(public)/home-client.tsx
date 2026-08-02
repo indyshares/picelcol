@@ -109,7 +109,7 @@ export function HomeClient({ latest, publishedCount, categoryCount, viewCount, l
             </h2>
             <Link
               href="/articles"
-              className="text-sm font-medium text-[var(--link)] hover:text-[var(--link-hover)]"
+              className="clay-bounce text-sm font-medium text-[var(--link)] motion-reduce:transition-none hover:text-[var(--link-hover)]"
             >
               {dict.home.viewAll}
             </Link>

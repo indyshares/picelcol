@@ -99,7 +99,7 @@ export function ProfileForm({ user }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="clay-button bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] disabled:opacity-50"
+        className="clay-button clay-bounce bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none disabled:opacity-50"
       >
         {pending ? "กำลังบันทึก…" : "บันทึก"}
       </button>

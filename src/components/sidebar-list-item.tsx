@@ -15,7 +15,7 @@ export function SidebarListItem({ article }: { article: Item }) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group block border-l-2 border-transparent py-2 pl-3 transition hover:border-[var(--primary)] hover:bg-[var(--bg)]"
+      className="clay-bounce group block border-l-2 border-transparent py-2 pl-3 motion-reduce:transition-none hover:border-[var(--primary)] hover:bg-[var(--bg)]"
     >
       {category && (
         <span className="mb-0.5 inline-block text-[11px] font-medium uppercase tracking-wider text-[var(--text-muted)]">

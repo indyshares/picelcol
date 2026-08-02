@@ -161,6 +161,37 @@
     border-radius: 1.25rem;
     box-shadow: var(--clay-shadow-well);
   }
+
+  /* Custom Spring Bounce micro-interaction.
+     Applied on top of clay-card / clay-button / clay-badge —
+     defined LAST so its hover/active transform wins the cascade. */
+  .clay-bounce {
+    transition:
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease,
+      background-color 0.2s ease;
+    will-change: transform;
+  }
+
+  .clay-bounce:hover {
+    transform: translateY(-4px) scale(1.03);
+  }
+
+  .clay-bounce:active {
+    transform: translateY(2px) scale(0.96);
+    transition: transform 0.1s ease;
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .clay-bounce,
+    .clay-bounce:hover,
+    .clay-bounce:active {
+      transition: none;
+      transform: none;
+      will-change: auto;
+    }
+  }
 }
 
 /* Bind prose element colors to theme tokens instead of hardcoded palette */

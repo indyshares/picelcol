@@ -96,7 +96,7 @@ export function SearchBar() {
                       setOpen(false);
                       setQuery("");
                     }}
-                    className="block border-b border-[var(--border)] px-4 py-3 text-sm transition hover:bg-[var(--primary)]/5 last:border-0"
+                    className="clay-bounce block border-b border-[var(--border)] px-4 py-3 text-sm motion-reduce:transition-none hover:bg-[var(--primary)]/5 last:border-0"
                   >
                     <span className="font-medium text-[var(--text)]">{r.title}</span>
                     {r.excerpt && (

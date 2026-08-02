@@ -17,7 +17,7 @@ export async function CategoriesBar() {
         <span className="mr-2 text-sm font-medium text-[var(--text-light)]">หมวดหมู่:</span>
         <Link
           href="/articles"
-          className="clay-badge bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+          className="clay-badge clay-bounce bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] motion-reduce:transition-none hover:text-[var(--link)]"
         >
           ทั้งหมด
         </Link>
@@ -25,7 +25,7 @@ export async function CategoriesBar() {
           <Link
             key={cat.slug}
             href={`/articles?cat=${cat.slug}`}
-            className="clay-badge bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+            className="clay-badge clay-bounce bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] motion-reduce:transition-none hover:text-[var(--link)]"
           >
             {cat.name}
           </Link>

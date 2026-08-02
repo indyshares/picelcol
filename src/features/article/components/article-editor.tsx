@@ -36,7 +36,7 @@ function InsertImageButton({ editorRef }: { editorRef: React.RefObject<MDXEditor
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="rounded px-1.5 py-1 text-sm hover:bg-[var(--hover-bg)]"
+        className="clay-bounce rounded px-1.5 py-1 text-sm motion-reduce:transition-none hover:bg-[var(--hover-bg)]"
         title="Insert image"
       >
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">

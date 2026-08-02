@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
  * add more shadcn/ui components alongside this one as the UI grows.
  */
 export const buttonVariants = cva(
-  "clay-button inline-flex items-center justify-center gap-2 text-sm font-medium disabled:pointer-events-none",
+  "clay-button clay-bounce inline-flex items-center justify-center gap-2 text-sm font-medium disabled:pointer-events-none motion-reduce:transition-none",
   {
     variants: {
       variant: {

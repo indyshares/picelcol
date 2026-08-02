@@ -71,32 +71,32 @@ export function SiteFooter() {
           </h3>
           <ul className="space-y-2">
             <li>
-              <Link href="/" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {common.nav.home}
               </Link>
             </li>
             <li>
-              <Link href="/articles" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/articles" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {common.nav.articles}
               </Link>
             </li>
             <li>
-              <Link href="/about" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/about" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {common.nav.about}
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/privacy" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {footer.privacy}
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/terms" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {footer.terms}
               </Link>
             </li>
             <li>
-              <Link href="/cookies" className="text-[var(--text-light)] transition hover:text-[var(--link)]">
+              <Link href="/cookies" className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]">
                 {footer.cookies}
               </Link>
             </li>
@@ -113,7 +113,7 @@ export function SiteFooter() {
                 <li key={cat.slug}>
                   <Link
                     href={`/articles?cat=${cat.slug}`}
-                    className="text-[var(--text-light)] transition hover:text-[var(--link)]"
+                    className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]"
                   >
                     {cat.name}
                   </Link>
@@ -133,7 +133,7 @@ export function SiteFooter() {
             <li>
               <a
                 href="mailto:eiei.picel.contact@gmail.com"
-                className="text-[var(--text-light)] transition hover:text-[var(--link)]"
+                className="clay-bounce text-[var(--text-light)] motion-reduce:transition-none hover:text-[var(--link)]"
               >
                 eiei.picel.contact@gmail.com
               </a>
@@ -147,7 +147,7 @@ export function SiteFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={(footer as Record<string, string>)[social.ariaLabelKey]}
-                className="text-xs text-[var(--text-light)] underline decoration-dotted underline-offset-2 transition hover:text-[var(--link)]"
+                className="clay-bounce text-xs text-[var(--text-light)] underline decoration-dotted underline-offset-2 motion-reduce:transition-none hover:text-[var(--link)]"
               >
                 {(footer as Record<string, string>)[social.labelKey]}
               </a>

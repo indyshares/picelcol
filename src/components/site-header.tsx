@@ -38,19 +38,19 @@ export function SiteHeader() {
         <nav className="flex items-center gap-2 text-sm">
           <Link
             href="/"
-            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+            className="clay-badge clay-bounce bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] motion-reduce:transition-none hover:text-[var(--link)]"
           >
             {dict.common.nav.home}
           </Link>
           <Link
             href="/articles"
-            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+            className="clay-badge clay-bounce bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] motion-reduce:transition-none hover:text-[var(--link)]"
           >
             {dict.common.nav.articles}
           </Link>
           <Link
             href="/about"
-            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+            className="clay-badge clay-bounce bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] motion-reduce:transition-none hover:text-[var(--link)]"
           >
             {dict.common.nav.about}
           </Link>
