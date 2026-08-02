@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { listArticlesForAdmin } from "@/services/article.service";
+import { listCategories } from "@/services/taxonomy.service";
 import { AdminArticlesList } from "@/components/admin/admin-articles-list";
 
 export default async function AdminArticlesPage() {
-  const articles = await listArticlesForAdmin({ take: 50 });
+  const [articles, categories] = await Promise.all([
+    listArticlesForAdmin({ take: 50 }),
+    listCategories(),
+  ]);
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
@@ -20,7 +24,10 @@ export default async function AdminArticlesPage() {
         </Link>
       </div>
 
-      <AdminArticlesList articles={articles} />
+      <AdminArticlesList
+        articles={articles}
+        categories={categories.map((c) => ({ id: c.id, name: c.name }))}
+      />
     </main>
   );
 }

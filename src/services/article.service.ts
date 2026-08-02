@@ -245,8 +245,8 @@ export async function getArticleContent(slug: string) {
 }
 
 /**
- * Lean list for admin table view – avoids fetching large `content` and
- * unnecessary joins.
+ * Admin list view – includes `excerpt`/`content` for client-side search,
+ * categories for filtering, and cover/date fields for the list cards.
  */
 export async function listArticlesForAdmin({ take = 50 }: { take?: number } = {}) {
   return prisma.article.findMany({
@@ -257,10 +257,15 @@ export async function listArticlesForAdmin({ take = 50 }: { take?: number } = {}
       title: true,
       slug: true,
       published: true,
+      excerpt: true,
+      content: true,
       coverImage: true,
       coverMedia: { select: { url: true } },
       createdAt: true,
       updatedAt: true,
+      categories: {
+        select: { category: { select: { id: true, name: true, slug: true } } },
+      },
     },
   });
 }
