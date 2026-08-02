@@ -25,13 +25,39 @@ const MAX_SOURCE_MB = 20;
 export function ProfileForm({ user }: Props) {
   const router = useRouter();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [compressedFile, setCompressedFile] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(user.avatarUrl);
   const [compressing, setCompressing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const busy = compressing || uploading;
   const src = avatarPreview ?? avatarUrl;
   const initials = (user.displayName ?? user.email).slice(0, 2).toUpperCase();
+
+  async function uploadAvatar(file: File) {
+    setUploading(true);
+    const toastId = toast.loading("กำลังอัปโหลดรูปโปรไฟล์...");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/profile/avatar", { method: "POST", body: fd });
+      const json = (await res.json()) as { error?: string; avatarUrl?: string };
+      if (!res.ok || !json.avatarUrl) {
+        throw new Error(json.error ?? "upload failed");
+      }
+      setAvatarUrl(json.avatarUrl);
+      setAvatarPreview(null);
+      toast.dismiss(toastId);
+      toast.success("Profile picture updated successfully");
+      router.refresh();
+    } catch {
+      setAvatarPreview(null);
+      toast.dismiss(toastId);
+      toast.error("Image upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -46,19 +72,28 @@ export function ProfileForm({ user }: Props) {
       return;
     }
 
+    const resizeToast = toast.loading("Resizing image...");
     setCompressing(true);
-    const toastId = toast.loading("กำลังปรับขนาดรูปภาพ...");
+    let compressed: File;
     try {
-      const compressed = await compressImage(file, 200, 600);
-      setCompressedFile(compressed);
-      setAvatarPreview(URL.createObjectURL(compressed));
-      toast.dismiss(toastId);
-      toast.success("ปรับขนาดรูปภาพเรียบร้อย พร้อมอัปโหลด");
+      compressed = await compressImage(file, 200, 600);
     } catch {
-      toast.dismiss(toastId);
-      toast.error("ไม่สามารถปรับขนาดรูปภาพได้");
-    } finally {
       setCompressing(false);
+      toast.dismiss(resizeToast);
+      toast.error("ไม่สามารถปรับขนาดรูปภาพได้");
+      return;
+    }
+    setCompressing(false);
+    toast.dismiss(resizeToast);
+
+    const previewUrl = URL.createObjectURL(compressed);
+    setAvatarPreview(previewUrl);
+
+    try {
+      await uploadAvatar(compressed);
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+      e.target.value = "";
     }
   }
 
@@ -66,28 +101,12 @@ export function ProfileForm({ user }: Props) {
     e.preventDefault();
     setSaving(true);
     try {
-      if (compressedFile) {
-        const fd = new FormData();
-        fd.append("file", compressedFile);
-        const res = await fetch("/api/profile/avatar", { method: "POST", body: fd });
-        const json = (await res.json()) as { error?: string; avatarUrl?: string };
-        if (!res.ok) {
-          toast.error(json.error ?? "อัปโหลดรูปไม่สำเร็จ");
-          return;
-        }
-        setAvatarUrl(json.avatarUrl!);
-        setCompressedFile(null);
-        setAvatarPreview(null);
-        toast.success("อัปโหลดรูปโปรไฟล์ใหม่แล้ว และลบรูปเก่าเรียบร้อย");
-      }
-
       const textForm = new FormData(e.currentTarget);
       const state = await updateProfileAction(null, textForm);
       if (state?.error) {
         toast.error(state.error);
         return;
       }
-
       toast.success("บันทึกข้อมูลเรียบร้อย");
       router.refresh();
     } catch {
@@ -103,13 +122,19 @@ export function ProfileForm({ user }: Props) {
         <div className="flex items-center gap-6">
           <div className="clay-badge relative size-20 shrink-0 overflow-hidden rounded-full bg-[var(--clay-bg-soft)]">
             {src ? (
-              <Image src={src} alt="" fill className="object-cover" unoptimized />
+              <Image
+                src={src}
+                alt=""
+                fill
+                className={`object-cover transition-all ${busy ? "blur-sm" : ""}`}
+                unoptimized
+              />
             ) : (
               <span className="flex size-full items-center justify-center text-lg font-semibold text-[var(--text-muted)]">
                 {initials}
               </span>
             )}
-            {compressing && (
+            {busy && (
               <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
                 <Loader2 className="h-6 w-6 animate-spin text-white" />
               </span>
@@ -132,11 +157,8 @@ export function ProfileForm({ user }: Props) {
             <p className="mt-1 text-xs text-[var(--text-muted)]">
               JPEG, PNG, WebP, GIF · ระบบบีบอัดอัตโนมัติให้เหลือเล็ก (&lt;200KB)
             </p>
-            {compressedFile && !compressing && (
-              <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                พร้อมอัปโหลด: {compressedFile.name} (
-                {Math.round(compressedFile.size / 1024)}KB)
-              </p>
+            {uploading && (
+              <p className="mt-1 text-xs font-medium text-[var(--accent)]">กำลังอัปโหลด...</p>
             )}
           </div>
         </div>
@@ -185,7 +207,7 @@ export function ProfileForm({ user }: Props) {
 
       <button
         type="submit"
-        disabled={saving || compressing}
+        disabled={saving || busy}
         className="clay-button clay-bounce bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none disabled:opacity-50"
       >
         {saving ? "กำลังบันทึก…" : "บันทึก"}
