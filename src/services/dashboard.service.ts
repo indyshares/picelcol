@@ -236,6 +236,7 @@ export async function getActivityPage({
         user: {
           select: {
             email: true,
+            displayName: true,
             avatarUrl: true,
             profile: { select: { displayName: true, avatarUrl: true } },
           },
@@ -255,7 +256,8 @@ export async function getActivityPage({
       id: c.id,
       content: c.content,
       createdAt: c.createdAt,
-      authorName: c.user.profile?.displayName ?? c.user.email.split("@")[0] ?? "ผู้ใช้",
+      authorName:
+        c.user.profile?.displayName ?? c.user.displayName ?? c.user.email.split("@")[0] ?? "user",
       authorAvatar: c.user.profile?.avatarUrl ?? c.user.avatarUrl,
       articleTitle: c.article.title,
       articleSlug: c.article.slug,

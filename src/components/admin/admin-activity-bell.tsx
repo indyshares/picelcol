@@ -135,7 +135,7 @@ export function AdminActivityBell() {
                       <Link
                         href={`/articles/${item.articleSlug}`}
                         title={item.content}
-                        className="clay-card clay-bounce block rounded-2xl p-3 transition-all motion-reduce:transition-none hover:bg-gray-50/50 dark:hover:bg-white/5"
+                        className="clay-card clay-bounce block rounded-2xl p-3 bg-white/80 transition-all motion-reduce:transition-none hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800"
                       >
                         <div className="flex gap-3">
                           <div className="clay-card h-9 w-9 shrink-0 overflow-hidden rounded-full">
@@ -156,13 +156,13 @@ export function AdminActivityBell() {
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                            <p className="text-xs font-medium text-slate-600 dark:text-slate-300">
                               {item.authorName} <span aria-hidden>•</span> {timeAgo(item.createdAt)}
                             </p>
-                            <p className="my-0.5 line-clamp-2 text-sm font-semibold text-gray-800 dark:text-gray-100">
+                            <p className="my-0.5 line-clamp-2 text-sm font-semibold text-slate-800 dark:text-slate-100">
                               {item.content}
                             </p>
-                            <p className="flex items-center gap-1 truncate text-xs text-gray-400 dark:text-gray-500">
+                            <p className="flex items-center gap-1 truncate text-xs text-slate-400 dark:text-slate-500">
                               <MessageSquare className="h-3 w-3 shrink-0" />
                               In the article: {item.articleTitle}
                             </p>
