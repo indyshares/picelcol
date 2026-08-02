@@ -35,14 +35,23 @@ export function SiteHeader() {
 
         <SearchBar />
 
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
+        <nav className="flex items-center gap-2 text-sm">
+          <Link
+            href="/"
+            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+          >
             {dict.common.nav.home}
           </Link>
-          <Link href="/articles" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
+          <Link
+            href="/articles"
+            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+          >
             {dict.common.nav.articles}
           </Link>
-          <Link href="/about" className="font-medium text-[var(--text)] hover:text-[var(--link)]">
+          <Link
+            href="/about"
+            className="clay-badge bg-[var(--clay-bg-soft)] px-3.5 py-1.5 font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
+          >
             {dict.common.nav.about}
           </Link>
           <ThemeSwitcher />

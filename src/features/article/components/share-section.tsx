@@ -20,7 +20,7 @@ function ShareButton({ href, label, icon }: ShareButtonProps) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--bg)] hover:border-[var(--primary)]"
+      className="clay-button flex items-center gap-2 bg-[var(--clay-bg-soft)] px-4 py-2 text-sm text-[var(--text)]"
       title={label}
     >
       {icon}
@@ -90,7 +90,7 @@ export function ShareSection({ title, url }: { title: string; url: string }) {
         <button
           type="button"
           onClick={copyLink}
-          className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text)] transition hover:bg-[var(--bg)] hover:border-[var(--primary)]"
+          className="clay-button flex items-center gap-2 bg-[var(--clay-bg-soft)] px-4 py-2 text-sm text-[var(--text)]"
           title="คัดลอกลิงก์"
         >
           {copied ? (

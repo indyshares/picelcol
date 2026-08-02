@@ -25,7 +25,7 @@ export function AuthForm({ action, submitLabel }: AuthFormProps) {
 
       <form
         action={formAction}
-        className="flex flex-col gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)]"
+        className="clay-card flex flex-col gap-4 p-6"
       >
         {state.error && (
           <p className="rounded-[var(--radius-input)] border border-[var(--accent)] bg-[var(--accent)]/10 px-4 py-2 text-sm text-[var(--accent)]">
@@ -43,7 +43,7 @@ export function AuthForm({ action, submitLabel }: AuthFormProps) {
             type="email"
             required
             autoComplete="email"
-            className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/30"
+            className="clay-input px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-muted)]"
           />
         </div>
 
@@ -58,7 +58,7 @@ export function AuthForm({ action, submitLabel }: AuthFormProps) {
             required
             minLength={8}
             autoComplete="current-password"
-            className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/30"
+            className="clay-input px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-muted)]"
           />
         </div>
 

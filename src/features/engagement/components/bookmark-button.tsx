@@ -37,10 +37,10 @@ export function BookmarkButton({ articleId, articleSlug, initialBookmarked }: Bo
         onClick={handleClick}
         disabled={isPending}
         className={cn(
-          "flex items-center gap-2 rounded-[var(--radius-btn)] border px-4 py-2 text-sm font-medium transition",
+          "clay-button flex items-center gap-2 px-4 py-2 text-sm font-medium",
           bookmarked
-            ? "border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--text)]"
-            : "border-[var(--border)] text-[var(--text)] hover:border-[var(--primary)]",
+            ? "bg-[var(--primary)]/20 text-[var(--text)]"
+            : "bg-[var(--clay-bg-soft)] text-[var(--text)]",
         )}
       >
         <Bookmark className="h-4 w-4" fill={bookmarked ? "currentColor" : "none"} />

@@ -28,7 +28,7 @@ export function CommentList({ articleSlug, comments, currentUserId }: CommentLis
       {comments.map((comment) => (
         <li
           key={comment.id}
-          className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-4"
+          className="clay-card p-4"
         >
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-[var(--text)]">

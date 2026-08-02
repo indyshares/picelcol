@@ -43,10 +43,10 @@ export function EngagementBar({ slug, articleId }: EngagementBarProps) {
       <div className="mt-10 flex items-center gap-3 border-t border-[var(--border)] pt-6">
         {loading ? (
           <>
-            <div className="flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--border)] px-4 py-2">
+            <div className="clay-button flex items-center gap-2 bg-[var(--clay-bg-soft)] px-4 py-2">
               <Loader2 className="h-4 w-4 animate-spin text-[var(--text-muted)]" />
             </div>
-            <div className="flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--border)] px-4 py-2">
+            <div className="clay-button flex items-center gap-2 bg-[var(--clay-bg-soft)] px-4 py-2">
               <Loader2 className="h-4 w-4 animate-spin text-[var(--text-muted)]" />
             </div>
             <span className="text-sm text-[var(--text-muted)]">

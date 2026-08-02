@@ -20,7 +20,7 @@ export function GoogleAuthButton({ label }: { label: string }) {
       type="button"
       disabled={loading}
       onClick={handleSignIn}
-      className="flex w-full items-center justify-center gap-3 rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--border)]/50 disabled:opacity-50"
+      className="clay-button flex w-full items-center justify-center gap-3 bg-[var(--clay-bg-soft)] px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-[var(--clay-bg-soft)]"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
         <path

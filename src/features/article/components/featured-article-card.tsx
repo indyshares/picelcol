@@ -16,27 +16,31 @@ export function FeaturedArticleCard({ article, priority }: { article: FeaturedAr
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.1)] md:flex-row"
+      className="clay-card clay-card-hover group relative flex flex-col overflow-hidden border border-[var(--border)]/50 md:flex-row"
     >
-      <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-[var(--bg)] md:aspect-auto md:w-2/5">
-        {article.coverImage ? (
-          <Image
-            src={article.coverImage}
-            alt={article.title}
-            fill
-            priority={priority}
-            className="object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, #98D8F4 0%, #FFC5D6 100%)" }}
-          />
-        )}
+      <div className="p-3 pb-0 md:pb-3 md:pr-0 md:w-2/5">
+        <div className="clay-well h-full p-2">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[var(--bg)] md:aspect-auto md:h-full">
+            {article.coverImage ? (
+              <Image
+                src={article.coverImage}
+                alt={article.title}
+                fill
+                priority={priority}
+                className="object-cover transition duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg, #98D8F4 0%, #FFC5D6 100%)" }}
+              />
+            )}
+          </div>
+        </div>
       </div>
-      <div className="flex flex-1 flex-col justify-center gap-3 p-6 md:p-8">
+      <div className="flex flex-1 flex-col justify-center gap-3 p-6 pt-4 md:p-8 md:pl-6">
         {category && (
-          <span className="self-start rounded-full bg-[var(--primary)]/15 px-3 py-1 text-xs font-medium text-[var(--text)]">
+          <span className="clay-badge self-start bg-[var(--primary)]/20 px-3 py-1 text-xs font-medium text-[var(--text)]">
             {category}
           </span>
         )}

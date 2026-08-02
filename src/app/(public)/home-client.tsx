@@ -56,7 +56,7 @@ export function HomeClient({ latest, publishedCount, categoryCount, viewCount, l
         <DecorativeBlobs />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-6 py-24 lg:flex-row lg:gap-12 lg:text-left">
           <div className="flex flex-col items-center gap-6 lg:items-start lg:w-1/2">
-            <span className="rounded-full bg-white/70 px-4 py-1.5 text-sm font-medium text-[var(--text)] shadow-sm backdrop-blur">
+            <span className="clay-badge bg-white/80 px-4 py-1.5 text-sm font-medium text-[var(--text)] backdrop-blur">
               {siteConfig.name}
             </span>
             <h1 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight text-[var(--text)] sm:text-5xl whitespace-pre-line">

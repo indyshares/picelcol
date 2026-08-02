@@ -43,10 +43,10 @@ export function LikeButton({ articleId, articleSlug, initialLiked, initialCount 
         onClick={handleClick}
         disabled={isPending}
         className={cn(
-          "flex items-center gap-2 rounded-[var(--radius-btn)] border px-4 py-2 text-sm font-medium transition",
+          "clay-button flex items-center gap-2 px-4 py-2 text-sm font-medium",
           liked
-            ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
-            : "border-[var(--border)] text-[var(--text)] hover:border-[var(--accent)]",
+            ? "bg-[var(--accent)]/15 text-[var(--accent)]"
+            : "bg-[var(--clay-bg-soft)] text-[var(--text)]",
         )}
       >
         <Heart className="h-4 w-4" fill={liked ? "currentColor" : "none"} />

@@ -25,9 +25,9 @@ export function ProfileForm({ user }: Props) {
 
   return (
     <form action={formAction} className="space-y-8">
-      <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-6 space-y-6">
+      <div className="clay-card p-6 space-y-6">
         <div className="flex items-center gap-6">
-          <div className="relative size-20 shrink-0 overflow-hidden rounded-full bg-[var(--muted)]">
+          <div className="clay-badge relative size-20 shrink-0 overflow-hidden rounded-full bg-[var(--clay-bg-soft)]">
             {src ? (
               <Image src={src} alt="" fill className="object-cover" unoptimized />
             ) : (
@@ -63,7 +63,7 @@ export function ProfileForm({ user }: Props) {
             type="email"
             value={user.email}
             disabled
-            className="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 py-2 text-sm text-[var(--text-muted)]"
+            className="clay-input mt-1 block w-full rounded-2xl px-3 py-2 text-sm text-[var(--text-muted)] disabled:opacity-70"
           />
         </div>
 
@@ -76,7 +76,7 @@ export function ProfileForm({ user }: Props) {
             defaultValue={user.displayName ?? ""}
             placeholder="ชื่อของคุณ"
             maxLength={100}
-            className="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            className="clay-input mt-1 block w-full rounded-2xl px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
           />
         </div>
 
@@ -87,7 +87,7 @@ export function ProfileForm({ user }: Props) {
             type="text"
             value={user.role}
             disabled
-            className="mt-1 block w-full rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 py-2 text-sm text-[var(--text-muted)]"
+            className="clay-input mt-1 block w-full rounded-2xl px-3 py-2 text-sm text-[var(--text-muted)] disabled:opacity-70"
           />
         </div>
       </div>
@@ -99,7 +99,7 @@ export function ProfileForm({ user }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+        className="clay-button bg-[var(--accent)] px-6 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
         {pending ? "กำลังบันทึก…" : "บันทึก"}
       </button>

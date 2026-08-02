@@ -19,7 +19,7 @@ export function CommentForm({ articleId, articleSlug }: { articleId: string; art
         rows={3}
         required
         placeholder="แสดงความคิดเห็น..."
-        className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/30"
+        className="clay-input rounded-2xl px-3 py-2 text-[var(--text)] placeholder:text-[var(--text-muted)]"
       />
       <Button type="submit" disabled={isPending} size="sm" className="self-start">
         {isPending ? "กำลังส่ง..." : "ส่งความคิดเห็น"}

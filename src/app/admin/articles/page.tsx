@@ -11,13 +11,13 @@ export default async function AdminArticlesPage() {
         <h1 className="text-3xl font-semibold text-[var(--text)]">จัดการบทความ</h1>
         <Link
           href="/admin/articles/new"
-          className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-4 py-2 font-medium text-white transition hover:bg-[var(--accent-hover)]"
+          className="clay-button bg-[var(--accent)] px-4 py-2 font-medium text-white"
         >
           + สร้างบทความใหม่
         </Link>
       </div>
 
-      <div className="flex flex-col divide-y divide-[var(--border)] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)]">
+      <div className="clay-card flex flex-col divide-y divide-[var(--border)] p-2">
         {articles.length === 0 && (
           <p className="p-6 text-[var(--text-light)]">ยังไม่มีบทความ</p>
         )}

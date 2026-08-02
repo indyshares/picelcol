@@ -58,7 +58,7 @@ export function SearchBar() {
 
   return (
     <div ref={ref} className="relative hidden sm:block">
-      <div className="flex items-center gap-2 rounded-xl border-2 border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-colors focus-within:border-[var(--primary)]">
+      <div className="clay-input flex items-center gap-2 px-4 py-2">
         <Search className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
         <input
           type="search"
@@ -76,7 +76,7 @@ export function SearchBar() {
         {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--text-muted)]" />}
       </div>
       {open && query.trim() && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-lg">
+        <div className="clay-card absolute left-0 right-0 top-full z-50 mt-3 overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center gap-2 px-4 py-6 text-sm text-[var(--text-muted)]">
               <Loader2 className="h-4 w-4 animate-spin" />

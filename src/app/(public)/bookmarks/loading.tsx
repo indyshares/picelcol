@@ -1,8 +1,10 @@
 function CardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)]">
-      <div className="aspect-[16/9] w-full animate-pulse bg-[var(--border)]" />
-      <div className="flex flex-col gap-3 p-5">
+    <div className="clay-card overflow-hidden p-3">
+      <div className="clay-well p-2">
+        <div className="aspect-[16/9] w-full animate-pulse rounded-xl bg-[var(--border)]" />
+      </div>
+      <div className="flex flex-col gap-3 p-4">
         <div className="h-4 w-3/4 animate-pulse rounded-full bg-[var(--border)]" />
         <div className="h-3 w-full animate-pulse rounded-full bg-[var(--border)]" />
         <div className="h-3 w-1/2 animate-pulse rounded-full bg-[var(--border)]" />

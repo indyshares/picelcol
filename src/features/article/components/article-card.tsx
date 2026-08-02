@@ -15,29 +15,33 @@ export function ArticleCard({ article }: { article: ArticleCardArticle }) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(0,0,0,0.1)]"
+      className="clay-card clay-card-hover group flex flex-col overflow-hidden border border-[var(--border)]/50"
     >
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--bg)]">
-        {article.coverImage ? (
-          <Image
-            src={article.coverImage}
-            alt={article.title}
-            fill
-            className="object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, #98D8F4 0%, #FFC5D6 100%)" }}
-          />
-        )}
-        {category && (
-          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-[var(--text)] shadow-sm backdrop-blur">
-            {category}
-          </span>
-        )}
+      <div className="p-3 pb-0">
+        <div className="clay-well p-2">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[var(--bg)]">
+            {article.coverImage ? (
+              <Image
+                src={article.coverImage}
+                alt={article.title}
+                fill
+                className="object-cover transition duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg, #98D8F4 0%, #FFC5D6 100%)" }}
+              />
+            )}
+            {category && (
+              <span className="clay-badge absolute left-3 top-3 bg-white/90 px-3 py-1 text-xs font-medium text-[var(--text)] backdrop-blur">
+                {category}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="flex flex-1 flex-col gap-2 p-5">
+      <div className="flex flex-1 flex-col gap-2 p-5 pt-4">
         <h2 className="font-[var(--font-heading)] text-lg font-semibold leading-snug text-[var(--text)]">
           {article.title}
         </h2>

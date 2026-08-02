@@ -114,7 +114,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               {article.categories.map(({ category }) => (
                 <span
                   key={category.id}
-                  className="rounded-full bg-[var(--primary)]/15 px-3 py-1 text-xs font-medium text-[var(--text)]"
+                  className="clay-badge bg-[var(--primary)]/20 px-3 py-1 text-xs font-medium text-[var(--text)]"
                 >
                   {category.name}
                 </span>
@@ -142,7 +142,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               {article.tags.map(({ tag }) => (
                 <span
                   key={tag.id}
-                  className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[11px] text-[var(--text-light)]"
+                  className="clay-badge bg-[var(--clay-bg-soft)] px-2.5 py-0.5 text-[11px] text-[var(--text-light)]"
                 >
                   #{tag.name}
                 </span>
@@ -151,8 +151,12 @@ export default async function ArticleDetailPage({ params }: Props) {
           )}
 
           {article.coverImage && (
-            <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-              <Image src={article.coverImage} alt={coverAlt} fill priority className="object-cover" />
+            <div className="clay-card mt-8 p-3">
+              <div className="clay-well p-2">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
+                  <Image src={article.coverImage} alt={coverAlt} fill priority className="object-cover" />
+                </div>
+              </div>
             </div>
           )}
 
@@ -162,7 +166,7 @@ export default async function ArticleDetailPage({ params }: Props) {
 
           {/* Author box */}
           {article.author && (
-            <div className="mt-12 flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <div className="clay-card mt-12 flex items-start gap-4 p-5">
               {authorAvatar ? (
                 <Image
                   src={authorAvatar}

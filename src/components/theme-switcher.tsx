@@ -20,7 +20,7 @@ export function ThemeSwitcher() {
     <button
       type="button"
       onClick={toggle}
-      className="flex items-center gap-1 text-sm font-medium text-[var(--text-light)] hover:text-[var(--link)]"
+      className="clay-button flex h-9 w-9 items-center justify-center bg-[var(--clay-bg-soft)] text-[var(--text-light)] hover:text-[var(--link)]"
       title={!mounted ? "" : theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
       {!mounted ? (

@@ -1,3 +1,10 @@
+const tones = [
+  { bg: "rgba(152, 216, 244, 0.35)", dot: "#98D8F4" },
+  { bg: "rgba(255, 197, 214, 0.4)", dot: "#FFC5D6" },
+  { bg: "rgba(255, 126, 95, 0.22)", dot: "#FF7E5F" },
+  { bg: "rgba(152, 216, 244, 0.2)", dot: "#98D8F4" },
+];
+
 export function StatsBar({
   publishedCount,
   categoryCount,
@@ -17,11 +24,20 @@ export function StatsBar({
   ];
 
   return (
-    <section className="border-y border-[var(--border)] bg-[var(--surface)]/50">
+    <section className="border-y border-[var(--border)] bg-[var(--clay-bg-soft)]/60">
       <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="flex flex-col items-center gap-1 text-center">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className="clay-card clay-card-hover flex flex-col items-center gap-1.5 px-4 py-6 text-center"
+              style={{ background: tones[i].bg, boxShadow: "var(--clay-shadow-card)" }}
+            >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ background: tones[i].dot }}
+                aria-hidden
+              />
               <span className="font-[var(--font-heading)] text-2xl font-bold text-[var(--text)]">
                 {stat.value}
               </span>

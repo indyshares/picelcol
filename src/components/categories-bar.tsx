@@ -13,11 +13,11 @@ export async function CategoriesBar() {
 
   return (
     <section className="mx-auto max-w-5xl px-6 pb-4">
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2.5">
         <span className="mr-2 text-sm font-medium text-[var(--text-light)]">หมวดหมู่:</span>
         <Link
           href="/articles"
-          className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-sm text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--primary)]/10"
+          className="clay-badge bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
         >
           ทั้งหมด
         </Link>
@@ -25,7 +25,7 @@ export async function CategoriesBar() {
           <Link
             key={cat.slug}
             href={`/articles?cat=${cat.slug}`}
-            className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-sm text-[var(--text)] transition hover:border-[var(--primary)] hover:bg-[var(--primary)]/10"
+            className="clay-badge bg-[var(--clay-bg-soft)] px-4 py-1.5 text-sm font-medium text-[var(--text)] transition hover:-translate-y-0.5 hover:text-[var(--link)]"
           >
             {cat.name}
           </Link>

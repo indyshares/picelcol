@@ -11,21 +11,21 @@ export function HeroVisual() {
               animationDuration: "8s",
             }}
           />
-          <div className="absolute inset-4 rounded-full bg-[var(--bg)]/80 backdrop-blur" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center">
+          {/* Raised tactile clay disc — "article preview card" */}
+          <div className="clay-card absolute inset-2 flex flex-col items-center justify-center gap-3 rounded-full p-8 text-center">
             <div className="flex -space-x-2">
-              <div className="h-10 w-10 rounded-full border-2 border-[var(--surface)] bg-gradient-to-br from-[#98D8F4] to-[#4DB6E8]" />
-              <div className="h-10 w-10 rounded-full border-2 border-[var(--surface)] bg-gradient-to-br from-[#FFC5D6] to-[#FF7E5F]" />
-              <div className="h-10 w-10 rounded-full border-2 border-[var(--surface)] bg-gradient-to-br from-[#FF7E5F] to-[#FF6B47]" />
+              <div className="clay-badge h-10 w-10 border-2 border-[var(--surface)] bg-gradient-to-br from-[#98D8F4] to-[#4DB6E8]" />
+              <div className="clay-badge h-10 w-10 border-2 border-[var(--surface)] bg-gradient-to-br from-[#FFC5D6] to-[#FF7E5F]" />
+              <div className="clay-badge h-10 w-10 border-2 border-[var(--surface)] bg-gradient-to-br from-[#FF7E5F] to-[#FF6B47]" />
             </div>
             <div className="flex flex-wrap justify-center gap-1.5">
-              <span className="rounded-md bg-[var(--primary)]/20 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
+              <span className="clay-badge bg-[var(--primary)]/25 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
                 การตลาด
               </span>
-              <span className="rounded-md bg-[var(--secondary)]/20 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
+              <span className="clay-badge bg-[var(--secondary)]/25 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
                 เทคโนโลยี
               </span>
-              <span className="rounded-md bg-[var(--accent)]/20 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
+              <span className="clay-badge bg-[var(--accent)]/25 px-2 py-1 text-[10px] font-medium text-[var(--text)]">
                 ดีไซน์
               </span>
             </div>

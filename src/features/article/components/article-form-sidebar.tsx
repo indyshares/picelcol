@@ -46,7 +46,7 @@ function Badge({
   onRemove: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--primary)]/15 px-2.5 py-0.5 text-xs font-medium text-[var(--text)]">
+    <span className="clay-badge inline-flex items-center gap-1 bg-[var(--primary)]/20 px-2.5 py-0.5 text-xs font-medium text-[var(--text)]">
       {label}
       <button type="button" onClick={onRemove} className="hover:text-[var(--accent)]">&times;</button>
     </span>
@@ -172,7 +172,7 @@ export function ArticleFormSidebar({
             <button
               type="button"
               onClick={onOpenCoverPicker}
-              className="rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--hover-bg)]"
+              className="clay-button bg-[var(--clay-bg-soft)] px-3 py-2 text-sm text-[var(--text)]"
             >
               {coverImage ? "เปลี่ยนรูปภาพ" : "เลือกรูปภาพ"}
             </button>
@@ -190,14 +190,16 @@ export function ArticleFormSidebar({
           <input type="hidden" name="coverImageMediaId" value={coverImageMediaId} />
           {coverImage && (
             <>
-              <div className="relative mt-2 h-32 w-full overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)]">
-                <Image
-                  src={coverImage}
-                  alt={coverAlt || "Cover preview"}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
+              <div className="clay-well relative mt-2 p-1.5">
+                <div className="relative h-32 w-full overflow-hidden rounded-xl">
+                  <Image
+                    src={coverImage}
+                    alt={coverAlt || "Cover preview"}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
               </div>
               <input
                 value={coverAlt}
@@ -209,7 +211,7 @@ export function ArticleFormSidebar({
                 }}
                 placeholder="Alt Text สำหรับรูปภาพปก"
                 maxLength={300}
-                className="mt-2 w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--primary)]"
+                className="clay-input mt-2 w-full rounded-xl bg-[var(--clay-bg)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]"
               />
             </>
           )}
@@ -224,7 +226,7 @@ export function ArticleFormSidebar({
           <select
             name="authorId"
             defaultValue={defaultValues ? undefined : ""}
-            className="w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:border-[var(--primary)]"
+            className="clay-input w-full rounded-xl bg-[var(--clay-bg)] px-3 py-2 text-sm text-[var(--text)] outline-none"
           >
             <option value="" disabled>เลือกผู้เขียน</option>
             {users.map((u) => (
@@ -249,10 +251,10 @@ export function ArticleFormSidebar({
                   key={c.id}
                   type="button"
                   onClick={() => toggleCategory(c.id)}
-                  className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                  className={`clay-badge px-3 py-1 text-xs font-medium transition ${
                     selected
-                      ? "border-[var(--primary)] bg-[var(--primary)]/15 text-[var(--text)]"
-                      : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-light)] hover:border-[var(--primary)]"
+                      ? "bg-[var(--primary)]/20 text-[var(--text)]"
+                      : "bg-[var(--clay-bg-soft)] text-[var(--text-light)]"
                   }`}
                 >
                   {c.name}
@@ -277,20 +279,20 @@ export function ArticleFormSidebar({
                 }}
                 placeholder="พิมพ์ชื่อหมวดหมู่ใหม่"
                 disabled={creatingCategory}
-                className="flex-1 rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--background)] px-2.5 py-1.5 text-xs text-[var(--text)] outline-none focus:border-[var(--primary)] disabled:opacity-40"
+                className="clay-input flex-1 rounded-xl bg-[var(--clay-bg)] px-2.5 py-1.5 text-xs text-[var(--text)] outline-none disabled:opacity-40"
               />
               <button
                 type="button"
                 onClick={handleCreateCategory}
                 disabled={creatingCategory || !categoryInput.trim()}
-                className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+                className="clay-button bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
               >
                 Save
               </button>
               <button
                 type="button"
                 onClick={() => { setShowCategoryInput(false); setCategoryInput(""); }}
-                className="rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-medium text-[var(--text)] hover:bg-[var(--hover-bg)]"
+                className="clay-button bg-[var(--clay-bg-soft)] px-3 py-1.5 text-xs font-medium text-[var(--text)]"
               >
                 Cancel
               </button>
@@ -443,7 +445,7 @@ export function ArticleFormSidebar({
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-[var(--text-muted)]">Status</span>
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              className={`clay-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium ${
                 published
                   ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
@@ -460,7 +462,7 @@ export function ArticleFormSidebar({
             type="button"
             onClick={onPublish}
             disabled={isPending}
-            className="w-full rounded-[var(--radius-btn)] bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
+            className="clay-button w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50"
           >
             {isPending ? "กำลังบันทึก..." : "Publish"}
           </button>
@@ -472,7 +474,7 @@ export function ArticleFormSidebar({
             type="button"
             onClick={onSaveDraft}
             disabled={isPending}
-            className="w-full rounded-[var(--radius-btn)] border border-[var(--border)] bg-[var(--background)] px-4 py-2.5 text-sm font-medium text-[var(--text)] transition hover:bg-[var(--hover-bg)] disabled:opacity-50"
+            className="clay-button w-full bg-[var(--clay-bg-soft)] px-4 py-2.5 text-sm font-medium text-[var(--text)] disabled:opacity-50"
           >
             {isPending ? "กำลังบันทึก..." : "Save as Draft"}
           </button>

@@ -87,6 +87,82 @@
   }
 }
 
+/* ============================================================
+   CLAYMORPHISM — raised, tactile, soft-clay components
+   Shadow stacks live in theme.css as --clay-* so each theme
+   (light/dark) can control the raised texture independently.
+   ============================================================ */
+
+@layer components {
+  /* Soft raised card */
+  .clay-card {
+    background: var(--clay-bg, #ffffff);
+    border-radius: 1.5rem;
+    box-shadow: var(--clay-shadow-card);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Lifts a clay-card on hover (optional, opt-in) */
+  .clay-card-hover:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Raised pill button — collapses slightly when pressed */
+  .clay-button {
+    border-radius: 9999px;
+    box-shadow: var(--clay-shadow-btn);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .clay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--clay-shadow-btn-hover);
+  }
+
+  .clay-button:active {
+    transform: translateY(1px) scale(0.97);
+    box-shadow: var(--clay-shadow-btn-active);
+  }
+
+  .clay-button:disabled {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+
+  /* Small pill (badge / chip) */
+  .clay-badge {
+    border-radius: 9999px;
+    box-shadow: var(--clay-shadow-badge);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Recessed input well */
+  .clay-input {
+    border-radius: 9999px;
+    background: var(--clay-bg, #ffffff);
+    box-shadow: var(--clay-shadow-input);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .clay-input:focus {
+    outline: none;
+    box-shadow: var(--clay-shadow-input),
+      0 0 0 3px color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+
+  .clay-input:focus-within {
+    box-shadow: var(--clay-shadow-input),
+      0 0 0 3px color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+
+  /* Recessed well used to "sink" media (cover images) into a card */
+  .clay-well {
+    border-radius: 1.25rem;
+    box-shadow: var(--clay-shadow-well);
+  }
+}
+
 /* Bind prose element colors to theme tokens instead of hardcoded palette */
 .article-content {
   --tw-prose-body: var(--text);
