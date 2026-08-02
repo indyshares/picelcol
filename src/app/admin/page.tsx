@@ -24,7 +24,6 @@ export default async function AdminDashboardPage() {
     user?.user_metadata?.displayName ?? user?.email?.split("@")[0] ?? "Admin";
 
   const { stats } = data;
-  const weekViews = data.chart.reduce((sum, p) => sum + p.count, 0);
 
   return (
     <main className="mx-auto max-w-6xl py-6">
@@ -126,20 +125,7 @@ export default async function AdminDashboardPage() {
 
       {/* Traffic chart */}
       <section className="clay-card mb-6 rounded-3xl p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold text-[var(--text)]">ยอดเข้าชม 14 วันที่ผ่านมา</h2>
-            <p className="mt-0.5 text-sm text-[var(--text-muted)]">
-              รวม {weekViews.toLocaleString()} ครั้ง · เฉลี่ย{" "}
-              {Math.round(weekViews / 14).toLocaleString()} ครั้ง/วัน
-            </p>
-          </div>
-          <span className="clay-badge inline-flex items-center gap-1.5 rounded-full bg-[var(--primary)]/20 px-3 py-1 text-xs font-medium text-[var(--text)]">
-            <Eye className="h-3.5 w-3.5" />
-            Live
-          </span>
-        </div>
-        <TrafficChart data={data.chart} />
+        <TrafficChart />
       </section>
 
       {/* Bottom grid */}
