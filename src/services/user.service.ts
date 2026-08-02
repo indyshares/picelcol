@@ -45,12 +45,13 @@ export async function listUsers() {
 
 export async function listAuthors() {
   return prisma.user.findMany({
-    where: { role: { in: ["admin", "writer"] } },
+    where: { role: "writer" },
     orderBy: { email: "asc" },
     select: {
       id: true,
       email: true,
       displayName: true,
+      avatarUrl: true,
       role: true,
     },
   });

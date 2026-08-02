@@ -23,7 +23,7 @@ const ArticleEditor = dynamic(() => import("./article-editor").then((m) => m.Art
 type CategoryOption = { id: string; name: string };
 type TagOption = { id: string; name: string };
 type EntityOption = { id: string; name: string; type: string };
-type UserOption = { id: string; email: string; displayName: string | null; role: string };
+type UserOption = { id: string; email: string; displayName: string | null; avatarUrl: string | null; role: string };
 
 const LIMITS = {
   title: 120,

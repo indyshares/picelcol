@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Check, ChevronDown } from "lucide-react";
 import { createCategoryAction, findOrCreateEntityAction, updateMediaAltAction } from "@/features/article/actions";
 import { SectionGuide } from "@/components/section-guide";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,7 +11,7 @@ import { formatICTDateTime } from "@/utils/date";
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
 type Entity = { id: string; name: string; type: string };
-type UserOption = { id: string; email: string; displayName: string | null; role: string };
+type UserOption = { id: string; email: string; displayName: string | null; avatarUrl: string | null; role: string };
 
 type ArticleFormSidebarProps = {
   categories: Category[];
@@ -58,6 +59,91 @@ function SectionTitle({ label, guide }: { label: string; guide: string }) {
     <h3 className="mb-2 text-sm font-semibold text-[var(--text)]">
       {label} <SectionGuide text={guide} />
     </h3>
+  );
+}
+
+function userDisplayName(user: UserOption) {
+  return user.displayName ?? user.email.split("@")[0] ?? "ผู้เขียน";
+}
+
+function ClayAvatar({ user, size }: { user: UserOption; size: string }) {
+  const name = userDisplayName(user);
+  return (
+    <span
+      className={`clay-card inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ${size}`}
+    >
+      {user.avatarUrl ? (
+        <span className="relative h-full w-full">
+          <Image src={user.avatarUrl} alt={name} fill className="object-cover" unoptimized />
+        </span>
+      ) : (
+        <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] text-xs font-bold text-[var(--accent-contrast)]">
+          {name.charAt(0).toUpperCase()}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function AuthorSelect({ users }: { users: UserOption[] }) {
+  const [authorId, setAuthorId] = useState("");
+  const [open, setOpen] = useState(false);
+  const selected = users.find((u) => u.id === authorId) ?? null;
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        className="clay-card clay-bounce flex w-full items-center gap-2.5 rounded-2xl p-2.5 text-left text-sm text-[var(--text)] motion-reduce:transition-none"
+      >
+        {selected ? (
+          <>
+            <ClayAvatar user={selected} size="h-7 w-7" />
+            <span className="min-w-0 flex-1 truncate font-medium">{userDisplayName(selected)}</span>
+          </>
+        ) : (
+          <span className="flex-1 text-[var(--text-muted)]">เลือกผู้เขียน</span>
+        )}
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[var(--text-muted)] transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      <input type="hidden" name="authorId" value={authorId} />
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div
+            role="listbox"
+            className="clay-card absolute left-0 right-0 top-full z-40 mt-2 rounded-2xl p-2 shadow-xl backdrop-blur-md"
+          >
+            {users.length === 0 ? (
+              <p className="px-3 py-2 text-sm text-[var(--text-muted)]">ไม่มีผู้เขียนที่ใช้งานได้</p>
+            ) : (
+              users.map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  role="option"
+                  aria-selected={u.id === authorId}
+                  onClick={() => {
+                    setAuthorId(u.id);
+                    setOpen(false);
+                  }}
+                  className="clay-bounce flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left text-sm text-[var(--text)] transition-colors motion-reduce:transition-none hover:bg-[var(--clay-bg-soft)]"
+                >
+                  <ClayAvatar user={u} size="h-7 w-7" />
+                  <span className="min-w-0 flex-1 truncate">{userDisplayName(u)}</span>
+                  {u.id === authorId && <Check className="h-4 w-4 shrink-0 text-[var(--accent)]" />}
+                </button>
+              ))
+            )}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -222,19 +308,8 @@ export function ArticleFormSidebar({
 
         {/* Author */}
         <section>
-          <SectionTitle label="ผู้เขียน" guide="Select an author with the role of Admin or Writer." />
-          <select
-            name="authorId"
-            defaultValue={defaultValues ? undefined : ""}
-            className="clay-input w-full rounded-xl bg-[var(--clay-bg)] px-3 py-2 text-sm text-[var(--text)] outline-none"
-          >
-            <option value="" disabled>เลือกผู้เขียน</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.displayName ? `${u.displayName} (${u.role})` : `${u.email} (${u.role})`}
-              </option>
-            ))}
-          </select>
+          <SectionTitle label="ผู้เขียน" guide="Select an author with the role of Writer." />
+          <AuthorSelect users={users} />
           {fieldErrors?.authorId && (
             <p className="mt-1 text-sm text-[var(--accent)]">{fieldErrors.authorId[0]}</p>
           )}
