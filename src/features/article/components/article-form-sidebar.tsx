@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Rocket, Save } from "lucide-react";
 import { createCategoryAction, findOrCreateEntityAction, updateMediaAltAction } from "@/features/article/actions";
 import { SectionGuide } from "@/components/section-guide";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -515,42 +515,43 @@ export function ArticleFormSidebar({
           )}
         </section>
 
-        {/* Status */}
-        <section className="border-t border-[var(--border)] pt-4">
-          <div className="flex items-center justify-between">
+        {/* Status & Actions */}
+        <section className="clay-card rounded-3xl p-5 border border-white/60 dark:border-slate-800">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium text-[var(--text-muted)]">Status</span>
             <span
-              className={`clay-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium ${
+              className={`clay-badge inline-flex items-center gap-1.5 rounded-xl px-3 py-1 font-semibold ${
                 published
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                  ? "border border-emerald-300/60 bg-emerald-100/90 text-emerald-800"
+                  : "border border-amber-300/60 bg-amber-100/90 text-amber-800"
               }`}
             >
+              <span
+                className={`w-2 h-2 rounded-full animate-pulse ${
+                  published ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
               {published ? "Published" : "Draft"}
             </span>
           </div>
-        </section>
 
-        {/* Publish */}
-        <section>
           <button
             type="button"
             onClick={onPublish}
             disabled={isPending}
-            className="clay-button clay-bounce w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-[var(--accent-contrast)] motion-reduce:transition-none disabled:opacity-50"
+            className="clay-button w-full mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 py-3 font-bold text-white shadow-lg shadow-orange-500/20 transition-all hover:from-orange-600 hover:to-amber-600 disabled:opacity-50"
           >
+            <Rocket className="h-4 w-4" />
             {isPending ? "กำลังบันทึก..." : "Publish"}
           </button>
-        </section>
 
-        {/* Save Draft */}
-        <section>
           <button
             type="button"
             onClick={onSaveDraft}
             disabled={isPending}
-            className="clay-button clay-bounce w-full bg-[var(--clay-bg-soft)] px-4 py-2.5 text-sm font-medium text-[var(--text)] motion-reduce:transition-none disabled:opacity-50"
+            className="clay-button mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-2.5 font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 disabled:opacity-50"
           >
+            <Save className="h-4 w-4" />
             {isPending ? "กำลังบันทึก..." : "Save as Draft"}
           </button>
         </section>
