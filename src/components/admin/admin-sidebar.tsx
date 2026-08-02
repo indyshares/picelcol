@@ -110,7 +110,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
   return (
     <>
-      <aside className="clay-card sticky top-4 m-4 hidden h-[calc(100vh-2rem)] w-72 shrink-0 flex-col rounded-3xl p-4 lg:flex">
+      <aside className="clay-card m-4 hidden h-[calc(100vh-2rem)] w-72 shrink-0 flex-col rounded-3xl p-4 lg:flex">
         {brand}
         {nav}
         {bottom}

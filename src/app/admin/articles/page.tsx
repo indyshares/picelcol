@@ -59,10 +59,10 @@ export default async function AdminArticlesPage() {
                     {article.title}
                   </h2>
                   <span
-                    className={`clay-badge inline-flex items-center px-2.5 py-0.5 text-xs font-medium ${
+                    className={`clay-badge inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
                       article.published
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        ? "border border-emerald-200/60 bg-emerald-100 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-950/80 dark:text-emerald-300"
+                        : "border border-amber-200/60 bg-amber-100 text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/80 dark:text-amber-300"
                     }`}
                   >
                     {article.published ? "เผยแพร่แล้ว" : "แบบร่าง"}

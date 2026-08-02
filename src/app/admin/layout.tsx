@@ -15,10 +15,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <div className="lg:flex lg:min-h-screen">
+    <div className="h-screen overflow-hidden bg-[var(--bg)]">
+      <div className="flex h-full flex-col lg:flex-row">
         <AdminSidebar user={{ email: user.email ?? "" }} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="clay-scroll flex-1 min-h-0 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   );
