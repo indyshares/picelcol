@@ -19,6 +19,7 @@ type AdminArticlesControlsProps = {
   categories: CategoryOption[];
   onReset: () => void;
   hasActiveFilters: boolean;
+  actions?: React.ReactNode;
 };
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
@@ -39,6 +40,7 @@ export function AdminArticlesControls({
   categories,
   onReset,
   hasActiveFilters,
+  actions,
 }: AdminArticlesControlsProps) {
   return (
     <div className="mb-6 space-y-3">
@@ -80,6 +82,8 @@ export function AdminArticlesControls({
             </button>
           ))}
         </div>
+
+        {actions && <div className="lg:ml-auto">{actions}</div>}
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
