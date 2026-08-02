@@ -112,7 +112,7 @@ export function AuthNav() {
     <div className="flex items-center gap-4 text-sm">
       <Link
         href="/login"
-        className="clay-button bg-[var(--accent)] px-4 py-2 font-medium text-white"
+        className="clay-button bg-[var(--accent)] px-4 py-2 font-medium text-[var(--accent-contrast)]"
       >
         เข้าสู่ระบบ
       </Link>

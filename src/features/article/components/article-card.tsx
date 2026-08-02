@@ -15,7 +15,7 @@ export function ArticleCard({ article }: { article: ArticleCardArticle }) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="clay-card clay-card-hover group flex flex-col overflow-hidden border border-[var(--border)]/50"
+      className="clay-card clay-card-hover group flex flex-col overflow-hidden"
     >
       <div className="p-3 pb-0">
         <div className="clay-well p-2">

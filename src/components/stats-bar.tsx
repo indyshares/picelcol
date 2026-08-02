@@ -1,9 +1,4 @@
-const tones = [
-  { bg: "rgba(152, 216, 244, 0.35)", dot: "#98D8F4" },
-  { bg: "rgba(255, 197, 214, 0.4)", dot: "#FFC5D6" },
-  { bg: "rgba(255, 126, 95, 0.22)", dot: "#FF7E5F" },
-  { bg: "rgba(152, 216, 244, 0.2)", dot: "#98D8F4" },
-];
+const tones = ["var(--stat-1)", "var(--stat-2)", "var(--stat-3)", "var(--stat-2)"];
 
 export function StatsBar({
   publishedCount,
@@ -31,14 +26,20 @@ export function StatsBar({
             <div
               key={stat.label}
               className="clay-card clay-card-hover flex flex-col items-center gap-1.5 px-4 py-6 text-center"
-              style={{ background: tones[i].bg, boxShadow: "var(--clay-shadow-card)" }}
+              style={{
+                background: `color-mix(in srgb, ${tones[i]} 16%, var(--clay-bg))`,
+                boxShadow: "var(--clay-shadow-card)",
+              }}
             >
               <span
                 className="h-2 w-2 rounded-full"
-                style={{ background: tones[i].dot }}
+                style={{ background: tones[i] }}
                 aria-hidden
               />
-              <span className="font-[var(--font-heading)] text-2xl font-bold text-[var(--text)]">
+              <span
+                className="font-[var(--font-heading)] text-2xl font-bold"
+                style={{ color: tones[i] }}
+              >
                 {stat.value}
               </span>
               <span className="text-sm text-[var(--text-light)]">{stat.label}</span>

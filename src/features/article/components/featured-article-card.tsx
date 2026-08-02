@@ -16,7 +16,7 @@ export function FeaturedArticleCard({ article, priority }: { article: FeaturedAr
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="clay-card clay-card-hover group relative flex flex-col overflow-hidden border border-[var(--border)]/50 md:flex-row"
+      className="clay-card clay-card-hover group relative flex flex-col overflow-hidden md:flex-row"
     >
       <div className="p-3 pb-0 md:pb-3 md:pr-0 md:w-2/5">
         <div className="clay-well h-full p-2">

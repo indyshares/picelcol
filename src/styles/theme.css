@@ -1,7 +1,7 @@
 /*
- * Design tokens — derived from Theme Setup.md
+ * Design tokens — Cute & Soft Claymorphism
  * Light theme: Fresh / Cute / Soft / Friendly / Clean
- * Dark theme: Cozy / Premium / Soft Dark / Modern
+ * Dark theme: Midnight Plum / Soft Violet / Pastel accents
  */
 
 :root {
@@ -10,6 +10,7 @@
   --secondary: #ffc5d6;
   --accent: #ff7e5f;
   --accent-hover: #ff6b47;
+  --accent-contrast: #ffffff;
 
   --bg: #fffdf6;
   --surface: #ffffff;
@@ -33,105 +34,115 @@
   --icon: #98d8f4;
   --icon-active: #ff7e5f;
 
-  --shadow-card: 0 8px 30px rgb(0 0 0 / 0.06);
-  --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.08);
+  /* Pastel numbers for the stats boxes */
+  --stat-1: #3f9bd8;
+  --stat-2: #ee6fa4;
+  --stat-3: #ff7e5f;
+
+  --shadow-card: 0 12px 32px -8px rgb(0 0 0 / 0.12);
+  --shadow-soft: 0 12px 32px -8px rgb(0 0 0 / 0.15);
 
   --hero-gradient: linear-gradient(135deg, #98d8f4 0%, #ffc5d6 100%);
 
-  /* ---------- CLAYMORPHISM (LIGHT) ---------- */
+  /* ---------- CLAYMORPHISM (LIGHT) ----------
+     Long, full drop shadow + soft inner glow — no harsh edges. */
   --clay-bg: #fcfdff;
   --clay-bg-soft: #ffffff;
 
-  --clay-shadow-card: 8px 8px 16px rgba(0, 0, 0, 0.08),
-    inset -6px -6px 12px rgba(0, 0, 0, 0.05),
-    inset 6px 6px 12px rgba(255, 255, 255, 0.85);
+  --clay-shadow-card: 0 12px 32px -8px rgba(0, 0, 0, 0.25),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.3);
 
-  --clay-shadow-btn: 6px 6px 12px rgba(0, 0, 0, 0.1),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.14),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.65);
+  --clay-shadow-btn: 0 8px 20px -6px rgba(0, 0, 0, 0.22),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.22);
 
-  --clay-shadow-btn-hover: 4px 4px 10px rgba(0, 0, 0, 0.08),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.12),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.7);
+  --clay-shadow-btn-hover: 0 6px 16px -6px rgba(0, 0, 0, 0.18),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.22),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.18);
 
-  --clay-shadow-btn-active: 2px 2px 5px rgba(0, 0, 0, 0.1),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.08),
-    inset 2px 2px 5px rgba(0, 0, 0, 0.12);
+  --clay-shadow-btn-active: inset 2px 2px 6px rgba(0, 0, 0, 0.28),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1);
 
-  --clay-shadow-badge: 4px 4px 8px rgba(0, 0, 0, 0.06),
-    inset -3px -3px 6px rgba(0, 0, 0, 0.04),
-    inset 3px 3px 6px rgba(255, 255, 255, 0.75);
+  --clay-shadow-badge: 0 4px 12px -4px rgba(0, 0, 0, 0.18),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.3),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.18);
 
-  --clay-shadow-input: inset 4px 4px 8px rgba(0, 0, 0, 0.06),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.75);
+  --clay-shadow-input: inset 2px 2px 6px rgba(0, 0, 0, 0.12),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 
-  --clay-shadow-well: inset 5px 5px 10px rgba(0, 0, 0, 0.09),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+  --clay-shadow-well: inset 3px 3px 8px rgba(0, 0, 0, 0.14),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.6);
 }
 
 .dark {
-  /* ---------- DARK ---------- */
-  --primary: #8fd7ff;
-  --secondary: #ffb8cc;
-  --accent: #ff8b6d;
-  --accent-hover: #ff7755;
+  /* ---------- DARK — Cute & Soft Midnight Plum ---------- */
+  --primary: #8caaee; /* pastel blue */
+  --secondary: #f4b8e4; /* soft pink */
+  --accent: #f2d5cf; /* peach */
+  --accent-hover: #e9c1b7;
+  --accent-contrast: #2a2433; /* deep plum text on pastel buttons */
 
-  --bg: #1a2230;
-  --surface: #273345;
+  --bg: #16141d; /* midnight plum */
+  --surface: #282435; /* soft violet / plum */
 
-  --text: #f7f9fc;
-  --text-light: #d0d8e4;
-  --text-muted: #94a3b8;
+  --text: #e6e1ee; /* off-white warm gray (not pure white) */
+  --text-light: #b9b2c9;
+  --text-muted: #8b849b;
 
-  --foreground: #f7f9fc;
-  --muted-foreground: #d0d8e4;
+  --foreground: #e6e1ee;
+  --muted-foreground: #b9b2c9;
 
-  --border: #39495f;
+  --border: #332e42;
 
-  --navbar-bg: #1f2838;
-  --navbar-text: #f8fafc;
-  --navbar-hover: #ffffff;
+  --navbar-bg: #1c1926;
+  --navbar-text: #e6e1ee;
+  --navbar-hover: #f4b8e4;
 
-  --link: #8fd7ff;
-  --link-hover: #ffb8cc;
+  --link: #8caaee;
+  --link-hover: #f4b8e4;
 
-  --icon: #8fd7ff;
-  --icon-active: #ff8b6d;
+  --icon: #8caaee;
+  --icon-active: #f4b8e4;
 
-  --shadow-card: 0 12px 35px rgb(0 0 0 / 0.4);
-  --shadow-soft: 0 12px 35px rgb(0 0 0 / 0.35);
+  /* Pastel numbers for the stats boxes */
+  --stat-1: #8caaee;
+  --stat-2: #f4b8e4;
+  --stat-3: #f2d5cf;
 
-  --hero-gradient: linear-gradient(135deg, #1a2230, #273345, #2d3c52);
+  --shadow-card: 0 12px 32px -8px rgb(0 0 0 / 0.35);
+  --shadow-soft: 0 12px 32px -8px rgb(0 0 0 / 0.4);
+
+  --hero-gradient: linear-gradient(135deg, #16141d, #23202e, #2e2a3d);
 
   /* ---------- CLAYMORPHISM (DARK) ----------
-     Brighter/softer inner highlight so the raised clay texture
-     stays visible against the dark background. */
-  --clay-bg: #273345;
-  --clay-bg-soft: #2d3c52;
+     Same long, soft drop shadows as light — the raised clay texture
+     reads consistently against the pastel plum background. */
+  --clay-bg: #282435;
+  --clay-bg-soft: #2e2a3d;
 
-  --clay-shadow-card: 10px 10px 20px rgba(0, 0, 0, 0.45),
-    inset -6px -6px 12px rgba(0, 0, 0, 0.4),
-    inset 6px 6px 12px rgba(255, 255, 255, 0.06);
+  --clay-shadow-card: 0 12px 32px -8px rgba(0, 0, 0, 0.25),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.3);
 
-  --clay-shadow-btn: 8px 8px 16px rgba(0, 0, 0, 0.5),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.45),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.07);
+  --clay-shadow-btn: 0 8px 20px -6px rgba(0, 0, 0, 0.45),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.08),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.35);
 
-  --clay-shadow-btn-hover: 6px 6px 12px rgba(0, 0, 0, 0.45),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.4),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.09);
+  --clay-shadow-btn-hover: 0 6px 16px -6px rgba(0, 0, 0, 0.4),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.3);
 
-  --clay-shadow-btn-active: 2px 2px 5px rgba(0, 0, 0, 0.5),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.3),
-    inset 2px 2px 5px rgba(0, 0, 0, 0.4);
+  --clay-shadow-btn-active: inset 2px 2px 6px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.06);
 
-  --clay-shadow-badge: 4px 4px 8px rgba(0, 0, 0, 0.3),
-    inset -3px -3px 6px rgba(0, 0, 0, 0.25),
-    inset 3px 3px 6px rgba(255, 255, 255, 0.05);
+  --clay-shadow-badge: 0 4px 12px -4px rgba(0, 0, 0, 0.4),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.07),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.3);
 
-  --clay-shadow-input: inset 4px 4px 8px rgba(0, 0, 0, 0.45),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.05);
+  --clay-shadow-input: inset 2px 2px 6px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.06);
 
-  --clay-shadow-well: inset 5px 5px 10px rgba(0, 0, 0, 0.45),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+  --clay-shadow-well: inset 3px 3px 8px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.06);
 }

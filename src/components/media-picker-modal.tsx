@@ -98,7 +98,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="block w-full text-sm text-[var(--text)] file:mr-3 file:rounded file:border-0 file:bg-[var(--accent)] file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
+                  className="block w-full text-sm text-[var(--text)] file:mr-3 file:rounded file:border-0 file:bg-[var(--accent)] file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-[var(--accent-contrast)]"
                 />
               </div>
               <div>
@@ -116,7 +116,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                 type="button"
                 onClick={handleUpload}
                 disabled={!file || uploading}
-                className="rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                className="rounded-lg bg-[var(--accent)] px-6 py-2 text-sm font-medium text-[var(--accent-contrast)] hover:opacity-90 disabled:opacity-50"
               >
                 {uploading ? "กำลังอัปโหลด..." : "อัปโหลดและเลือก"}
               </button>
@@ -165,7 +165,7 @@ export function MediaPickerModal({ onSelect, onClose }: MediaPickerModalProps) {
                         toast.success("เลือกรูปภาพสำเร็จ");
                         onSelect({ url: selected.url, alt: altText, mediaId: selected.id });
                       }}
-                      className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+                      className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--accent-contrast)] hover:opacity-90"
                     >
                       เลือกรูปนี้
                     </button>

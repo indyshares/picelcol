@@ -285,7 +285,7 @@ export function ArticleFormSidebar({
                 type="button"
                 onClick={handleCreateCategory}
                 disabled={creatingCategory || !categoryInput.trim()}
-                className="clay-button bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
+                className="clay-button bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] disabled:opacity-40"
               >
                 Save
               </button>
@@ -340,7 +340,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={() => addTag(tagInput)}
               disabled={tagNames.length >= 5 || !tagInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               +
             </button>
@@ -386,7 +386,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={addKeyword}
               disabled={keywords.length >= 5 || !keywordInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               +
             </button>
@@ -427,7 +427,7 @@ export function ArticleFormSidebar({
               type="button"
               onClick={() => handleAddEntity(entityInput)}
               disabled={creatingEntity || selectedEntityIds.length >= 4 || !entityInput.trim()}
-              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
+              className="rounded-[var(--radius-btn)] bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-[var(--accent-contrast)] transition hover:bg-[var(--accent-hover)] disabled:opacity-40"
             >
               {creatingEntity ? "..." : "+"}
             </button>
@@ -462,7 +462,7 @@ export function ArticleFormSidebar({
             type="button"
             onClick={onPublish}
             disabled={isPending}
-            className="clay-button w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50"
+            className="clay-button w-full bg-[var(--accent)] px-4 py-2.5 text-sm font-medium text-[var(--accent-contrast)] disabled:opacity-50"
           >
             {isPending ? "กำลังบันทึก..." : "Publish"}
           </button>
